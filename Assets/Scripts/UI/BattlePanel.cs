@@ -98,6 +98,7 @@ public class BattlePanel : MonoBehaviour
                 {
                     users[i].SetInfo(DataTool.GetName(), UnityEngine.Random.Range(10, 20), UnityEngine.Random.Range(1000, 2000));
                 }
+                currentCount = -1;
                 //users[currentCount].IsSelected();
             }
             else

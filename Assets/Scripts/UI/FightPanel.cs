@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using DG.Tweening;
 public class FightPanel : MonoBehaviour
 {
     private Text titleText;
@@ -21,7 +21,7 @@ public class FightPanel : MonoBehaviour
     private int roleIndex;
     private int foeIndex;
     private float currentTime;
-    private bool isVictory;
+    private bool isStop;
     public List<int> attackRoles = new List<int>();
     public List<int> attackFoes = new List<int>();
     private List<FightItem> roles = new List<FightItem>();
@@ -47,7 +47,7 @@ public class FightPanel : MonoBehaviour
     public void OpenPanel(string enemyName,float grade,int time)
     {
         currentTime = time;
-        isVictory = false;
+        isStop = true;
         attackRoles.Clear();
         attackFoes.Clear();
         gameObject.SetActive(true);
@@ -102,7 +102,7 @@ public class FightPanel : MonoBehaviour
             }
             if(attackRoles.Count <= 0)
             {
-                JudeVictory(false);
+                StartCoroutine(JudeVictory(false));
             }
         }
         else
@@ -117,17 +117,13 @@ public class FightPanel : MonoBehaviour
             }
             if (attackFoes.Count <= 0)
             {
-                JudeVictory(true);
+                StartCoroutine(JudeVictory(true));
             }
         }
     }
     //玩家攻击
     public void RoleAttack(int count,bool isFast,float hurt)
     {
-        if (roleIndex >= attackRoles.Count)
-        {
-            roleIndex = 0;
-        }
         for (int i = 0; i < count; i++)
         {
             if (foeAttack >= attackFoes.Count)
@@ -140,15 +136,10 @@ public class FightPanel : MonoBehaviour
                 foeAttack += 1;
             }
         }
-        roleIndex += 1;
     }
     //敌对攻击
     public void FoeAttack(int count,bool isFast,float hurt)
     {
-        if (foeIndex >= attackFoes.Count)
-        {
-            foeIndex = 0;
-        }
         for (int i = 0; i < count; i++)
         {
             if (roleAttack >= attackRoles.Count)
@@ -161,18 +152,87 @@ public class FightPanel : MonoBehaviour
                 roleAttack += 1;
             }
         }
+    }
+    private IEnumerator RoleAnimal(int count,float hurt)
+    {
+        if (roleIndex >= attackRoles.Count)
+        {
+            roleIndex = 0;
+        }
+        if (foeAttack >= attackFoes.Count)
+        {
+            foeAttack = 0;
+        }
+        Vector3 rolePoint = roles[attackRoles[roleIndex]].fightParent.localPosition;
+        Vector3 foePoint = foes[attackFoes[foeAttack]].fightParent.position;
+        roles[attackRoles[roleIndex]].fightParent.DOMove(foePoint, 0.5f);
+        yield return new WaitForSeconds(0.5f);
+        RoleAttack(count, false, hurt);
+        yield return new WaitForSeconds(0.5f);
+        roles[attackRoles[roleIndex]].fightParent.DOLocalMove(rolePoint, 0.5f);
+        roleIndex += 1;
+    }
+    private IEnumerator FoeAnimal(int count, float hurt)
+    {
+        if (foeIndex >= attackFoes.Count)
+        {
+            foeIndex = 0;
+        }
+        if (roleAttack >= attackRoles.Count)
+        {
+            roleAttack = 0;
+        }
+        Vector3 rolePoint = roles[attackRoles[roleAttack]].fightParent.position;
+        Vector3 foePoint = foes[attackFoes[foeIndex]].fightParent.localPosition;
+        foes[attackFoes[foeIndex]].fightParent.DOMove(rolePoint, 0.5f);
+        yield return new WaitForSeconds(0.5f);
+        FoeAttack(count, false, hurt);
+        yield return new WaitForSeconds(0.5f);
+        foes[attackFoes[foeIndex]].fightParent.DOLocalMove(foePoint, 0.5f);
         foeIndex += 1;
     }
     private IEnumerator AttackAnimation()
     {
         yield return new WaitForSeconds(0.5f);
-        if(!isVictory)
+        if(isStop)
         {
-            RoleAttack(Random.Range(1, attackFoes.Count), false,Random.Range(45, 80));
-            yield return new WaitForSeconds(0.5f);
-            if (!isVictory)
+            if (roleIndex >= attackRoles.Count)
             {
-                FoeAttack(Random.Range(1, attackRoles.Count),false,Random.Range(45, 80));
+                roleIndex = 0;
+            }
+            if (foeAttack >= attackFoes.Count)
+            {
+                foeAttack = 0;
+            }
+            Transform roleCurret = roles[attackRoles[roleIndex]].fightParent;
+            Vector3 rolePoint1 = roles[attackRoles[roleIndex]].fightParent.localPosition;
+            Vector3 foePoint2 = foes[attackFoes[foeAttack]].fightParent.position;
+            roleCurret.DOMove(foePoint2, 0.5f);
+            yield return new WaitForSeconds(0.5f);
+            RoleAttack(Random.Range(1, attackFoes.Count), false, Random.Range(45, 80));
+            yield return new WaitForSeconds(0.5f);
+            roleCurret.DOLocalMove(rolePoint1, 0.5f);
+            roleIndex += 1;
+            yield return new WaitForSeconds(0.5f);
+            if (isStop)
+            {
+                if (foeIndex >= attackFoes.Count)
+                {
+                    foeIndex = 0;
+                }
+                if (roleAttack >= attackRoles.Count)
+                {
+                    roleAttack = 0;
+                }
+                Transform foeCurret = foes[attackFoes[foeIndex]].fightParent;
+                Vector3 rolePoint = roles[attackRoles[roleAttack]].fightParent.position;
+                Vector3 foePoint = foes[attackFoes[foeIndex]].fightParent.localPosition;
+                foeCurret.DOMove(rolePoint, 0.5f);
+                yield return new WaitForSeconds(0.5f);
+                FoeAttack(Random.Range(1, attackRoles.Count), false, Random.Range(45, 80));
+                yield return new WaitForSeconds(0.5f);
+                foeCurret.DOLocalMove(foePoint, 0.5f);
+                foeIndex += 1;
                 StartCoroutine(AttackAnimation());
             }
         }
@@ -201,16 +261,25 @@ public class FightPanel : MonoBehaviour
     //快速战斗
     private void OpenFast()
     {
-        while (!isVictory)
+        while (isStop)
         {
-            RoleAttack(1,true,Random.Range(45, 80));
-            FoeAttack(1,true,Random.Range(45, 80));
+            if(isStop)
+            {
+                RoleAttack(1, true, Random.Range(45, 80));
+            }
+            if (isStop)
+            {
+                FoeAttack(1, true, Random.Range(45, 80));
+            }
         }
     }
     //胜利or失败
-    private void JudeVictory(bool isVictory)
+    private IEnumerator JudeVictory(bool isVictory)
     {
-        if(isVictory)
+        isStop = false;
+        //StopCoroutine("AttackAnimation");
+        yield return new WaitForSeconds(2);
+        if (isVictory)
         {
             titleText.text = "胜利";
         }
@@ -218,7 +287,6 @@ public class FightPanel : MonoBehaviour
         {
             titleText.text = "失败";
         }
-        this.isVictory = true;
         settlePanel.SetActive(true);
     }
     //private void Update()
@@ -240,7 +308,7 @@ public class FightPanel : MonoBehaviour
     //战斗信息
     private class FightItem
     {
-        private Transform fightParent;
+        public Transform fightParent;
         private Image headSprite;
         private Image hpbarImage;
         private Text nameText;
@@ -279,11 +347,12 @@ public class FightPanel : MonoBehaviour
                     fightParent.gameObject.SetActive(false);
                     UIManager.Instance.fightPanel.Search(isRole);
                 }
-                else if(!isFas)
+                else 
                 {
                     hpText.text = string.Format("{0}", curretHp);
                     hpbarImage.fillAmount = curretHp / maxHp;
-                    UIManager.Instance.CloningBlood(fightParent.localPosition, hurt);
+                    if (!isFas)
+                        UIManager.Instance.CloningBlood(fightParent.localPosition, hurt);
                 }
             }
         }

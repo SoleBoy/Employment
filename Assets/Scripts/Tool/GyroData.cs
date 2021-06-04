@@ -9,7 +9,7 @@ using System;
 public class GyroData : MonoBehaviour
 {
     public Transform textInput;
-    private bool draw = false;
+    //private bool draw = false;
     private bool gyinfo;
     private Gyroscope go;
     private FileInfo fileInfo;
