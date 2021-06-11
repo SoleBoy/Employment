@@ -85,44 +85,52 @@ public class UnitPanel : MonoBehaviour
             if (attestIndex == 0)
             {
                 Debug.Log("输入邀请码");
+                DataTool.StartActivity(158);
             }
             else if (attestIndex == 1)
             {
                 Debug.Log("实名认证");
+                DataTool.StartActivity(38);
             }
             else if (attestIndex == 2)
             {
                 Debug.Log("银行卡绑定");
+                DataTool.StartActivity(48);
             }
             else if (attestIndex == 3)
             {
                 Debug.Log("签名认证");
+                DataTool.StartActivity(91);
             }
             else if (attestIndex == 4)
             {
                 Debug.Log("江苏银行二类开卡");
+                DataTool.StartActivity(72);
             }
             else if (attestIndex == 5)
             {
                 Debug.Log("活体认证");
+                DataTool.StartActivity(95);
             }
             else if (attestIndex == 6)
             {
                 Debug.Log("意愿视频");
-                DataTool.StartActivity("35");
+                DataTool.StartActivity(99);
             }
             else if (attestIndex == 7)
             {
                 Debug.Log("税务办理");
+                DataTool.StartActivity(105);
             }
             else if (attestIndex == 8)
             {
                 Debug.Log("农业二类卡开卡");
+                DataTool.StartActivity(108);
             }
             else if (attestIndex == 9)
             {
                 Debug.Log("银税协议签订");
-                DataTool.StartActivity("110");
+                DataTool.StartActivity(110);
             }
         }
         public void HideInfo(bool isHide)

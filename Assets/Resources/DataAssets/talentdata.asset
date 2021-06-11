@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 417d173e7d667f14b9d7844dd1d3f763, type: 3}
+  m_Name: talentdata
+  m_EditorClassIdentifier: 
+  items:
+  - id: 4001
+    name: "\u5947\u95E8\u9041\u75321\u9636"
+    probability: 30
+    value: 50
+    duration: 5
+    info: "\u88AB\u653B\u51FB\u65F6\u5019\uFF0C\u89E6\u53D1\u9632\u5FA1\u529B\u589E50%\uFF0C\u53EF\u6301\u7EED\u4E00\u6BB5\u65F6\u95F4\u3002"
+  - id: 4002
+    name: "\u6218\u795E\u9644\u4F532\u9636"
+    probability: 40
+    value: 100
+    duration: 10
+    info: "\u4E3B\u52A8\u653B\u51FB\u65F6\uFF0C\u89E6\u53D1\u653B\u51FB\u529B\u7FFB\u500D\uFF0C\u53EF\u6301\u7EED\u4E00\u6BB5\u65F6\u95F4\u3002"
+  - id: 4003
+    name: "\u8D77\u6B7B\u56DE\u751F1\u9636"
+    probability: 25
+    value: 20
+    duration: -1
+    info: "\u88AB\u52A8\u653B\u51FB\u65F6\uFF0C\u89E6\u53D1\u56DE\u884020%\uFF0C\u5355\u6B21\u77AC\u95F4\u3002"

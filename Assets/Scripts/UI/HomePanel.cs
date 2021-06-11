@@ -24,7 +24,7 @@ public class HomePanel : MonoBehaviour
     private Button mainBtn;
 
     private int indexCurret;
-    private void Awake()
+    public void Init()
     {
         nameText = transform.Find("Head/NameText").GetComponent<Text>();
         dutyText = transform.Find("Bottom/InfoText").GetComponent<Text>();

@@ -24,6 +24,7 @@ public class BeastPanel : MonoBehaviour
     private int itemIndex;
     private int carryIndex;
 
+    private TalentData talentData;
     private List<BeastItem> beastItems = new List<BeastItem>();
     private List<int> carryItem = new List<int>();
     private void Awake()
@@ -56,7 +57,7 @@ public class BeastPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
     //选择
-    public void SelectedItem(int index)
+    public void SelectedItem(int index,string beastName,string quality, string itemId)
     {
         if(itemIndex >= 0)
         {
@@ -72,7 +73,21 @@ public class BeastPanel : MonoBehaviour
         }
         itemIndex = index;
         headParent.SetActive(true);
-        PetInfo("招财喵","", itemIndex,UnityEngine.Random.Range(1,5));
+        talentData = DataTool.talentDatas[itemId];
+        nameText.text = string.Format("{0} LV.{1}", beastName, itemIndex);
+        infoText.text = string.Format("{0}\n{1}%{2}", talentData.name, talentData.probability, talentData.info);
+        int fabric = int.Parse(quality);
+        for (int i = 0; i < qualitys.Length; i++)
+        {
+            if (i < fabric)
+            {
+                qualitys[i].SetActive(true);
+            }
+            else
+            {
+                qualitys[i].SetActive(false);
+            }
+        }
     }
     //取消选择
     public void CancelSelected()
@@ -147,7 +162,7 @@ public class BeastPanel : MonoBehaviour
     private void PetInfo(string name,string talent,int grade,int fabric)
     {
         nameText.text = string.Format("{0} LV.{1}", name,grade);
-        infoText.text = string.Format("金钟罩\n30%几率发动金钟罩", talent);
+        infoText.text = string.Format("{0}\n{1}%{2}",talentData.name,talentData.probability,talentData.info);
         for (int i = 0; i < qualitys.Length; i++)
         {
             if(i < fabric)
@@ -168,6 +183,7 @@ public class BeastItem
     private Image headImage;
     private Button fixBtn;
     private Sprite headSprite;
+    private RoleData beastData;
     private GameObject carryObject;
     private GameObject frameObject;
     private int orderIndex;
@@ -177,6 +193,8 @@ public class BeastItem
     {
         orderIndex = index;
         headSprite = head;
+        string itemId = string.Format("200{0}", UnityEngine.Random.Range(1, 7));
+        beastData = DataTool.roleDatas[itemId];
         carryObject = parent.Find("carry").gameObject;
         frameObject = parent.Find("Frame").gameObject;
         fixBtn = parent.GetComponent<Button>();
@@ -201,7 +219,7 @@ public class BeastItem
         {
             isPick = true;
             frameObject.SetActive(true);
-            UIManager.Instance.beastPanel.SelectedItem(orderIndex);
+            UIManager.Instance.beastPanel.SelectedItem(orderIndex,beastData.name,beastData.quality, beastData.talentId);
         }
     }
     public void HideFrame()

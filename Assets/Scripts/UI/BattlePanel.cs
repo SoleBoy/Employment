@@ -56,22 +56,35 @@ public class BattlePanel : MonoBehaviour
         {
             refreshTime -= dataTime;
             timeText.text = string.Format("{0:F0}秒", refreshTime);
-            if(refreshTime <= 0)
+            if (refreshTime <= 0)
             {
                 isRefresh = false;
+                refreshTime = 150;
+                timeText.text = string.Format("{0:F0}秒", refreshTime);
                 refreshBtn.GetComponent<Image>().color=Color.white;
             }
         }
     }
 
+    public void ServiceData()
+    {
+        Debug.Log(refreshTime);
+        PlayerPrefs.SetFloat("RefreshTime", refreshTime);
+    }
+
     private void InitData()
     {
-        battleCount = 5;
         currentCount = -1;
-        refreshTime = 150;
-        lastText.text = "5";
-        ranText.text = UnityEngine.Random.Range(1000, 2000).ToString();
+        battleCount = 5;//PlayerPrefs.GetInt("BattleCount", 5);
+        refreshTime = PlayerPrefs.GetFloat("RefreshTime", 150);
+        lastText.text = battleCount.ToString();
+        ranText.text = DataTool.roleRanking.ToString();
         timeText.text = string.Format("{0}秒", refreshTime);
+        if(refreshTime < 150)
+        {
+            isRefresh = true;
+            refreshBtn.GetComponent<Image>().color = Color.gray;
+        }
         for (int i = 1; i < 6; i++)
         {
             UserItem user = new UserItem(transform.Find("Parent/Equal" + i),i);
@@ -99,7 +112,7 @@ public class BattlePanel : MonoBehaviour
                     users[i].SetInfo(DataTool.GetName(), UnityEngine.Random.Range(10, 20), UnityEngine.Random.Range(1000, 2000));
                 }
                 currentCount = -1;
-                //users[currentCount].IsSelected();
+                PlayerPrefs.SetInt("BattleCount", battleCount);
             }
             else
             {

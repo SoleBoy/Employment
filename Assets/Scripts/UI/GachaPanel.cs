@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,25 +7,31 @@ using UnityEngine.UI;
 public class GachaPanel : MonoBehaviour
 {
     private Text numberText;
+    private Text openText;
 
     private Button backBtn;
     private Button openBtn;
 
-    private int number;
+    private bool isOpen;
     private void Awake()
     {
         numberText = transform.Find("InfoText").GetComponent<Text>();
+        openText = transform.Find("OpenBtn/Text").GetComponent<Text>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         openBtn = transform.Find("OpenBtn").GetComponent<Button>();
         backBtn.onClick.AddListener(ClosePanel);
         openBtn.onClick.AddListener(OpenCard);
-        number = 1;
+        isOpen = PlayerPrefs.GetString("LastDay") != DateTime.Now.Date.ToString();
+        if(isOpen)
+        {
+            openText.text = "首次免费";
+        }
     }
 
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        numberText.text = string.Format("剩余次数：{0}",number);
+        numberText.text = string.Format("剩余次数：{0}",DataTool.blindBox);
     }
 
     public void ClosePanel()
@@ -34,10 +41,20 @@ public class GachaPanel : MonoBehaviour
 
     public void OpenCard()
     {
-        if(number >= 1)
+        if(DataTool.blindBox >= 1 || isOpen)
         {
-            number -= 1;
-            numberText.text = string.Format("剩余次数：{0}", number);
+            if (isOpen)
+            {
+                isOpen = false;
+                openText.text = "打开";
+                PlayerPrefs.SetString("LastDay", DateTime.Now.Date.ToString());
+            }
+            else
+            {
+                DataTool.blindBox -= 1;
+                PlayerPrefs.SetInt("CurretBlindBox", DataTool.blindBox);
+                numberText.text = string.Format("剩余次数：{0}", DataTool.blindBox);
+            }
             UIManager.Instance.cardPanel.OpenPanel("爱丽儿");
         }
         else

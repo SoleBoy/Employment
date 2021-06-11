@@ -7,6 +7,7 @@ public class RankingPanel : MonoBehaviour
 {
     private Text rankingText;
     private Text rewardText;
+    private Text holdText;
 
     private Image dailyImage;
     private Image weekImage;
@@ -31,6 +32,7 @@ public class RankingPanel : MonoBehaviour
 
         rankingText = transform.Find("LastBg/RankingText").GetComponent<Text>();
         rewardText = transform.Find("LastBg/RewardText").GetComponent<Text>();
+        holdText = transform.Find("LastBg/HoldText").GetComponent<Text>();
 
         dailyImage = transform.Find("DailyBtn").GetComponent<Image>();
         weekImage = transform.Find("WeekBtn").GetComponent<Image>();
@@ -59,7 +61,7 @@ public class RankingPanel : MonoBehaviour
 
     private void InitData()
     {
-        rankingText.text = string.Format("昨日,我的名次{0}",1000);
+        rankingText.text = string.Format("昨日,我的名次{0}",DataTool.roleRanking);
         rewardText.text = string.Format("奖励:经验值{0}",100);
         for (int i = 1; i <= 50; i++)
         {
@@ -76,14 +78,15 @@ public class RankingPanel : MonoBehaviour
                 item.localScale = Vector3.one;
             }
             RankingItem ranking = new RankingItem(item,i);
+            ranking.SetInfo(DataTool.GetName(), "奖励经验值1.5k",true);
             rankings.Add(ranking);
-            ranking.SetInfo(DataTool.GetName(), "奖励经验值1.5k");
         }
         isDaily = false;
         dailyImage.sprite = selectSprite;
         weekImage.sprite = normalSprite;
         float maxY = 50 * 150 + 50 * 35 + 50;
         rankParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
+        holdText.text = string.Format("头衔:{0}", DataTool.roleTitle);
     }
 
     private void OpenDaily()
@@ -94,6 +97,11 @@ public class RankingPanel : MonoBehaviour
             dailyImage.sprite = selectSprite;
             weekImage.sprite = normalSprite;
             rankParent.localPosition = Vector3.zero;
+            holdText.gameObject.SetActive(true);
+            for (int i = 0; i < rankings.Count; i++)
+            {
+                rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",true);
+            }
         }
     }
 
@@ -105,6 +113,11 @@ public class RankingPanel : MonoBehaviour
             dailyImage.sprite = normalSprite;
             weekImage.sprite = selectSprite;
             rankParent.localPosition = Vector3.zero;
+            holdText.gameObject.SetActive(false);
+            for (int i = 0; i < rankings.Count; i++)
+            {
+                rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",false);
+            }
         }
     }
 
@@ -121,22 +134,31 @@ public class RankingPanel : MonoBehaviour
         private Text moreText;
         private Text nameText;
         private Text infoText;
+        private Text titleText;
 
+        private int rankIndex;
         public RankingItem(Transform parent,int index)
         {
+            rankIndex = index;
             kingText = parent.Find("KingText").GetComponent<Text>();
             moreText = parent.Find("MoreText").GetComponent<Text>();
             nameText = parent.Find("NameText").GetComponent<Text>();
             infoText = parent.Find("InfoText").GetComponent<Text>();
+            titleText = parent.Find("TitleText").GetComponent<Text>();
 
             kingText.text = index.ToString();
         }
 
-        public void SetInfo(string name,string messg)
+        public void SetInfo(string name,string messg,bool isDaily)
         {
             moreText.text = "0";
             nameText.text = name;
             infoText.text = messg;
+            titleText.gameObject.SetActive(isDaily);
+            if (isDaily)
+            {
+                titleText.text = DataTool.GetTitle(rankIndex);
+            }
         }
     }
 }

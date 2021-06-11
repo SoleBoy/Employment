@@ -30,6 +30,6 @@ public class DropPanel : MonoBehaviour
     private void ReLog()
     {
         Debug.Log("退出登录");
-        DataTool.StartActivity("");
+        DataTool.StartActivity(0);
     }
 }

@@ -15,6 +15,7 @@ public class FightPanel : MonoBehaviour
     private GameObject settlePanel;
     private Transform roleParent;
     private Transform foeParent;
+    private Transform rewardsParent;
 
     private int roleAttack; 
     private int foeAttack;
@@ -26,10 +27,12 @@ public class FightPanel : MonoBehaviour
     public List<int> attackFoes = new List<int>();
     private List<FightItem> roles = new List<FightItem>();
     private List<FightItem> foes = new List<FightItem>();
+    private List<RewardItem> rewards = new List<RewardItem>();
     private void Awake()
     {
         roleParent = transform.Find("OurSide");
         foeParent = transform.Find("Opponent");
+        rewardsParent = transform.Find("SettlePanel/Bottom");
         settlePanel = transform.Find("SettlePanel").gameObject;
 
         titleText = transform.Find("SettlePanel/TitleText").GetComponent<Text>();
@@ -41,6 +44,11 @@ public class FightPanel : MonoBehaviour
         fixBtn.onClick.AddListener(OpenReward);
         fastBtn.onClick.AddListener(OpenFast);
         backBtn.onClick.AddListener(ClosePanel);
+        for (int i = 0; i < rewardsParent.childCount; i++)
+        {
+            RewardItem item = new RewardItem(rewardsParent.GetChild(0));
+            rewards.Add(item);
+        }
         InitData();
     }
 
@@ -306,6 +314,26 @@ public class FightPanel : MonoBehaviour
     //}
 
     //战斗信息
+    private class RewardItem
+    {
+        private Image headSprite;
+        private Text typeText;
+        private Text numberText;
+
+        public RewardItem(Transform parent)
+        {
+            headSprite = parent.Find("Image").GetComponent<Image>();
+            typeText = parent.Find("TypeText").GetComponent<Text>();
+            numberText = parent.Find("NumberText").GetComponent<Text>();
+        }
+
+        public void SetInfo(Sprite head,string typeName,string number)
+        {
+            typeText.text = typeName;
+            numberText.text = number;
+            headSprite.sprite = head;
+        }
+    }
     private class FightItem
     {
         public Transform fightParent;

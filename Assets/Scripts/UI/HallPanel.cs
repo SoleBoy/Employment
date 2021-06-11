@@ -13,9 +13,10 @@ public class HallPanel : MonoBehaviour
     private Text certeiText;
     private Text gradeText;
     private Text expText;
-    private Text totleText;
+    private Text titleText;
 
     private Image roleImage;
+    private Image expImage;
 
     private Button gachaBtn;
     private Button battleBtn;
@@ -27,7 +28,7 @@ public class HallPanel : MonoBehaviour
     private Transform roleParent;
     private Transform petParent;
 
-    private void Awake()
+    public void Init()
     {
         roleParent = transform.Find("Bracket/RoleImage");
         petParent = transform.Find("PetParent");
@@ -38,9 +39,10 @@ public class HallPanel : MonoBehaviour
         certeiText = transform.Find("CertiBtn/Text").GetComponent<Text>();
         gradeText = transform.Find("GradeBar/GradeText").GetComponent<Text>();
         expText = transform.Find("GradeBar/ExpText").GetComponent<Text>();
-        totleText = transform.Find("GradeBar/NameText").GetComponent<Text>();
+        titleText = transform.Find("GradeBar/NameText").GetComponent<Text>();
 
         roleImage = transform.Find("Bracket/RoleImage").GetComponent<Image>();
+        expImage = transform.Find("GradeBar/Bar").GetComponent<Image>();
 
         gachaBtn = transform.Find("GachaBtn").GetComponent<Button>();
         battleBtn = transform.Find("BattleBtn").GetComponent<Button>();
@@ -57,13 +59,17 @@ public class HallPanel : MonoBehaviour
         infoBtn.onClick.AddListener(OpenDetails);
         InitData();
     }
+
     public void InitData()
     {
         firmText.text = "XXX公司技术服务中心";
         addText.text = "杭州市文一西路1000号";
         statusText.text = "工作中";
         certeiText.text = "点击认证";
-        gradeText.text = "LV.1";
+        titleText.text = DataTool.roleTitle;
+        gradeText.text = string.Format("LV.{0}", DataTool.roleLevel);
+        expText.text = string.Format("{0}/{1}", DataTool.roleExp, DataTool.roleExp_Max);
+        expImage.fillAmount = DataTool.roleExp / DataTool.roleExp_Max;
     }
 
     public void OpenPanel()
@@ -80,7 +86,16 @@ public class HallPanel : MonoBehaviour
     {
         petParent.GetChild(index).gameObject.SetActive(isHide);
     }
-
+    //增加经验
+    public void AddExperience(float exp)
+    {
+        if(DataTool.AddExperience(exp))
+        {
+            gradeText.text = string.Format("LV.{0}", DataTool.roleLevel);
+        }
+        expText.text = string.Format("{0}/{1}", DataTool.roleExp, DataTool.roleExp_Max);
+        expImage.fillAmount = DataTool.roleExp / DataTool.roleExp_Max;
+    }
     private void OpnePack()
     {
         UIManager.Instance.backpackPanel.OpenPanel();

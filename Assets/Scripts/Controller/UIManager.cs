@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -37,8 +38,30 @@ public class UIManager : MonoSingleton<UIManager>
     public override void Init()
     {
         Debug.Log("初始信息");
-        DataTool.isUnit = false;
+        DataTool.InitData();
         FindPanel();
+    }
+    private void Start()
+    {
+        hallPanel.Init();
+        homePanel.Init();
+    }
+    private void Update()
+    {
+        battlePanel.SetUpdata(Time.deltaTime);
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject onUI;
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                onUI = ClickOnUI();
+                if(onUI && onUI.CompareTag("Player"))
+                {
+                    hallPanel.AddExperience(3 * DataTool.roleLevel);
+                    CloningTips("经验值+"+ 3 * DataTool.roleLevel);
+                }
+            }
+        }
     }
     //查找面板
     private void FindPanel()
@@ -71,10 +94,18 @@ public class UIManager : MonoSingleton<UIManager>
         fightPanel = transform.Find("FightPanel").GetComponent<FightPanel>();
         payrollPanel = transform.Find("PayrollPanel").GetComponent<PayrollPanel>();
     }
-
-    private void Update()
+    //获取点击对象
+	private GameObject ClickOnUI()
     {
-        battlePanel.SetUpdata(Time.deltaTime);
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = Input.mousePosition;
+        List<RaycastResult> results = new List<RaycastResult>();
+        this.GetComponent<GraphicRaycaster>().Raycast(eventDataCurrentPosition, results);
+        if (results.Count > 0)
+        {
+            return results[0].gameObject;
+        }
+        return null;
     }
     //生成血条
     public void CloningBlood(Vector3 point,float hurt)
@@ -102,5 +133,24 @@ public class UIManager : MonoSingleton<UIManager>
         tip.transform.SetParent(transform,false);
         tip.transform.localPosition = Vector3.zero;
         tip.GetComponent<TipPanel>().StartAnimal(messg);
+    }
+
+    //切换后台
+    private void OnApplicationPause(bool focus)
+    {
+        if (focus)
+        {
+            battlePanel.ServiceData();
+            Debug.Log("保存数据");
+        }
+        else
+        {
+
+        }
+    }
+    private void OnApplicationQuit()
+    {
+        battlePanel.ServiceData();
+        Debug.Log("保存数据");
     }
 }

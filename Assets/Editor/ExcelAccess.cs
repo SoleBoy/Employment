@@ -31,6 +31,79 @@ public class ExcelAccess
         }
         return menuArray;
     }
+    //查询角色数据
+    public static List<RoleData> SelectRoleItem()
+    {
+        DataRowCollection collect = ExcelAccess.ReadExcel("GameValue.xlsx", 0);
+
+        List<RoleData> menuArray = new List<RoleData>();
+        for (int i = 1; i < collect.Count; i++)
+        {
+            if (collect[i][1].ToString() == "") continue;
+            RoleData data = new RoleData
+            {
+                id = collect[i][0].ToString(),
+                name = collect[i][1].ToString(),
+                quality = collect[i][2].ToString(),
+                exp = collect[i][3].ToString(),
+                exp_upgrade = collect[i][4].ToString(),
+                hp = collect[i][5].ToString(),
+                hp_upgrade = collect[i][6].ToString(),
+                attack = collect[i][7].ToString(),
+                attack_upgrade = collect[i][8].ToString(),
+                def = collect[i][9].ToString(),
+                def_upgrade = collect[i][10].ToString(),
+                talentId = collect[i][11].ToString(),
+            };
+            menuArray.Add(data);
+        }
+        return menuArray;
+    }
+    //查询物品种类
+    public static List<TypeData> SelectTypeItem()
+    {
+        DataRowCollection collect = ExcelAccess.ReadExcel("GameValue.xlsx", 1);
+
+        List<TypeData> menuArray = new List<TypeData>();
+        for (int i = 1; i < collect.Count; i++)
+        {
+            if (collect[i][1].ToString() == "") continue;
+            TypeData data = new TypeData
+            {
+                id = collect[i][0].ToString(),
+                name = collect[i][1].ToString(),
+                itemId = collect[i][2].ToString(),
+                itemNum = collect[i][3].ToString(),
+                itemInfo = collect[i][4].ToString(),
+            };
+            menuArray.Add(data);
+        }
+        return menuArray;
+    }
+    //查询天赋
+    public static List<TalentData> SelectTalentItem()
+    {
+        DataRowCollection collect = ExcelAccess.ReadExcel("GameValue.xlsx", 2);
+
+        List<TalentData> menuArray = new List<TalentData>();
+        for (int i = 1; i < collect.Count; i++)
+        {
+            if (collect[i][1].ToString() == "") continue;
+            TalentData data = new TalentData
+            {
+                id = collect[i][0].ToString(),
+                name = collect[i][1].ToString(),
+                probability = collect[i][2].ToString(),
+                value = collect[i][3].ToString(),
+                duration = collect[i][4].ToString(),
+                info = collect[i][5].ToString(),
+            };
+            menuArray.Add(data);
+        }
+        return menuArray;
+    }
+
+
     /// <summary>
     /// 读取 Excel ; 需要添加 Excel.dll; System.Data.dll;
     /// </summary>
