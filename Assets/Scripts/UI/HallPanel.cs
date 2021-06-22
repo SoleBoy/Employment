@@ -108,7 +108,8 @@ public class HallPanel : MonoBehaviour
 
     private void OpneBattle()
     {
-        UIManager.Instance.battlePanel.OpenPanel();
+        UIManager.Instance.CloningTips("功能暂未开启");
+        //UIManager.Instance.battlePanel.OpenPanel();
     }
 
     private void OpneGacha()
