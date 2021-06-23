@@ -134,7 +134,12 @@ public class UIManager : MonoSingleton<UIManager>
         tip.transform.localPosition = Vector3.zero;
         tip.GetComponent<TipPanel>().StartAnimal(messg);
     }
-
+    //接受安卓数据
+    public void AcceptData_Android(string messgInfo)
+    {
+        Debug.Log(messgInfo);
+        CloningTips(messgInfo);
+    }
     //切换后台
     private void OnApplicationPause(bool focus)
     {
