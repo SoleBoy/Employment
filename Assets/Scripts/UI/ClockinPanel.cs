@@ -35,13 +35,15 @@ public class ClockinPanel : MonoBehaviour
     }
     public void OpenPanel()
     {
-        //if(DataTool.isClock)
-        //{
-        //    UIManager.Instance.CloningTips("今日已完成打卡");
-        //}
-        //else
+        if (DataTool.isClock)
+        {
+            UIManager.Instance.CloningTips("今日已完成打卡");
+        }
+        else
         {
             gameObject.SetActive(true);
+            flipBtn.gameObject.SetActive(true);
+            takeBtn.gameObject.SetActive(true);
             rawImage.gameObject.SetActive(true);
             clockinPanel.gameObject.SetActive(false);
             UIManager.Instance.gameObject.SetActive(false);
