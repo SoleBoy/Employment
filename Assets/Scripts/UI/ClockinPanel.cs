@@ -30,16 +30,15 @@ public class ClockinPanel : MonoBehaviour
         takeBtn.onClick.AddListener(TakePhotoAndSave);
         submitBtn.onClick.AddListener(SubmitTexture);
         flipBtn.onClick.AddListener(FlipCamera);
-        webCamDevices = WebCamTexture.devices;
-        flipBtn.gameObject.SetActive(webCamDevices.Length > 1);
+        
     }
     public void OpenPanel()
     {
-        if (DataTool.isClock)
-        {
-            UIManager.Instance.CloningTips("今日已完成打卡");
-        }
-        else
+        //if (DataTool.isClock)
+        //{
+        //    UIManager.Instance.CloningTips("今日已完成打卡");
+        //}
+        //else
         {
             gameObject.SetActive(true);
             flipBtn.gameObject.SetActive(true);
@@ -60,11 +59,13 @@ public class ClockinPanel : MonoBehaviour
     private void TakePhotoAndSave()
     {
         // 调用拍照保存函数
+        rawImage.texture = null;
         TakePhotoAndSaveImage(webCamTexture);
         flipBtn.gameObject.SetActive(false);
         takeBtn.gameObject.SetActive(false);
         rawImage.gameObject.SetActive(false);
         clockinPanel.gameObject.SetActive(true);
+        webCamTexture.Stop();
     }
 
     private void SubmitTexture()
@@ -110,13 +111,14 @@ public class ClockinPanel : MonoBehaviour
         if (Application.HasUserAuthorization(UserAuthorization.WebCam))
         {
             // 获取相机设备
-            //WebCamDevice[] webCamDevices = WebCamTexture.devices;
+            webCamDevices = WebCamTexture.devices;
+            flipBtn.gameObject.SetActive(webCamDevices.Length > 1);
             // 判断是否有相机设别
             if (webCamDevices != null && webCamDevices.Length > 0)
             {
-                isFlip = true;
+                isFlip = false;
                 // 把 0 号设备（移动端后置摄像头）名称赋值
-                string webCamName = webCamDevices[0].name;
+                string webCamName = webCamDevices[1].name;
                 // 设置相机渲染宽高，并运行相机
                 webCamTexture = new WebCamTexture(webCamName, 768, 1024);
                 webCamTexture.Play();
