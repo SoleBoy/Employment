@@ -116,9 +116,18 @@ public class ClockinPanel : MonoBehaviour
             // 判断是否有相机设别
             if (webCamDevices != null && webCamDevices.Length > 0)
             {
-                isFlip = false;
                 // 把 0 号设备（移动端后置摄像头）名称赋值
-                string webCamName = webCamDevices[1].name;
+                string webCamName = "";
+                if (webCamDevices.Length > 1)
+                {
+                    isFlip = false;
+                    webCamName = webCamDevices[1].name;
+                }
+                else
+                {
+                    isFlip = true;
+                    webCamName = webCamDevices[0].name;
+                }
                 // 设置相机渲染宽高，并运行相机
                 webCamTexture = new WebCamTexture(webCamName, 768, 1024);
                 webCamTexture.Play();
