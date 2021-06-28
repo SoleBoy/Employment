@@ -71,8 +71,8 @@ public class ClockinPanel : MonoBehaviour
     private void SubmitTexture()
     {
         DataTool.isClock = true;
-        UIManager.Instance.gameObject.SetActive(true);
-        UIManager.Instance.CloningTips("打卡成功");
+        UIManager.Instance.SubmitTip("打卡成功");
+        //UIManager.Instance.CloningTips("打卡成功");
         PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
     }
 
