@@ -19,9 +19,11 @@ public class IncomePanel : MonoBehaviour
 
     private Button dailyBtn;
     private Button payrollBtn;
+    private Button monthlyBtn;
     private Button issuedBtn;
     private Button operatingBtn;
     private Button monthBtn;
+
 
     private RectTransform viewParent;
     private Transform toolView;
@@ -37,8 +39,11 @@ public class IncomePanel : MonoBehaviour
     private int yearCurrent;
     private int indexCurret;
     private int monthIndex;
+    private int whichWeek;
     private void Awake()
     {
+        whichWeek = GetWeekOfYear(DateTime.Today)-1;
+
         payItem = transform.Find("Item");
         viewParent = transform.Find("ToolView").GetComponent<RectTransform>();
         dailyParent = transform.Find("DailyState/DailyView").gameObject;
@@ -53,12 +58,14 @@ public class IncomePanel : MonoBehaviour
 
         dailyBtn = transform.Find("Header/DailyBtn").GetComponent<Button>();
         payrollBtn = transform.Find("Header/PayrollBtn").GetComponent<Button>();
+        monthlyBtn = transform.Find("Header/MonthlyBtn").GetComponent<Button>();
         issuedBtn = transform.Find("Header/IssuedBtn").GetComponent<Button>();
         operatingBtn = transform.Find("Header/OperatingBtn").GetComponent<Button>();
         monthBtn = transform.Find("DailyState/monthBtn").GetComponent<Button>();
 
         dailyBtn.onClick.AddListener(OpenDaily);
         payrollBtn.onClick.AddListener(OpenPayro);
+        monthlyBtn.onClick.AddListener(OpenMonthly);
         issuedBtn.onClick.AddListener(OpenIssued);
         operatingBtn.onClick.AddListener(OpenOperatin);
         monthBtn.onClick.AddListener(OpenMonth);
@@ -97,22 +104,24 @@ public class IncomePanel : MonoBehaviour
             slipItems.Add(pay);
         }
         grandText.text = string.Format("{0:N2}",3600);
+        toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
+        monthCurrent = DateTime.Now.Month - 1;
+        yearCurrent = DateTime.Now.Year;
         if (DataTool.isUnit)
         {
             dailyState.SetActive(false);
             dailyBtn.gameObject.SetActive(false);
             payrollBtn.gameObject.SetActive(false);
+            monthlyBtn.gameObject.SetActive(false);
             issuedBtn.gameObject.SetActive(true);
             operatingBtn.gameObject.SetActive(true);
-            toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
         }
         else
         {
-            monthCurrent = DateTime.Now.Month - 1;
-            yearCurrent = DateTime.Now.Year;
             dailyBtn.gameObject.SetActive(true);
             payrollBtn.gameObject.SetActive(true);
-            issuedBtn.gameObject.SetActive(true);
+            monthlyBtn.gameObject.SetActive(true);
+            issuedBtn.gameObject.SetActive(false);
             operatingBtn.gameObject.SetActive(false);
             for (int i = 0; i < 10; i++)
             {
@@ -162,9 +171,52 @@ public class IncomePanel : MonoBehaviour
                 }
                 incomeText.text = string.Format("收入{0:N2}", 1800);
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-                toolView.GetComponent<GridLayoutGroup>().padding.top = 200;
+                //toolView.GetComponent<GridLayoutGroup>().padding.top = 200;
                 break;
             case 1:
+                if(whichWeek >= 1)
+                {
+                    for (int i = 0; i < slipItems.Count; i++)
+                    {
+                        if (whichWeek > i)
+                        {
+                            int money = UnityEngine.Random.Range(1500, 3000);
+                            Tuple<DateTime, DateTime> tuple = GetFirstEndDayOfWeek(DateTime.Now.Year, whichWeek - i, System.Globalization.CultureInfo.InvariantCulture);
+                            slipItems[i].SetInit(index, tuple.Item1, tuple.Item2,money);
+                        }
+                        else
+                        {
+                            slipItems[i].HideItem();
+                        }
+                    }
+                }
+                maxY = whichWeek * 150 + whichWeek * 20 + 50;
+                //month = DateTime.Now.Month - 1;
+                //day = Mathf.Clamp(12 + month, 0, 12);
+                //maxY = day * 150 + day * 20 + 50;
+                //for (int i = 0; i < slipItems.Count; i++)
+                //{
+                //    if (i < day)
+                //    {
+                //        int money = UnityEngine.Random.Range(1500, 3000);
+                //        if (month-i > 0)
+                //        {
+                //            slipItems[i].SetInit(index, money, DateTime.Now.Year,(month - i), day - i);
+                //        }
+                //        else
+                //        {
+                //            slipItems[i].SetInit(index, money, DateTime.Now.Year-1,(month-i+12), day - i);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        slipItems[i].HideItem();
+                //    }
+                //}
+                toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
+                //toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
+                break;
+            case 2:
                 month = DateTime.Now.Month - 1;
                 day = Mathf.Clamp(12 + month, 0, 12);
                 maxY = day * 150 + day * 20 + 50;
@@ -173,13 +225,13 @@ public class IncomePanel : MonoBehaviour
                     if (i < day)
                     {
                         int money = UnityEngine.Random.Range(1500, 3000);
-                        if (month-i > 0)
+                        if (month - i > 0)
                         {
-                            slipItems[i].SetInit(index, money, DateTime.Now.Year,(month - i), day - i);
+                            slipItems[i].SetInit(index, money, DateTime.Now.Year, (month - i), day - i);
                         }
                         else
                         {
-                            slipItems[i].SetInit(index, money, DateTime.Now.Year-1,(month-i+12), day - i);
+                            slipItems[i].SetInit(index, money, DateTime.Now.Year - 1, (month - i + 12), day - i);
                         }
                     }
                     else
@@ -188,17 +240,17 @@ public class IncomePanel : MonoBehaviour
                     }
                 }
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-                toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
+                //toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
                 break;
-            case 2:
+            case 3:
                 day = DateTime.DaysInMonth(yearCurrent, monthCurrent);
                 maxY = day * 150 + day * 20 + 50;
                 for (int i = 0; i < slipItems.Count; i++)
                 {
                     if (i < day)
                     {
-                        int money = UnityEngine.Random.Range(100, 1000);
-                        slipItems[i].SetInit(index, money,yearCurrent, monthCurrent, day - i);
+                        int money = UnityEngine.Random.Range(3000, 5000);
+                        slipItems[i].SetInit(index, money, yearCurrent, monthCurrent, day - i);
                     }
                     else
                     {
@@ -206,11 +258,10 @@ public class IncomePanel : MonoBehaviour
                     }
                 }
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-                toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
                 break;
-            case 3:
+            case 4:
                 month = DateTime.Now.Month - 1;
-                day = Mathf.Clamp(12 + month,0,12);
+                day = Mathf.Clamp(12 + month, 0, 12);
                 maxY = day * 150 + day * 20 + 50;
                 for (int i = 0; i < slipItems.Count; i++)
                 {
@@ -241,27 +292,34 @@ public class IncomePanel : MonoBehaviour
 
     private void OpenOperatin()
     {
-        ClcikButton(3);
-        InitState(3);
+        ClcikButton(4);
+        InitState(4);
     }
 
     private void OpenIssued()
     {
-        dailyState.SetActive(false);
+        //dailyState.SetActive(false);
+        ClcikButton(3);
+        InitState(3);
+    }
+
+    private void OpenMonthly()
+    {
+        //dailyState.SetActive(false);
         ClcikButton(2);
         InitState(2);
     }
 
     private void OpenPayro()
     {
-        dailyState.SetActive(false);
+        //dailyState.SetActive(false);
         ClcikButton(1);
         InitState(1);
     }
 
     private void OpenDaily()
     {
-        dailyState.SetActive(true);
+        //dailyState.SetActive(true);
         ClcikButton(0);
         InitState(0);
     }
@@ -282,12 +340,12 @@ public class IncomePanel : MonoBehaviour
     {
         if(indexCurret >= 0)
         {
-            clickImage[indexCurret].sprite = norSprite;
-            clickText[indexCurret].color = norColor;
+            clickImage[indexCurret].sprite = pickSprite;
+            clickText[indexCurret].color = pickColor;
         }
         indexCurret = index;
-        clickImage[indexCurret].sprite = pickSprite;
-        clickText[indexCurret].color = pickColor;
+        clickImage[indexCurret].sprite = norSprite;
+        clickText[indexCurret].color = norColor;
     }
 
     public void ClickMonth(int year, int month,int index)
@@ -300,6 +358,40 @@ public class IncomePanel : MonoBehaviour
         monthText.text = string.Format("{0}年{1}月", year, month);
         dailyParent.gameObject.SetActive(false);
         InitState(0);
+    }
+
+    /// <summary>
+    /// 获取一年中的周
+    /// </summary>
+    /// <param name="dt">日期</param>
+    /// <returns></returns>
+    public static int GetWeekOfYear(DateTime dt)
+    {
+        System.Globalization.GregorianCalendar gc = new System.Globalization.GregorianCalendar();
+        int weekOfYear = gc.GetWeekOfYear(dt, System.Globalization.CalendarWeekRule.FirstDay, DayOfWeek.Monday);
+
+        return weekOfYear;
+    }
+    /// <summary>
+    /// 根据一年中的第几周获取该周的开始日期与结束日期
+    /// </summary>
+    /// <param name="year"></param>
+    /// <param name="weekNumber"></param>
+    /// <param name="culture"></param>
+    /// <returns></returns>
+    public static Tuple<DateTime, DateTime> GetFirstEndDayOfWeek(int year, int weekNumber, System.Globalization.CultureInfo culture)
+    {
+        System.Globalization.Calendar calendar = culture.Calendar;
+        DateTime firstOfYear = new DateTime(year, 1, 1, calendar);
+        DateTime targetDay = calendar.AddWeeks(firstOfYear, weekNumber - 1);
+        DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
+
+        while (targetDay.DayOfWeek != firstDayOfWeek)
+        {
+            targetDay = targetDay.AddDays(-1);
+        }
+
+        return Tuple.Create<DateTime, DateTime>(targetDay, targetDay.AddDays(6));
     }
 }
 public class MonthItem
@@ -358,6 +450,16 @@ public class PaySlipItem
         payBtn.onClick.AddListener(OpenBill);
     }
 
+    public void SetInit(int type,DateTime star, DateTime end, int money)
+    {
+        this.type = type;
+        this.money = money;
+        this.year = star.Year;
+        dateText.text = string.Format("{0}月{1}日-{2}月{3}日",star.Month,star.Day,end.Month,end.Day);
+        moneyText.text = string.Format("￥{0:N2}", money);
+    }
+
+
     public void SetInit(int type, int money, int year, int month, int day)
     {
         this.type = type;
@@ -372,15 +474,19 @@ public class PaySlipItem
                 dateText.text = string.Format("{0}月{1}日", month, day);
                 moneyText.text = string.Format("+{0:N2}", money);
                 break;
-            case 1:
+            //case 1:
+            //    dateText.text = string.Format("{0}年{1}月工资单", year, month);
+            //    moneyText.text = string.Format("￥{0:N2}", money);
+             //   break;
+            case 2:
                 dateText.text = string.Format("{0}年{1}月工资单", year, month);
                 moneyText.text = string.Format("￥{0:N2}", money);
                 break;
-            case 2:
-                dateText.text = string.Format("{0}年{1}月{2}日", year, month,day);
+            case 3:
+                dateText.text = string.Format("{0}年{1}月{2}日", year, month, day);
                 moneyText.text = string.Format("￥{0:N2}", money);
                 break;
-            case 3:
+            case 4:
                 dateText.text = string.Format("{0}年{1}月收入", year, month);
                 moneyText.text = string.Format("￥{0:N2}", money);
                 break;
@@ -399,14 +505,18 @@ public class PaySlipItem
         switch (type)
         {
             case 0:
-                UIManager.Instance.dayKnotPanel.OpenPanel(year,month,day,money);
+                UIManager.Instance.dayKnotPanel.OpenPanel("日结明细",string.Format("【{0}年】{1}",year ,dateText.text),money);
                 break;
             case 1:
-                UIManager.Instance.salaryPanel.OpenPanel(year,month,money);
+                UIManager.Instance.dayKnotPanel.OpenPanel("周结明细", string.Format("【{0}年】{1}", year, dateText.text), money);
                 break;
             case 2:
+                UIManager.Instance.salaryPanel.OpenPanel(year,month, money);
                 break;
             case 3:
+                //UIManager.Instance.operatingPanel.OpenPanel();
+                break;
+            case 4:
                 UIManager.Instance.operatingPanel.OpenPanel();
                 break;
             default:

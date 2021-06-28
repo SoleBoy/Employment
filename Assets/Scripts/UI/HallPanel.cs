@@ -126,6 +126,4 @@ public class HallPanel : MonoBehaviour
     {
         UIManager.Instance.detailsPanel.OpenPanel();
     }
-
-    
 }

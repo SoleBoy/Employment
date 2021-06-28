@@ -13,6 +13,7 @@ public class DataTool
 
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
+    public static bool isClock;//打卡记录
     //获取头衔等级
     public static string GetTitle(int rankIndex)
     {
@@ -73,7 +74,7 @@ public class DataTool
     public static Dictionary<string, TalentData> talentDatas = new Dictionary<string, TalentData>();
     public static void InitData()
     {
-        isUnit = false;
+        isUnit = false;//true 个体工商户  //false 个人
         PackageRole role = Resources.Load<PackageRole>("DataAssets/roledata");
         roleDatas = role.GetItems();
         PackageType type = Resources.Load<PackageType>("DataAssets/typedata");
@@ -83,6 +84,7 @@ public class DataTool
 
         roleData = roleDatas["1001"];
         //数据
+        isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString()+ "Clock") == "Clock";
         blindBox = PlayerPrefs.GetInt("CurretBlindBox", 5);
         roleRanking = Random.Range(800,2000);
         roleTitle = GetTitle(roleRanking);
