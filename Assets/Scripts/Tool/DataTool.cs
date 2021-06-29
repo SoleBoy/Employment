@@ -10,6 +10,7 @@ public class DataTool
     public static float roleExp_Max;//经验
     public static int roleRanking;//排名
     public static string roleTitle;//头衔
+    public static string roleName;//姓名
 
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
@@ -72,9 +73,8 @@ public class DataTool
     public static Dictionary<string, RoleData> roleDatas = new Dictionary<string, RoleData>();
     public static Dictionary<string, TypeData> typeDatas = new Dictionary<string, TypeData>();
     public static Dictionary<string, TalentData> talentDatas = new Dictionary<string, TalentData>();
-    public static void InitData()
+    public static void InitData(string messgName)
     {
-        isUnit = false;//true 个体工商户  //false 个人
         PackageRole role = Resources.Load<PackageRole>("DataAssets/roledata");
         roleDatas = role.GetItems();
         PackageType type = Resources.Load<PackageType>("DataAssets/typedata");
@@ -82,6 +82,7 @@ public class DataTool
         PackageTalent talent = Resources.Load<PackageTalent>("DataAssets/talentdata");
         talentDatas = talent.GetItems();
 
+        roleName = messgName;
         roleData = roleDatas["1001"];
         //数据
         isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString()+ "Clock") == "Clock";

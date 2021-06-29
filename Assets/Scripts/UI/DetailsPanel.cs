@@ -42,7 +42,7 @@ public class DetailsPanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        userInfos[0].SetInfo("张小牛");
+        userInfos[0].SetInfo(DataTool.roleName);
         userInfos[1].SetInfo(DataTool.roleTitle);
         userInfos[2].SetInfo("LV."+DataTool.roleLevel);
         userInfos[3].SetInfo("10");

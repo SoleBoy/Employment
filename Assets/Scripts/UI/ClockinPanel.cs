@@ -11,11 +11,14 @@ public class ClockinPanel : MonoBehaviour
     private Button submitBtn;
     private Button takeBtn;
     private Button flipBtn;
+    private Button backBtn;
     // 摄像机图片参数
     private WebCamTexture webCamTexture;
 
     private Transform clockinPanel;
     private WebCamDevice[] webCamDevices;
+    private Vector3 frontAngle = new Vector3(0,0,90);
+    private Vector3 rearAngle = new Vector3(0,0,-90);
 
     private bool isFlip;
     private void Awake()
@@ -27,10 +30,11 @@ public class ClockinPanel : MonoBehaviour
         submitBtn = transform.Find("ClockinPanel/SubmitBtn").GetComponent<Button>();
         takeBtn = transform.Find("TakeBtn").GetComponent<Button>();
         flipBtn = transform.Find("FlipBtn").GetComponent<Button>();
+        backBtn = transform.Find("ClockinPanel/BackBtn").GetComponent<Button>();
         takeBtn.onClick.AddListener(TakePhotoAndSave);
         submitBtn.onClick.AddListener(SubmitTexture);
         flipBtn.onClick.AddListener(FlipCamera);
-        
+        backBtn.onClick.AddListener(ClosePanel);
     }
     public void OpenPanel()
     {
@@ -54,6 +58,12 @@ public class ClockinPanel : MonoBehaviour
     public void ClosePanel()
     {
         gameObject.SetActive(false);
+        UIManager.Instance.gameObject.SetActive(true);
+    }
+
+    private void Update()
+    {
+        
     }
 
     private void TakePhotoAndSave()
@@ -88,6 +98,7 @@ public class ClockinPanel : MonoBehaviour
                 webCamTexture = new WebCamTexture(webCamName, 768, 1024);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
+                rawImage.transform.localEulerAngles = frontAngle;
                 rawImage.texture = webCamTexture;
             }
             else
@@ -98,6 +109,7 @@ public class ClockinPanel : MonoBehaviour
                 webCamTexture = new WebCamTexture(webCamName, 768, 1024);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
+                rawImage.transform.localEulerAngles = rearAngle;
                 rawImage.texture = webCamTexture;
             }
         }
@@ -121,23 +133,26 @@ public class ClockinPanel : MonoBehaviour
                 if (webCamDevices.Length > 1)
                 {
                     isFlip = false;
+                    rawImage.transform.localEulerAngles = frontAngle;
                     webCamName = webCamDevices[1].name;
                 }
                 else
                 {
                     isFlip = true;
+                    rawImage.transform.localEulerAngles = rearAngle;
                     webCamName = webCamDevices[0].name;
                 }
                 // 设置相机渲染宽高，并运行相机
-                webCamTexture = new WebCamTexture(webCamName, 768, 1024);
+                webCamTexture = new WebCamTexture(webCamName, 768, 1024,25);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.texture = webCamTexture;
             }
-            else
-            {
-                UIManager.Instance.CloningTips("获取相机权限失败");
-            }
+        }
+        else
+        {
+            gameObject.SetActive(false);
+            UIManager.Instance.SubmitTip("获取相机权限失败");
         }
     }
     /// <summary>

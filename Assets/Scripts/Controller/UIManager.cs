@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using MiniJSON;
 
 public class UIManager : MonoSingleton<UIManager>
 {
@@ -32,19 +33,19 @@ public class UIManager : MonoSingleton<UIManager>
     public FightPanel fightPanel;
     public PayrollPanel payrollPanel;
 
+    private GameObject maskPanel;
     private Transform tipPanel;
     private Transform bloodParent;
     private Transform bloodPrefab;
     public override void Init()
     {
         Debug.Log("初始信息");
-        DataTool.InitData();
         FindPanel();
     }
     private void Start()
     {
-        hallPanel.Init();
-        homePanel.Init();
+        AcceptData_Android("");
+        DataTool.StartActivity(0);
     }
     private void Update()
     {
@@ -66,9 +67,11 @@ public class UIManager : MonoSingleton<UIManager>
     //查找面板
     private void FindPanel()
     {
+        maskPanel = transform.Find("MaskPanel").gameObject;
         tipPanel = transform.Find("TipPanel");
         bloodParent = transform.Find("DriftingBlood");
         bloodPrefab = bloodParent.Find("BloodText");
+        maskPanel.SetActive(true);
 
         hallPanel = transform.Find("HallPanel").GetComponent<HallPanel>();
         homePanel = transform.Find("HomePanel").GetComponent<HomePanel>();
@@ -141,11 +144,36 @@ public class UIManager : MonoSingleton<UIManager>
         gameObject.SetActive(true);
         CloningTips(messgInfo);
     }
-    //接受安卓数据
+    //接受安卓数据  {"name":"张大牛","goto":"个体户"}
     public void AcceptData_Android(string messgInfo)
     {
-        Debug.Log(messgInfo);
-        CloningTips(messgInfo);
+        maskPanel.SetActive(false);
+        try
+        {
+            if (messgInfo == "")
+            {
+                messgInfo = "{\"name\":\"张大牛\",\"goto\":\"个人\"}";
+            }
+            Dictionary<string, object> jsonData = Json.Deserialize(messgInfo) as Dictionary<string, object>;
+            if (jsonData["goto"].ToString() == "个人")//true 个体工商户  //false 个人
+            {
+                DataTool.isUnit = false;
+            }
+            else
+            {
+                DataTool.isUnit = true;
+            }
+            DataTool.InitData(jsonData["name"].ToString());
+            hallPanel.Init();
+            homePanel.Init();
+        }
+        catch (System.Exception e)
+        {
+            Debug.Log(e.ToString());
+            DataTool.InitData("张大牛");
+            hallPanel.Init();
+            homePanel.Init();
+        }
     }
     //切换后台
     private void OnApplicationPause(bool focus)

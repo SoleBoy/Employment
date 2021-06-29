@@ -39,21 +39,20 @@ public class HomePanel : MonoBehaviour
         incomeBtn.onClick.AddListener(OpenInconme);
         mainBtn.onClick.AddListener(OpenMain);
 
-        InitData();
+        nameText.text = DataTool.roleName;
         OpenPanel();
     }
 
-    public void InitData()
+    public void InitData(string firstname)
     {
-        nameText.text = "张小牛";
-        if(DataTool.isUnit)
-        {
-            dutyText.text = "个体工商户";
-        }
-        else
-        {
-            dutyText.text = "个人";
-        }
+        //if(DataTool.isUnit)
+        //{
+        //    dutyText.text = "个体工商户";
+        //}
+        //else
+        //{
+        //    dutyText.text = "个人";
+        //}
     }
 
     public void OpenPanel()

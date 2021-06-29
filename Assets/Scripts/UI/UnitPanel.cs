@@ -20,7 +20,7 @@ public class UnitPanel : MonoBehaviour
         {
             InfoItem item = new InfoItem(infoParent.Find("Item"+(i+1)),i);
             infos.Add(item);
-            item.SetInfo(Random.Range(0,3));
+            item.SetInfo(1);
         }
         if(DataTool.isUnit)
         {
