@@ -17,8 +17,8 @@ public class ClockinPanel : MonoBehaviour
 
     private Transform clockinPanel;
     private WebCamDevice[] webCamDevices;
-    private Vector3 frontAngle = new Vector3(0,0,90);
-    private Vector3 rearAngle = new Vector3(0,0,-90);
+    private Vector3 frontAngle = new Vector3(0,180,90);
+    private Vector3 rearAngle = new Vector3(0,0, -90);
 
     private bool isFlip;
     private void Awake()
@@ -166,6 +166,14 @@ public class ClockinPanel : MonoBehaviour
         Texture2D texture2D = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, true);
         texture2D.SetPixels32(tex.GetPixels32());
         texture2D.Apply();
+        if(isFlip)
+        {
+            textImage.transform.localEulerAngles = rearAngle;
+        }
+        else
+        {
+            textImage.transform.localEulerAngles = frontAngle;
+        }
         textImage.texture = texture2D;
 //        byte[] imageBytes = texture2D.EncodeToJPG();
 //        // 判断图片 bytes 是否为空
