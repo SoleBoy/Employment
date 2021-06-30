@@ -9,6 +9,8 @@ using MiniJSON;
 
 public class UIManager : MonoSingleton<UIManager>
 {
+    public LocationService location;
+
     public HallPanel hallPanel;
     public HomePanel homePanel;
     public IncomePanel incomePanel;
@@ -143,6 +145,8 @@ public class UIManager : MonoSingleton<UIManager>
         Debug.Log(messgInfo);
         gameObject.SetActive(true);
         CloningTips(messgInfo);
+        location.updateGps();
+        PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
     }
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
     public void AcceptData_Android(string messgInfo)
@@ -166,6 +170,7 @@ public class UIManager : MonoSingleton<UIManager>
             DataTool.InitData(jsonData["name"].ToString());
             hallPanel.Init();
             homePanel.Init();
+            hallPanel.CheckRecord(DataTool.isClock);
         }
         catch (System.Exception e)
         {

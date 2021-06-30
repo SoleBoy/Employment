@@ -16,6 +16,7 @@ public class HallPanel : MonoBehaviour
     private Text gradeText;
     private Text expText;
     private Text titleText;
+    private Text clockText;
 
     private Image roleImage;
     private Image expImage;
@@ -29,19 +30,21 @@ public class HallPanel : MonoBehaviour
 
     private Transform roleParent;
     private Transform petParent;
-
+    private GameObject clockIn;
     public void Init()
     {
+        clockIn = transform.Find("Address/ClockIn").gameObject;
         roleParent = transform.Find("Bracket/RoleImage");
         petParent = transform.Find("PetParent");
 
         firmText = transform.Find("Address/FirmText").GetComponent<Text>();
-        addText = transform.Find("Address/AddText").GetComponent<Text>();
+        addText = transform.Find("Address/ClockIn/AddText").GetComponent<Text>();
         statusText = transform.Find("Status/Text").GetComponent<Text>();
         certeiText = transform.Find("CertiBtn/Text").GetComponent<Text>();
         gradeText = transform.Find("GradeBar/GradeText").GetComponent<Text>();
         expText = transform.Find("GradeBar/ExpText").GetComponent<Text>();
         titleText = transform.Find("GradeBar/NameText").GetComponent<Text>();
+        clockText = transform.Find("Address/ClockIn/TimeText").GetComponent<Text>();
 
         roleImage = transform.Find("Bracket/RoleImage").GetComponent<Image>();
         expImage = transform.Find("GradeBar/Bar").GetComponent<Image>();
@@ -66,7 +69,6 @@ public class HallPanel : MonoBehaviour
     public void InitData()
     {
         firmText.text = "XXX公司技术服务中心";
-        addText.text = "杭州市文一西路1000号";
         statusText.text = "工作中";
         certeiText.text = "点击认证";
         titleText.text = DataTool.roleTitle;
@@ -85,6 +87,20 @@ public class HallPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+    //打卡记录
+    public void CheckRecord(bool isCheck)
+    {
+        if(isCheck)
+        {
+            clockText.text = PlayerPrefs.GetString("ClockInTime");
+            clockIn.SetActive(true);
+        }
+        else
+        {
+            clockIn.SetActive(false);
+        }
+    }
+
     //宠物携带
     public void BringPets(bool isHide,int index,Sprite pet=null)
     {

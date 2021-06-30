@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -60,12 +61,6 @@ public class ClockinPanel : MonoBehaviour
         gameObject.SetActive(false);
         UIManager.Instance.gameObject.SetActive(true);
     }
-
-    private void Update()
-    {
-        
-    }
-
     private void TakePhotoAndSave()
     {
         // 调用拍照保存函数
@@ -77,13 +72,11 @@ public class ClockinPanel : MonoBehaviour
         clockinPanel.gameObject.SetActive(true);
         webCamTexture.Stop();
     }
-
+    //string.Format("{0:D2}:{1:D2}:{2:D2} " + "{3:D4}/{4:D2}/{5:D2}", hour, minute, second, year, month, day);
     private void SubmitTexture()
     {
         DataTool.isClock = true;
         UIManager.Instance.SubmitTip("打卡成功");
-        //UIManager.Instance.CloningTips("打卡成功");
-        PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
     }
 
     private void FlipCamera()
@@ -147,6 +140,11 @@ public class ClockinPanel : MonoBehaviour
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.texture = webCamTexture;
+            }
+            else
+            {
+                gameObject.SetActive(false);
+                UIManager.Instance.SubmitTip("获取相机权限失败");
             }
         }
         else
