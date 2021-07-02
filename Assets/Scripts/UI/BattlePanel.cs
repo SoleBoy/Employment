@@ -68,7 +68,6 @@ public class BattlePanel : MonoBehaviour
 
     public void ServiceData()
     {
-        Debug.Log(refreshTime);
         PlayerPrefs.SetFloat("RefreshTime", refreshTime);
     }
 

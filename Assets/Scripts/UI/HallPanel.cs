@@ -93,6 +93,7 @@ public class HallPanel : MonoBehaviour
         if(isCheck)
         {
             clockText.text = PlayerPrefs.GetString("ClockInTime");
+            addText.text = PlayerPrefs.GetString("ClockInAddress");
             clockIn.SetActive(true);
         }
         else
@@ -145,40 +146,5 @@ public class HallPanel : MonoBehaviour
     private void OpenDetails()
     {
         UIManager.Instance.detailsPanel.OpenPanel();
-    }
-
-
-    private IEnumerator RequestAddress()
-    {
-        UnityWebRequest webRequest = UnityWebRequest.Get("http://api.map.baidu.com/location/ip?ak=bretF4dm6W5gqjQAXuvP0NXW6FeesRXb&coor=bd09ll");
-        yield return webRequest.SendWebRequest();
-        if (webRequest.isNetworkError || webRequest.error != null)
-        {
-            Debug.Log("请求网络错误:" + webRequest.error);
-        }
-        else
-        {
-            //try
-            {
-                Debug.Log(webRequest.downloadHandler.text);
-                Dictionary<string, object> tokenData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-                Dictionary<string, object> pairs = tokenData["content"] as Dictionary<string, object>;
-                foreach (var item in pairs)
-                {
-                    Debug.Log(item.Key);
-                    Debug.Log(item.Value);
-                }
-                Dictionary<string, object> info = pairs["address_detail"] as Dictionary<string, object>;
-                foreach (var item in info)
-                {
-                    Debug.Log(item.Key);
-                    Debug.Log(item.Value);
-                }
-            }
-            //catch (System.Exception)
-            //{
-            //    Debug.Log("数据解析错误:");
-            //}
-        }
     }
 }

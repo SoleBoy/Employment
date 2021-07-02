@@ -15,6 +15,7 @@ public class DataTool
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
     public static bool isClock;//打卡记录
+    public static SalaryEntry salaryEntry;
     //获取头衔等级
     public static string GetTitle(int rankIndex)
     {
@@ -125,8 +126,8 @@ public class DataTool
             currentActivity.Call("startActivity", intentObj);
         }
     }
-
-    public static void CallNative()
+    // 172 173 174
+    public static void CallNative(int mesgg,int id)
     {
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -137,7 +138,7 @@ public class DataTool
                 if (pluginClass != null)
                 {
                     Debug.Log("UnityReflection存在");
-                    pluginClass.CallStatic("RequestUserInfo");
+                    pluginClass.CallStatic("RequestUserInfo", mesgg,id);
                 }
             }
 
@@ -149,4 +150,11 @@ public class DataTool
     {
         UIManager.Instance.CloningTips(activityInfo);
     }
+}
+
+public enum SalaryEntry
+{
+    month_1,
+    month_2,
+    month_3
 }

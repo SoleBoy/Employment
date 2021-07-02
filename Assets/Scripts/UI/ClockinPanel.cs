@@ -76,7 +76,7 @@ public class ClockinPanel : MonoBehaviour
     private void SubmitTexture()
     {
         DataTool.isClock = true;
-        UIManager.Instance.SubmitTip("打卡成功");
+        UIManager.Instance.SubmitTip();
     }
 
     private void FlipCamera()
@@ -144,13 +144,15 @@ public class ClockinPanel : MonoBehaviour
             else
             {
                 gameObject.SetActive(false);
-                UIManager.Instance.SubmitTip("获取相机权限失败");
+                UIManager.Instance.gameObject.SetActive(true);
+                UIManager.Instance.CloningTips("获取相机权限失败");
             }
         }
         else
         {
             gameObject.SetActive(false);
-            UIManager.Instance.SubmitTip("获取相机权限失败");
+            UIManager.Instance.gameObject.SetActive(true);
+                UIManager.Instance.CloningTips("获取相机权限失败");
         }
     }
     /// <summary>

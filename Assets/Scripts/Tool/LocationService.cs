@@ -4,22 +4,26 @@ using System.Collections;
 using System.Net;
 using System.IO;
 using System;
+using MiniJSON;
+using System.Collections.Generic;
 
 public class LocationService : MonoBehaviour
 {
     private string GetGps = "";
+    private const string key = "ac611ea2fc1e9b9309cbb0486904e101";		//去高德地图开发者申请
     /// <summary>
     /// 初始化一次位置
     /// </summary>
     private void Start()
     {
-        StartCoroutine(StartGPS());
-        GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
+        //StartCoroutine(StartGPS());
+        //GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
+        //StartCoroutine(GetLocationByLngLat(0, 0));
     }
     /// <summary>
     /// 刷新位置信息（按钮的点击事件）
     /// </summary>
-    public void updateGps()
+    public void UpdateGps()
     {
         StartCoroutine(StartGPS());
     }
@@ -65,33 +69,24 @@ public class LocationService : MonoBehaviour
         }
         else
         {
-            //GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
-            //GetGps = GetGps + " Time:" + Input.location.lastData.timestamp;
             GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
-            string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
-            messgInfo += GetGps;
-            PlayerPrefs.SetString("ClockInTime", messgInfo);
-            UIManager.Instance.hallPanel.CheckRecord(true);
+            if (Input.location.lastData.longitude == 0 && Input.location.lastData.latitude == 0)
+            {
+                UIManager.Instance.CloningTips("位置获取失败,请检查GPS是否开启");
+                string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+                PlayerPrefs.SetString("ClockInTime", messgInfo);
+                //PlayerPrefs.SetString("ClockInAddress", "杭州市文一西路1000号");
+                UIManager.Instance.hallPanel.CheckRecord(true);
+                //UIManager.Instance.CloningTips("打卡成功");
+            }
+            else
+            {
+                GetLocationByLngLat(Input.location.lastData.longitude, Input.location.lastData.latitude);
+                Input.location.Stop();
+            }
             yield return new WaitForSeconds(100);
         }
     }
-
-
-    const string key = "46e7e5ba34d76192d8172172742ae1c4";		//去高德地图开发者申请 这个key的流量不知道被哪位同学用完了，
-
-    /// <summary>
-    /// 根据经纬度获取地址
-    /// </summary>
-    /// <param name="LngLatStr">经度纬度组成的字符串 例如:"113.692100,34.752853"</param>
-    /// <param name="timeout">超时时间默认10秒</param>
-    /// <returns>失败返回"" </returns>
-    public string GetLocationByLngLat(string LngLatStr, int timeout = 10000)
-    {
-        LngLatStr = "113.692100,34.752853";
-        string url = $"http://restapi.amap.com/v3/geocode/regeo?key={key}&location={LngLatStr}";
-        return GetLocationByURL(url, timeout);
-    }
-
     /// <summary>
     /// 根据经纬度获取地址
     /// </summary>
@@ -99,10 +94,10 @@ public class LocationService : MonoBehaviour
     /// <param name="lat">维度 例如:34.752853</param>
     /// <param name="timeout">超时时间默认10秒</param>
     /// <returns>失败返回"" </returns>
-    public string GetLocationByLngLat(double lng, double lat, int timeout = 10000)
+    public void GetLocationByLngLat(double lng, double lat, int timeout = 10000)
     {
         string url = $"http://restapi.amap.com/v3/geocode/regeo?key={key}&location={lng},{lat}";
-        return GetLocationByURL(url, timeout);
+        GetLocationByURL(url, timeout);
     }
     /// <summary>
     /// 根据URL获取地址
@@ -110,7 +105,7 @@ public class LocationService : MonoBehaviour
     /// <param name="url">Get方法的URL</param>
     /// <param name="timeout">超时时间默认10秒</param>
     /// <returns></returns>
-    private string GetLocationByURL(string url, int timeout = 10000)
+    private void GetLocationByURL(string url, int timeout = 10000)
     {
         string strResult = "";
         try
@@ -132,12 +127,21 @@ public class LocationService : MonoBehaviour
             int addressComponentIndex = strResult.IndexOf("addressComponent");
             int cutIndex = addressComponentIndex - formatted_addressIndex - 23;
             int subIndex = formatted_addressIndex + 20;
-            return strResult;
         }
         catch (Exception)
         {
             strResult = "";
         }
-        return strResult;
+        if(strResult != "")
+        {
+            Dictionary<string, object> tokenData = Json.Deserialize(strResult) as Dictionary<string, object>;
+            Dictionary<string, object> pairs1 = tokenData["regeocode"] as Dictionary<string, object>;
+
+            string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+            PlayerPrefs.SetString("ClockInTime", messgInfo);
+            PlayerPrefs.SetString("ClockInAddress", pairs1["formatted_address"].ToString());
+            UIManager.Instance.hallPanel.CheckRecord(true);
+            UIManager.Instance.CloningTips("打卡成功");
+        }
     }
 }

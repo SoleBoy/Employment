@@ -12,6 +12,8 @@ public class SalaryPanel : MonoBehaviour
 
     private Transform wageView;
     private List<SalaryDetails> salaries = new List<SalaryDetails>();
+
+    public int infoID;
     private void Awake()
     {
         wageView = transform.Find("Info/WageView/Viewport/Content");
@@ -22,12 +24,30 @@ public class SalaryPanel : MonoBehaviour
         backBtn.onClick.AddListener(ClosePanel);
         InitData();
     }
-    //2021年4月  工资单
-    public void OpenPanel(int year,int month,int money)
+    //2021年4月  工资单 发薪日实发 fxrsf  应发前加项	yf_before_add 应发前减项 yf_before_deduct
+    //应发后加项 yf_after_add 应发后减项 yf_after_deduct 应发总额 yfze
+    public void SetHeadFile(int year, int month)
     {
         gameObject.SetActive(true);
         dateText.text = string.Format("{0}年{1}月 工资单", year, month);
-        wageText.text = string.Format("￥{0:N2}",money);
+    }
+    public void OpenPanel(Dictionary<string,object> detailInfo)
+    {
+        infoID = int.Parse(detailInfo["id"].ToString());
+        if (detailInfo.ContainsKey("fxrsf"))
+        {
+            wageText.text = string.Format("￥{0:N2}", detailInfo["fxrsf"]);
+        }
+        else
+        {
+            wageText.text = string.Format("￥{0:N2}", 3600);
+        }
+        salaries[0].SetInfo(string.Format("￥{0:N2}", detailInfo["yfze"]), dateText.text);
+        salaries[1].SetInfo(string.Format("+{0:N2}", detailInfo["yf_before_add"]), dateText.text);
+        salaries[2].SetInfo(string.Format("-{0:N2}", detailInfo["yf_before_deduct"]), dateText.text);
+        salaries[3].SetInfo(string.Format("+{0:N2}", detailInfo["yf_after_add"]), dateText.text);
+        salaries[4].SetInfo(string.Format("-{0:N2}", detailInfo["yf_after_deduct"]), dateText.text);
+        salaries[5].SetInfo(string.Format("￥{0:N2}", detailInfo["fxrsf"]), dateText.text);
     }
 
     public void ClosePanel()
@@ -43,7 +63,6 @@ public class SalaryPanel : MonoBehaviour
             salaries.Add(item);
         }
     }
-
     //工资条目
     private class SalaryDetails
     {
@@ -51,6 +70,7 @@ public class SalaryPanel : MonoBehaviour
         private Text amountText;
         private Button wageBtn;
         private GameObject detailed;
+        private string dateInfo;
         public SalaryDetails(Transform parent)
         {
             durationText = parent.Find("Duration").GetComponent<Text>();
@@ -58,19 +78,26 @@ public class SalaryPanel : MonoBehaviour
             wageBtn = parent.GetComponent<Button>();
             detailed = parent.Find("Duration").gameObject;
             wageBtn.onClick.AddListener(OpenDetails);
-            //wageBtn.enabled = isOpen;
-            //detailed.SetActive(isOpen);
         }
 
-        public void SetInfo(int year,int month,float money)
+        public void SetInfo(string wageInfo,string date)
         {
-            durationText.text = string.Format("{0}年{1}月",year,month);
-            amountText.text = string.Format("{0:N2}", money);
+            amountText.text = wageInfo;
+            dateInfo = date;
         }
 
         private void OpenDetails()
         {
-            UIManager.Instance.payrollPanel.OpenPanel();
+            UIManager.Instance.payrollPanel.SetInfo(dateInfo, durationText.text, amountText.text);
+            DataTool.salaryEntry = SalaryEntry.month_3;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                DataTool.CallNative(174, UIManager.Instance.salaryPanel.infoID);
+            }
+            else
+            {
+                UIManager.Instance.Acceptance_Android("Monthly3");
+            }
         }
     }
 }

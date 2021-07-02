@@ -9,6 +9,7 @@ using MiniJSON;
 
 public class UIManager : MonoSingleton<UIManager>
 {
+    public LoadTxt loadTxt;
     public LocationService location;
 
     public HallPanel hallPanel;
@@ -140,14 +141,32 @@ public class UIManager : MonoSingleton<UIManager>
         tip.GetComponent<TipPanel>().StartAnimal(messg);
     }
     //打卡提示
-    public void SubmitTip(string messgInfo)
+    public void SubmitTip()
     {
-        Debug.Log(messgInfo);
         gameObject.SetActive(true);
-        CloningTips(messgInfo);
-        location.updateGps();
+        location.UpdateGps();
         PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
     }
+   
+    //切换后台
+    private void OnApplicationPause(bool focus)
+    {
+        if (focus)
+        {
+            battlePanel.ServiceData();
+            Debug.Log("保存数据");
+        }
+        else
+        {
+
+        }
+    }
+    private void OnApplicationQuit()
+    {
+        battlePanel.ServiceData();
+        Debug.Log("保存数据");
+    }
+
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
     public void AcceptData_Android(string messgInfo)
     {
@@ -180,22 +199,65 @@ public class UIManager : MonoSingleton<UIManager>
             homePanel.Init();
         }
     }
-    //切换后台
-    private void OnApplicationPause(bool focus)
+    //接收收入信息
+    public void Acceptance_Android(string messg)
     {
-        if (focus)
+        if(Application.platform == RuntimePlatform.Android)
         {
-            battlePanel.ServiceData();
-            Debug.Log("保存数据");
+            try
+            {
+                Dictionary<string, object> tokenData = Json.Deserialize(messg) as Dictionary<string, object>;
+                switch (DataTool.salaryEntry)
+                {
+                    case SalaryEntry.month_1:
+                        incomePanel.InitState(2, tokenData);
+                        break;
+                    case SalaryEntry.month_2:
+                        salaryPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+                        break;
+                    case SalaryEntry.month_3:
+                        payrollPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (System.Exception e)
+            {
+                CloningTips("数据返回失败"+ e.ToString());
+                switch (DataTool.salaryEntry)
+                {
+                    case SalaryEntry.month_1:
+                        loadTxt.GetMonthly_1();
+                        break;
+                    case SalaryEntry.month_2:
+                        loadTxt.GetMonthly_2();
+                        break;
+                    case SalaryEntry.month_3:
+                        loadTxt.GetMonthly_3();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         else
         {
-
+            switch (DataTool.salaryEntry)
+            {
+                case SalaryEntry.month_1:
+                    loadTxt.GetMonthly_1();
+                    break;
+                case SalaryEntry.month_2:
+                    loadTxt.GetMonthly_2();
+                    break;
+                case SalaryEntry.month_3:
+                    loadTxt.GetMonthly_3();
+                    break;
+                default:
+                    break;
+            }
         }
     }
-    private void OnApplicationQuit()
-    {
-        battlePanel.ServiceData();
-        Debug.Log("保存数据");
-    }
+
 }
