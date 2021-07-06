@@ -64,19 +64,20 @@ public class ClockinPanel : MonoBehaviour
     private void TakePhotoAndSave()
     {
         // 调用拍照保存函数
-        rawImage.texture = null;
         TakePhotoAndSaveImage(webCamTexture);
         flipBtn.gameObject.SetActive(false);
         takeBtn.gameObject.SetActive(false);
         rawImage.gameObject.SetActive(false);
         clockinPanel.gameObject.SetActive(true);
+        rawImage.texture = null;
         webCamTexture.Stop();
     }
     //string.Format("{0:D2}:{1:D2}:{2:D2} " + "{3:D4}/{4:D2}/{5:D2}", hour, minute, second, year, month, day);
     private void SubmitTexture()
     {
+        gameObject.SetActive(false);
         DataTool.isClock = true;
-        UIManager.Instance.SubmitTip();
+        UIManager.Instance.SubmitTip(true);
     }
 
     private void FlipCamera()
@@ -144,15 +145,13 @@ public class ClockinPanel : MonoBehaviour
             else
             {
                 gameObject.SetActive(false);
-                UIManager.Instance.gameObject.SetActive(true);
-                UIManager.Instance.CloningTips("获取相机权限失败");
+                UIManager.Instance.SubmitTip(false);
             }
         }
         else
         {
             gameObject.SetActive(false);
-            UIManager.Instance.gameObject.SetActive(true);
-                UIManager.Instance.CloningTips("获取相机权限失败");
+            UIManager.Instance.SubmitTip(false);
         }
     }
     /// <summary>
@@ -166,7 +165,7 @@ public class ClockinPanel : MonoBehaviour
         Texture2D texture2D = new Texture2D(tex.width, tex.height, TextureFormat.RGBA32, true);
         texture2D.SetPixels32(tex.GetPixels32());
         texture2D.Apply();
-        if(isFlip)
+        if (isFlip)
         {
             textImage.transform.localEulerAngles = rearAngle;
         }
@@ -175,24 +174,26 @@ public class ClockinPanel : MonoBehaviour
             textImage.transform.localEulerAngles = frontAngle;
         }
         textImage.texture = texture2D;
-//        byte[] imageBytes = texture2D.EncodeToJPG();
-//        // 判断图片 bytes 是否为空
-//        if (imageBytes != null && imageBytes.Length > 0)
-//        {
-//            // 判断Android 平台，进行对应路径设置
-//            string savePath;
-//            string platformPath = Application.streamingAssetsPath + "/MyTempPhotos";
-//#if UNITY_ANDROID && !UNITY_EDITOR
-//            platformPath = "/sdcard/DCIM/MyTempPhotos";
-//#endif
-//            // 如果文件夹不存在，就创建文件夹
-//            if (!Directory.Exists(platformPath))
-//            {
-//                Directory.CreateDirectory(platformPath);
-//            }
-//            // 保存图片
-//            savePath = platformPath + "/" + Time.deltaTime + ".jpg";
-//            File.WriteAllBytes(savePath, imageBytes);
-//        }
+        DataTool.cheackByte = texture2D.EncodeToJPG();
+       
+        //        byte[] imageBytes = texture2D.EncodeToJPG();
+        //        // 判断图片 bytes 是否为空
+        //        if (imageBytes != null && imageBytes.Length > 0)
+        //        {
+        //            // 判断Android 平台，进行对应路径设置
+        //            string savePath;
+        //            string platformPath = Application.streamingAssetsPath + "/MyTempPhotos";
+        //#if UNITY_ANDROID && !UNITY_EDITOR
+        //            platformPath = "/sdcard/DCIM/MyTempPhotos";
+        //#endif
+        //            // 如果文件夹不存在，就创建文件夹
+        //            if (!Directory.Exists(platformPath))
+        //            {
+        //                Directory.CreateDirectory(platformPath);
+        //            }
+        //            // 保存图片
+        //            savePath = platformPath + "/" + Time.deltaTime + ".jpg";
+        //            File.WriteAllBytes(savePath, imageBytes);
+        //        }
     }
 }

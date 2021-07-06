@@ -9,7 +9,9 @@ public class UnitPanel : MonoBehaviour
 
     private Transform infoParent;
     private List<InfoItem> infos = new List<InfoItem>();
-    private void Awake()
+    // 输入邀请码 实名认证 银行卡绑定,签名验证，江苏银行二类卡开卡,活体认证，意愿视频，税务办理，农业二类卡开卡，银税签订协议
+    private string[] fieldInfo = { "", "realname_auth_status", "bank_card_bind_status", "signature_status", "jiangsubank_ii_status","living_check_status","entrust_video_status", "", "", "tripartite_agreement_status" };
+    public void Init()
     {
         infoParent = transform.Find("Info/PayrollView/Viewport/Content");
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
@@ -20,7 +22,7 @@ public class UnitPanel : MonoBehaviour
         {
             InfoItem item = new InfoItem(infoParent.Find("Item"+(i+1)),i);
             infos.Add(item);
-            item.SetInfo(1);
+            //item.SetInfo(1);
         }
         if(DataTool.isUnit)
         {
@@ -61,6 +63,22 @@ public class UnitPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
+    public void CertificationInfo(Dictionary<string,object> pairs)
+    {
+        for (int i = 0; i < infos.Count; i++)
+        {
+            if (pairs.ContainsKey(fieldInfo[i]))
+            {
+                infos[i].SetInfo(int.Parse(pairs[fieldInfo[i]].ToString()));
+            }
+            else
+            {
+                infos[i].SetInfo(2);
+            }
+        }
+    }
+
     //认证信息
     private class InfoItem
     {
@@ -137,20 +155,25 @@ public class UnitPanel : MonoBehaviour
         {
             infoObject.SetActive(isHide);
         }
+        //1已完成 2未完成 3审核待处理 0必填项
         public void SetInfo(int index)
         {
             if(index == 0)
             {
-                infoText.text = "必须项";
+                infoText.text = "必填项";
             }
             else if(index == 1)
             {
-                infoText.text = "审核中";
+                infoText.text = "已完成";
+                finish.SetActive(true);
+            }
+            else if (index == 2)
+            {
+                infoText.text = "未完成";
             }
             else
             {
-                infoText.text = "完成";
-                finish.SetActive(true);
+                infoText.text = "审核待处理";
             }
         }
     }

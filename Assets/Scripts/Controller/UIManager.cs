@@ -47,9 +47,13 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
-        AcceptData_Android("");
         DataTool.StartActivity(0);
+#if UNITY_ANDROID
+        Debug.Log("这里安卓设备");
+        AcceptData_Android("");
+#endif
     }
+
     private void Update()
     {
         battlePanel.SetUpdata(Time.deltaTime);
@@ -141,11 +145,18 @@ public class UIManager : MonoSingleton<UIManager>
         tip.GetComponent<TipPanel>().StartAnimal(messg);
     }
     //打卡提示
-    public void SubmitTip()
+    public void SubmitTip(bool isClock)
     {
         gameObject.SetActive(true);
-        location.UpdateGps();
-        PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
+        if(isClock)
+        {
+            location.UpdateGps();
+            PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");
+        }
+        else
+        {
+            CloningTips("获取相机权限失败");
+        }
     }
    
     //切换后台
@@ -154,7 +165,7 @@ public class UIManager : MonoSingleton<UIManager>
         if (focus)
         {
             battlePanel.ServiceData();
-            Debug.Log("保存数据");
+            Debug.Log("OnApplicationPause保存数据");
         }
         else
         {
@@ -164,7 +175,7 @@ public class UIManager : MonoSingleton<UIManager>
     private void OnApplicationQuit()
     {
         battlePanel.ServiceData();
-        Debug.Log("保存数据");
+        Debug.Log("OnApplicationQuit保存数据");
     }
 
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
@@ -175,8 +186,9 @@ public class UIManager : MonoSingleton<UIManager>
         {
             if (messgInfo == "")
             {
-                messgInfo = "{\"name\":\"张大牛\",\"goto\":\"个人\"}";
+                messgInfo = "{\"name\":\"张大牛\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}";
             }
+            Debug.Log("安卓初始数据"+messgInfo);
             Dictionary<string, object> jsonData = Json.Deserialize(messgInfo) as Dictionary<string, object>;
             if (jsonData["goto"].ToString() == "个人")//true 个体工商户  //false 个人
             {
@@ -189,6 +201,8 @@ public class UIManager : MonoSingleton<UIManager>
             DataTool.InitData(jsonData["name"].ToString());
             hallPanel.Init();
             homePanel.Init();
+            unitPanel.Init();
+            unitPanel.CertificationInfo(jsonData);
             hallPanel.CheckRecord(DataTool.isClock);
         }
         catch (System.Exception e)
@@ -197,6 +211,7 @@ public class UIManager : MonoSingleton<UIManager>
             DataTool.InitData("张大牛");
             hallPanel.Init();
             homePanel.Init();
+            unitPanel.Init();
         }
     }
     //接收收入信息

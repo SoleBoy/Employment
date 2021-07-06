@@ -15,6 +15,7 @@ public class DataTool
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
     public static bool isClock;//打卡记录
+    public static byte[] cheackByte;
     public static SalaryEntry salaryEntry;
     //获取头衔等级
     public static string GetTitle(int rankIndex)
@@ -139,6 +140,25 @@ public class DataTool
                 {
                     Debug.Log("UnityReflection存在");
                     pluginClass.CallStatic("RequestUserInfo", mesgg,id);
+                }
+            }
+
+        }
+    }
+    //打卡记录上传
+    public static void CallClockInfo(double lat, double lng)
+    {
+        Debug.Log(System.Convert.ToBase64String(cheackByte));
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            Debug.Log("uploadingSignInInfo");
+
+            using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
+            {
+                if (pluginClass != null)
+                {
+                    Debug.Log("UnityReflection存在");
+                    pluginClass.CallStatic("uploadingSignInInfo", lat, lng,System.Convert.ToBase64String(cheackByte));
                 }
             }
 

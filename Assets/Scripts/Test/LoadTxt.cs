@@ -3,18 +3,17 @@ using System.Collections;
 using MiniJSON;
 using System.Collections.Generic;
 using UnityEngine.Networking;
+using System;
 
 public class LoadTxt : MonoBehaviour
 {
 
     public TextAsset[] TxtFile;    //建立TextAsset
     private string Mytxt;          //用来存放文本内容
-
+    //07-05  16:53  河南省郑州市管城回族区城东路街道城东路98号正商向阳广场
     private void Start()
     {
-        //GetMonthly_1();
-        //GetMonthly_2();
-        //GetMonthly_3();
+
     }
 
     //total字段累计收入
@@ -89,4 +88,11 @@ public class LoadTxt : MonoBehaviour
             //}
         }
     }
+}
+
+public class CheckAddress
+{
+    public string lat;
+    public string lng;
+    public string strbaser64;
 }

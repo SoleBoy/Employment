@@ -75,15 +75,14 @@ public class LocationService : MonoBehaviour
                 UIManager.Instance.CloningTips("位置获取失败,请检查GPS是否开启");
                 string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
                 PlayerPrefs.SetString("ClockInTime", messgInfo);
-                //PlayerPrefs.SetString("ClockInAddress", "杭州市文一西路1000号");
                 UIManager.Instance.hallPanel.CheckRecord(true);
-                //UIManager.Instance.CloningTips("打卡成功");
             }
             else
             {
                 GetLocationByLngLat(Input.location.lastData.longitude, Input.location.lastData.latitude);
-                Input.location.Stop();
             }
+            DataTool.CallClockInfo(Input.location.lastData.latitude, Input.location.lastData.longitude);
+            Input.location.Stop();
             yield return new WaitForSeconds(100);
         }
     }
@@ -140,6 +139,7 @@ public class LocationService : MonoBehaviour
             string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
             PlayerPrefs.SetString("ClockInTime", messgInfo);
             PlayerPrefs.SetString("ClockInAddress", pairs1["formatted_address"].ToString());
+            Debug.Log(JsonUtility.ToJson(string.Format("{0}{1}", messgInfo, pairs1["formatted_address"].ToString())));
             UIManager.Instance.hallPanel.CheckRecord(true);
             UIManager.Instance.CloningTips("打卡成功");
         }
