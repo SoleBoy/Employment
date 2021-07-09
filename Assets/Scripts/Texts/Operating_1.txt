@@ -1,17 +1,17 @@
 {
     "datas":[
         {
-            "salary_month":"2021-07",
-            "sfze":209
+            "salary_month":"2021-01",
+            "sfze":0
         },
         {
-            "salary_month":"2021-06",
-            "sfze":84
+            "salary_month":"2020-12",
+            "sfze":0
         },
         {
-            "salary_month":"2021-05",
-            "sfze":107
+            "salary_month":"2020-10",
+            "sfze":0
         }
     ],
-    "total":400
+    "total":0
 }

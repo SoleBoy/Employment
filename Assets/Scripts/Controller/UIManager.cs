@@ -47,10 +47,10 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
-        //AcceptData_Android("");
+        //AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个体工商户\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
         DataTool.StartActivity(0);
 #if UNITY_ANDROID
-        Debug.Log("这里安卓设备");//true 个体工商户  //false 个人
+        Debug.Log("UNITY_ANDROID测试");//true 个体工商户  //false 个人
         AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
 #endif
     }
@@ -210,7 +210,8 @@ public class UIManager : MonoSingleton<UIManager>
     //接收收入信息
     public void Acceptance_Android(string messg)
     {
-        if(Application.platform == RuntimePlatform.Android)
+        Debug.Log(DataTool.salaryEntry + ":" + messg);
+        if (Application.platform == RuntimePlatform.Android)
         {
             try
             {

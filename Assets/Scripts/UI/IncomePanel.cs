@@ -103,7 +103,7 @@ public class IncomePanel : MonoBehaviour
             PaySlipItem pay = new PaySlipItem(item);
             slipItems.Add(pay);
         }
-        grandText.text = string.Format("{0:N2}",3600);
+        grandText.text = string.Format("{0:N2}",0);
         toolView.GetComponent<GridLayoutGroup>().padding.top = 50;
         monthCurrent = DateTime.Now.Month - 1;
         yearCurrent = DateTime.Now.Year;
@@ -218,7 +218,7 @@ public class IncomePanel : MonoBehaviour
                     {
                         Dictionary<string, object> data1 = issuedData[i] as Dictionary<string, object>;
                         string[] dates = data1["salary_date"].ToString().Split('-');
-                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(dates[1]));
+                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(dates[2]));
                     }
                     else
                     {
@@ -343,7 +343,15 @@ public class IncomePanel : MonoBehaviour
         yearCurrent = year;
         monthText.text = string.Format("{0}年{1}月", year, month);
         dailyParent.gameObject.SetActive(false);
-        InitState(0,null);
+        if (DataTool.isUnit)
+        {
+            OpenOperatin();
+        }
+        else
+        {
+            OpenDaily();
+        }
+        //InitState(0,null);
     }
 
     /// <summary>

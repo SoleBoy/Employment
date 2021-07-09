@@ -1,14 +1,14 @@
 [
     {
-        "salary_date":"2021-07-08",
-        "sfze":209
+        "salary_date":"2021-05-05",
+        "sfze":0
     },
     {
-        "salary_date":"2021-06-06",
-        "sfze":84
+        "salary_date":"2021-03-01",
+        "sfze":0
     },
     {
-        "salary_date":"2021-05-08",
-        "sfze":107
+        "salary_date":"2021-01-08",
+        "sfze":0
     }
 ]

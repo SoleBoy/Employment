@@ -127,7 +127,7 @@ public class DataTool
             currentActivity.Call("startActivity", intentObj);
         }
     }
-    // 172 173 174  185,187,190-加月份
+    // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
     public static void CallNative(int mesgg,int id,string month = "")
     {
         if (Application.platform == RuntimePlatform.Android)
