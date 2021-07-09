@@ -9,8 +9,8 @@ public class UnitPanel : MonoBehaviour
 
     private Transform infoParent;
     private List<InfoItem> infos = new List<InfoItem>();
-    // 输入邀请码 实名认证 银行卡绑定,签名验证，江苏银行二类卡开卡,活体认证，意愿视频，税务办理，农业二类卡开卡，银税签订协议
-    private string[] fieldInfo = { "", "realname_auth_status", "bank_card_bind_status", "signature_status", "jiangsubank_ii_status","living_check_status","entrust_video_status", "", "", "tripartite_agreement_status" };
+    //                                  输入邀请码               实名认证                银行卡绑定,             签名验证，           江苏银行二类卡开卡,      活体认证，                意愿视频，          税务办理，           农业二类卡开卡，          银税签订协议
+    private string[] fieldInfo = { "invite_channel_status", "realname_auth_status", "bank_card_bind_status", "signature_status", "jiangsubank_ii_status", "living_check_status", "entrust_video_status", "tax_deal_status", "abc_bank_card_bind_status", "tripartite_agreement_status" };
     public void Init()
     {
         infoParent = transform.Find("Info/PayrollView/Viewport/Content");

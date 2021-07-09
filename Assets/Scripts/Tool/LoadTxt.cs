@@ -9,33 +9,15 @@ public class LoadTxt : MonoBehaviour
 {
 
     public TextAsset[] TxtFile;    //建立TextAsset
-    private string Mytxt;          //用来存放文本内容
     //07-05  16:53  河南省郑州市管城回族区城东路街道城东路98号正商向阳广场
     private void Start()
     {
-
+        
     }
-
     //total字段累计收入
     public void GetMonthly_1()
     {
-        //Debug.Log(TxtFile.ToString());
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[0].ToString()) as Dictionary<string, object>;
-        //foreach (var item in tokenData)
-        //{
-        //    Debug.Log(item.Key);
-        //    Debug.Log(item.Value);
-        //}
-        //List<object> data1 = tokenData["data"] as List<object>;
-        //for (int i = 0; i < data1.Count; i++)
-        //{
-        //    Dictionary<string, object> data2 = data1[i] as Dictionary<string, object>;
-        //    foreach (var item in data2)
-        //    {
-        //        Debug.Log(item.Key);
-        //        Debug.Log(item.Value);
-        //    }
-        //}
         UIManager.Instance.incomePanel.InitState(2,tokenData);
     }
     public void GetMonthly_2()
@@ -46,15 +28,23 @@ public class LoadTxt : MonoBehaviour
     public void GetMonthly_3()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[2].ToString()) as Dictionary<string, object>;
-        //foreach (var item in tokenData["data"] as Dictionary<string, object>)
-        //{
-        //    Debug.Log(item.Key);
-        //    Debug.Log(item.Value);
-        //}
         UIManager.Instance.payrollPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
     }
-
-
+    public void GetMonthly_4()
+    {
+        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[3].ToString()) as Dictionary<string, object>;
+        UIManager.Instance.incomePanel.InitState(4, tokenData);
+    }
+    public void GetMonthly_5()
+    {
+        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[4].ToString()) as Dictionary<string, object>;
+        UIManager.Instance.operatingPanel.OpenPanel(tokenData);
+    }
+    public void GetMonthly_6()
+    {
+        List<object> tokenData = Json.Deserialize(TxtFile[5].ToString()) as List<object>;
+        UIManager.Instance.incomePanel.InitState(3,null,tokenData);
+    }
     private IEnumerator RequestAddress()
     {
         UnityWebRequest webRequest = UnityWebRequest.Get("http://api.map.baidu.com/location/ip?ak=bretF4dm6W5gqjQAXuvP0NXW6FeesRXb&coor=bd09ll");
@@ -88,11 +78,4 @@ public class LoadTxt : MonoBehaviour
             //}
         }
     }
-}
-
-public class CheckAddress
-{
-    public string lat;
-    public string lng;
-    public string strbaser64;
 }

@@ -47,10 +47,11 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
+        //AcceptData_Android("");
         DataTool.StartActivity(0);
 #if UNITY_ANDROID
-        Debug.Log("这里安卓设备");
-        AcceptData_Android("");
+        Debug.Log("这里安卓设备");//true 个体工商户  //false 个人
+        AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
 #endif
     }
 
@@ -184,13 +185,9 @@ public class UIManager : MonoSingleton<UIManager>
         maskPanel.SetActive(false);
         try
         {
-            if (messgInfo == "")
-            {
-                messgInfo = "{\"name\":\"张大牛\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}";
-            }
-            Debug.Log("安卓初始数据"+messgInfo);
+            Debug.Log("安卓初始数据" + messgInfo);
             Dictionary<string, object> jsonData = Json.Deserialize(messgInfo) as Dictionary<string, object>;
-            if (jsonData["goto"].ToString() == "个人")//true 个体工商户  //false 个人
+            if (jsonData["goto"].ToString() == "个人")
             {
                 DataTool.isUnit = false;
             }
@@ -207,11 +204,7 @@ public class UIManager : MonoSingleton<UIManager>
         }
         catch (System.Exception e)
         {
-            Debug.Log(e.ToString());
-            DataTool.InitData("张大牛");
-            hallPanel.Init();
-            homePanel.Init();
-            unitPanel.Init();
+            Debug.Log("数据解析错误"+e.ToString());
         }
     }
     //接收收入信息
@@ -221,17 +214,31 @@ public class UIManager : MonoSingleton<UIManager>
         {
             try
             {
-                Dictionary<string, object> tokenData = Json.Deserialize(messg) as Dictionary<string, object>;
                 switch (DataTool.salaryEntry)
                 {
                     case SalaryEntry.month_1:
-                        incomePanel.InitState(2, tokenData);
+                        Dictionary<string, object> month_1 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        incomePanel.InitState(2, month_1);
                         break;
                     case SalaryEntry.month_2:
-                        salaryPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+                        Dictionary<string, object> month_2 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        salaryPanel.OpenPanel(month_2["data"] as Dictionary<string, object>);
                         break;
                     case SalaryEntry.month_3:
-                        payrollPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+                        Dictionary<string, object> month_3 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        payrollPanel.OpenPanel(month_3["data"] as Dictionary<string, object>);
+                        break;
+                    case SalaryEntry.Operating_1:
+                        Dictionary<string, object> Operating_1 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        incomePanel.InitState(4, Operating_1);
+                        break;
+                    case SalaryEntry.Operating_2:
+                        Dictionary<string, object> Operating_2 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        operatingPanel.OpenPanel(Operating_2);
+                        break;
+                    case SalaryEntry.Issued_1:
+                        List<object> Issued_1 = Json.Deserialize(messg) as List<object>;
+                        incomePanel.InitState(3, null, Issued_1);
                         break;
                     default:
                         break;
@@ -251,6 +258,15 @@ public class UIManager : MonoSingleton<UIManager>
                     case SalaryEntry.month_3:
                         loadTxt.GetMonthly_3();
                         break;
+                    case SalaryEntry.Operating_1:
+                        loadTxt.GetMonthly_4();
+                        break;
+                    case SalaryEntry.Operating_2:
+                        loadTxt.GetMonthly_5();
+                        break;
+                    case SalaryEntry.Issued_1:
+                        loadTxt.GetMonthly_6();
+                        break;
                     default:
                         break;
                 }
@@ -268,6 +284,15 @@ public class UIManager : MonoSingleton<UIManager>
                     break;
                 case SalaryEntry.month_3:
                     loadTxt.GetMonthly_3();
+                    break;
+                case SalaryEntry.Operating_1:
+                    loadTxt.GetMonthly_4();
+                    break;
+                case SalaryEntry.Operating_2:
+                    loadTxt.GetMonthly_5();
+                    break;
+                case SalaryEntry.Issued_1:
+                    loadTxt.GetMonthly_6();
                     break;
                 default:
                     break;

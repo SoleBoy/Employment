@@ -1,0 +1,17 @@
+{
+    "datas":[
+        {
+            "salary_month":"2021-07",
+            "sfze":209
+        },
+        {
+            "salary_month":"2021-06",
+            "sfze":84
+        },
+        {
+            "salary_month":"2021-05",
+            "sfze":107
+        }
+    ],
+    "total":400
+}

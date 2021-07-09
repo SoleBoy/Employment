@@ -147,9 +147,8 @@ public class IncomePanel : MonoBehaviour
         }
     }
 
-    public void InitState(int index,Dictionary<string,object> detailInfo)
+    public void InitState(int index,Dictionary<string,object> detailInfo,List<object> issuedData = null)
     {
-        int month = 0;
         int day = 0;
         float maxY = 0;
         switch (indexCurret)
@@ -213,45 +212,39 @@ public class IncomePanel : MonoBehaviour
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             case 3:
-                day = DateTime.DaysInMonth(yearCurrent, monthCurrent);
-                maxY = day * 150 + day * 20 + 50;
                 for (int i = 0; i < slipItems.Count; i++)
                 {
-                    if (i < day)
+                    if (i < issuedData.Count)
                     {
-                        int money = UnityEngine.Random.Range(3000, 5000);
-                        slipItems[i].SetInit(index, money, yearCurrent, monthCurrent, day - i);
+                        Dictionary<string, object> data1 = issuedData[i] as Dictionary<string, object>;
+                        string[] dates = data1["salary_date"].ToString().Split('-');
+                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(dates[1]));
                     }
                     else
                     {
                         slipItems[i].HideItem();
                     }
                 }
+                maxY = issuedData.Count * 150 + issuedData.Count * 20 + 50;
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             case 4:
-                month = DateTime.Now.Month - 1;
-                day = Mathf.Clamp(12 + month, 0, 12);
-                maxY = day * 150 + day * 20 + 50;
+                grandText.text = string.Format("{0:N2}", detailInfo["total"]);
+                List<object> operating = detailInfo["datas"] as List<object>;
                 for (int i = 0; i < slipItems.Count; i++)
                 {
-                    if (i < day)
+                    if (i < operating.Count)
                     {
-                        int money = UnityEngine.Random.Range(2000, 4000);
-                        if (month - i > 0)
-                        {
-                            slipItems[i].SetInit(index, money, DateTime.Now.Year, (month - i), day - i);
-                        }
-                        else
-                        {
-                            slipItems[i].SetInit(index, money, DateTime.Now.Year - 1, (month - i + 12), day - i);
-                        }
+                        Dictionary<string, object> data1 = operating[i] as Dictionary<string, object>;
+                        string[] dates = data1["salary_month"].ToString().Split('-');
+                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]),0);
                     }
                     else
                     {
                         slipItems[i].HideItem();
                     }
                 }
+                maxY = operating.Count * 150 + operating.Count * 20 + 50;
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             default:
@@ -263,13 +256,31 @@ public class IncomePanel : MonoBehaviour
     private void OpenOperatin()
     {
         ClcikButton(4);
-        InitState(4,null);
+        DataTool.salaryEntry = SalaryEntry.Operating_1;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            DataTool.CallNative(187, 0);
+        }
+        else
+        {
+            UIManager.Instance.Acceptance_Android("Monthly1");
+        }
+        //InitState(4,null);
     }
 
     private void OpenIssued()
     {
         ClcikButton(3);
-        InitState(3, null);
+        DataTool.salaryEntry = SalaryEntry.Issued_1;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            DataTool.CallNative(185, 0);
+        }
+        else
+        {
+            UIManager.Instance.Acceptance_Android("Monthly1");
+        }
+        //InitState(3, null);
     }
 
     private void OpenMonthly()
@@ -462,7 +473,7 @@ public class PaySlipItem
                 moneyText.text = string.Format("￥{0:N2}", money);
                 break;
             case 4:
-                dateText.text = string.Format("{0}年{1}月收入", year, month);
+                dateText.text = string.Format("{0}年{1}月", year, month);
                 moneyText.text = string.Format("￥{0:N2}", money);
                 break;
             default:
@@ -501,7 +512,16 @@ public class PaySlipItem
                 //UIManager.Instance.operatingPanel.OpenPanel();
                 break;
             case 4:
-                UIManager.Instance.operatingPanel.OpenPanel();
+                UIManager.Instance.operatingPanel.SetHeadFile(year, month, moneyText.text);
+                DataTool.salaryEntry = SalaryEntry.Operating_2;
+                if (Application.platform == RuntimePlatform.Android)
+                {
+                    DataTool.CallNative(190,0,string.Format("{0:D2}-{1:D2}", year, month));
+                }
+                else
+                {
+                    UIManager.Instance.Acceptance_Android("Monthly2");
+                }
                 break;
             default:
                 break;

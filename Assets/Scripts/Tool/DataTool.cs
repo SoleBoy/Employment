@@ -127,8 +127,8 @@ public class DataTool
             currentActivity.Call("startActivity", intentObj);
         }
     }
-    // 172 173 174
-    public static void CallNative(int mesgg,int id)
+    // 172 173 174  185,187,190-加月份
+    public static void CallNative(int mesgg,int id,string month = "")
     {
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -138,8 +138,8 @@ public class DataTool
             {
                 if (pluginClass != null)
                 {
-                    Debug.Log("UnityReflection存在");
-                    pluginClass.CallStatic("RequestUserInfo", mesgg,id);
+                    Debug.Log("mesgg:" + mesgg + "id:" + id + "month:" + month);
+                    pluginClass.CallStatic("RequestUserInfo", mesgg,id, month);
                 }
             }
 
@@ -148,7 +148,7 @@ public class DataTool
     //打卡记录上传
     public static void CallClockInfo(double lat, double lng)
     {
-        Debug.Log(System.Convert.ToBase64String(cheackByte));
+        //Debug.Log(System.Convert.ToBase64String(cheackByte));
         if (Application.platform == RuntimePlatform.Android)
         {
             Debug.Log("uploadingSignInInfo");
@@ -157,7 +157,7 @@ public class DataTool
             {
                 if (pluginClass != null)
                 {
-                    Debug.Log("UnityReflection存在");
+                    Debug.Log("lat:"+lat+"lng:"+lng);
                     pluginClass.CallStatic("uploadingSignInInfo", lat, lng,System.Convert.ToBase64String(cheackByte));
                 }
             }
@@ -176,5 +176,8 @@ public enum SalaryEntry
 {
     month_1,
     month_2,
-    month_3
+    month_3,
+    Operating_1,
+    Operating_2,
+    Issued_1
 }
