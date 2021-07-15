@@ -30,6 +30,8 @@ public class DropPanel : MonoBehaviour
     private void ReLog()
     {
         Debug.Log("退出登录");
+        gameObject.SetActive(false);
+        UIManager.Instance.homePanel.OpenHome();
         DataTool.StartActivity(0);
     }
 }

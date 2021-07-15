@@ -86,7 +86,7 @@ public class HomePanel : MonoBehaviour
         UIManager.Instance.incomePanel.OpenPanel();
     }
 
-    private void OpenHome()
+    public void OpenHome()
     {
         ClosePanel(0);
         UIManager.Instance.hallPanel.OpenPanel();

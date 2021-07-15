@@ -9,22 +9,25 @@ public class TestData : MonoBehaviour
 {
     void Start()
     {
-        var director = new Director();
-        var builder = new ConcreteBuilder();
-        director.Builder = builder;
 
-        Debug.Log("Standard basic product:");
-        director.BuildMinimalViableProduct();
-        Debug.Log(builder.GetProduct().ListParts());
+        Debug.Log(GetR());
 
-        Debug.Log("Standard full featured product:");
-        director.BuildFullFeaturedProduct();
-        Debug.Log(builder.GetProduct().ListParts());
+        //var director = new Director();
+        //var builder = new ConcreteBuilder();
+        //director.Builder = builder;
 
-        Debug.Log("Custom product:");
-        builder.BuildPartA();
-        builder.BuildPartC();
-        Debug.Log(builder.GetProduct().ListParts());
+        //Debug.Log("Standard basic product:");
+        //director.BuildMinimalViableProduct();
+        //Debug.Log(builder.GetProduct().ListParts());
+
+        //Debug.Log("Standard full featured product:");
+        //director.BuildFullFeaturedProduct();
+        //Debug.Log(builder.GetProduct().ListParts());
+
+        //Debug.Log("Custom product:");
+        //builder.BuildPartA();
+        //builder.BuildPartC();
+        //Debug.Log(builder.GetProduct().ListParts());
 
         //Button button=GetComponent<Button>();
         //button.onClick.AddListener(()=> { });
@@ -61,6 +64,29 @@ public class TestData : MonoBehaviour
         }
 
         return Tuple.Create<DateTime, DateTime>(targetDay, targetDay.AddDays(6));
+    }
+
+    public bool GetR()
+    {
+        string strA = "Hello ";
+
+        string strB = "Hello ";
+
+        strA = strA + "C";
+
+        strB = strB + "C";
+
+        if (System.Object.ReferenceEquals(strA, strB))
+        {
+            return true;
+        }
+        Debug.Log("strA:" + strA+ "strB:" + strB);
+        if (strA == strB)
+        {
+            return false;
+        }
+
+        return true;
     }
 }
 

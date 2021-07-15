@@ -35,6 +35,7 @@ public class UIManager : MonoSingleton<UIManager>
     public RankingPanel rankingPanel;
     public FightPanel fightPanel;
     public PayrollPanel payrollPanel;
+    public LoadingPanel loadingPanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
@@ -48,11 +49,11 @@ public class UIManager : MonoSingleton<UIManager>
     private void Start()
     {
         //AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个体工商户\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
-        DataTool.StartActivity(0);
 #if UNITY_ANDROID
         Debug.Log("UNITY_ANDROID测试");//true 个体工商户  //false 个人
-        AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
+        AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个体工商户\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
 #endif
+        DataTool.StartActivity(0);
     }
 
     private void Update()
@@ -104,6 +105,7 @@ public class UIManager : MonoSingleton<UIManager>
         rankingPanel = transform.Find("RankingPanel").GetComponent<RankingPanel>();
         fightPanel = transform.Find("FightPanel").GetComponent<FightPanel>();
         payrollPanel = transform.Find("PayrollPanel").GetComponent<PayrollPanel>();
+        loadingPanel = transform.Find("LoadingPanel").GetComponent<LoadingPanel>();
     }
     //获取点击对象
 	private GameObject ClickOnUI()
@@ -241,6 +243,10 @@ public class UIManager : MonoSingleton<UIManager>
                         List<object> Issued_1 = Json.Deserialize(messg) as List<object>;
                         incomePanel.InitState(3, null, Issued_1);
                         break;
+                    case SalaryEntry.business_1:
+                        Dictionary<string, object> business_1 = Json.Deserialize(messg) as Dictionary<string, object>;
+                        businessPanel.OpenPanel(business_1);
+                        break;
                     default:
                         break;
                 }
@@ -268,6 +274,9 @@ public class UIManager : MonoSingleton<UIManager>
                     case SalaryEntry.Issued_1:
                         loadTxt.GetMonthly_6();
                         break;
+                    case SalaryEntry.business_1:
+                        loadTxt.GetMonthly_7();
+                        break;
                     default:
                         break;
                 }
@@ -294,6 +303,9 @@ public class UIManager : MonoSingleton<UIManager>
                     break;
                 case SalaryEntry.Issued_1:
                     loadTxt.GetMonthly_6();
+                    break;
+                case SalaryEntry.business_1:
+                    loadTxt.GetMonthly_7();
                     break;
                 default:
                     break;

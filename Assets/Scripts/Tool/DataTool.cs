@@ -179,5 +179,6 @@ public enum SalaryEntry
     month_3,
     Operating_1,
     Operating_2,
-    Issued_1
+    Issued_1,
+    business_1
 }

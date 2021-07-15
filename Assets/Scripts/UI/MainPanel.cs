@@ -60,6 +60,15 @@ public class MainPanel : MonoBehaviour
     //营业执照
     private void OpenLicense()
     {
-        UIManager.Instance.businessPanel.OpenPanel();
+        DataTool.salaryEntry = SalaryEntry.business_1;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            DataTool.CallNative(195, 0);
+        }
+        else
+        {
+            UIManager.Instance.Acceptance_Android("Monthly7");
+        }
+        //UIManager.Instance.businessPanel.OpenPanel();
     }
 }
