@@ -14,26 +14,26 @@ public class IncomePanel : MonoBehaviour
     public Text[] clickText;
 
     private Text grandText;
-    private Text monthText;
-    private Text incomeText;
+    //private Text monthText;
+   // private Text incomeText;
 
     private Button dailyBtn;
     private Button payrollBtn;
     private Button monthlyBtn;
     private Button issuedBtn;
     private Button operatingBtn;
-    private Button monthBtn;
+    //private Button monthBtn;
 
 
     private RectTransform viewParent;
     private Transform toolView;
-    private Transform dailyView;
+    //private Transform dailyView;
     private Transform payItem;
-    private Transform monthItem;
-    private GameObject dailyState;
-    private GameObject dailyParent;
+    //private Transform monthItem;
+    //private GameObject dailyState;
+    //private GameObject dailyParent;
     private List<PaySlipItem> slipItems = new List<PaySlipItem>();
-    private List<MonthItem> monthSelect = new List<MonthItem>();
+    //private List<MonthItem> monthSelect = new List<MonthItem>();
 
     private int monthCurrent;
     private int yearCurrent;
@@ -46,29 +46,29 @@ public class IncomePanel : MonoBehaviour
 
         payItem = transform.Find("Item");
         viewParent = transform.Find("ToolView").GetComponent<RectTransform>();
-        dailyParent = transform.Find("DailyState/DailyView").gameObject;
-        monthItem = transform.Find("DailyState/DailyItem");
-        dailyView = transform.Find("DailyState/DailyView/Viewport/Content");
+        //dailyParent = transform.Find("DailyState/DailyView").gameObject;
+        //monthItem = transform.Find("DailyState/DailyItem");
+        //dailyView = transform.Find("DailyState/DailyView/Viewport/Content");
         toolView = transform.Find("ToolView/Viewport/Content");
-        dailyState = transform.Find("DailyState").gameObject;
+        //dailyState = transform.Find("DailyState").gameObject;
         
         grandText = transform.Find("Grand/MoneyText").GetComponent<Text>();
-        monthText = transform.Find("DailyState/monthBtn").GetComponent<Text>();
-        incomeText = transform.Find("DailyState/IncomeText").GetComponent<Text>();
+        //monthText = transform.Find("DailyState/monthBtn").GetComponent<Text>();
+        //incomeText = transform.Find("DailyState/IncomeText").GetComponent<Text>();
 
         dailyBtn = transform.Find("Header/DailyBtn").GetComponent<Button>();
         payrollBtn = transform.Find("Header/PayrollBtn").GetComponent<Button>();
         monthlyBtn = transform.Find("Header/MonthlyBtn").GetComponent<Button>();
         issuedBtn = transform.Find("Header/IssuedBtn").GetComponent<Button>();
         operatingBtn = transform.Find("Header/OperatingBtn").GetComponent<Button>();
-        monthBtn = transform.Find("DailyState/monthBtn").GetComponent<Button>();
+        //monthBtn = transform.Find("DailyState/monthBtn").GetComponent<Button>();
 
         dailyBtn.onClick.AddListener(OpenDaily);
         payrollBtn.onClick.AddListener(OpenPayro);
         monthlyBtn.onClick.AddListener(OpenMonthly);
         issuedBtn.onClick.AddListener(OpenIssued);
         operatingBtn.onClick.AddListener(OpenOperatin);
-        monthBtn.onClick.AddListener(OpenMonth);
+        //monthBtn.onClick.AddListener(OpenMonth);
 
         InitData();
     }
@@ -109,7 +109,7 @@ public class IncomePanel : MonoBehaviour
         yearCurrent = DateTime.Now.Year;
         if (DataTool.isUnit)
         {
-            dailyState.SetActive(false);
+            //dailyState.SetActive(false);
             dailyBtn.gameObject.SetActive(false);
             payrollBtn.gameObject.SetActive(false);
             monthlyBtn.gameObject.SetActive(false);
@@ -123,65 +123,47 @@ public class IncomePanel : MonoBehaviour
             monthlyBtn.gameObject.SetActive(true);
             issuedBtn.gameObject.SetActive(false);
             operatingBtn.gameObject.SetActive(false);
-            for (int i = 0; i < 10; i++)
-            {
-                MonthItem itemMonth;
-                var item = Instantiate(monthItem);
-                item.gameObject.SetActive(true);
-                item.SetParent(dailyView);
-                item.localScale = Vector3.one;
-                if (i < monthCurrent)
-                {
-                    itemMonth = new MonthItem(item, DateTime.Now.Year, monthCurrent - i, i);
-                }
-                else
-                {
-                    itemMonth = new MonthItem(item, DateTime.Now.Year - 1, monthCurrent - i + 12, i);
-                }
-                monthSelect.Add(itemMonth);
-            }
-            monthIndex = 0;
-            monthSelect[monthIndex].HideImage(true);
-            float maxY = 10 * 60 + 10 * 25;
-            dailyView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    MonthItem itemMonth;
+            //    var item = Instantiate(monthItem);
+            //    item.gameObject.SetActive(true);
+            //    item.SetParent(dailyView);
+            //    item.localScale = Vector3.one;
+            //    if (i < monthCurrent)
+            //    {
+            //        itemMonth = new MonthItem(item, DateTime.Now.Year, monthCurrent - i, i);
+            //    }
+            //    else
+            //    {
+            //        itemMonth = new MonthItem(item, DateTime.Now.Year - 1, monthCurrent - i + 12, i);
+            //    }
+            //    monthSelect.Add(itemMonth);
+            //}
+            //monthIndex = 0;
+            //monthSelect[monthIndex].HideImage(true);
+            //float maxY = 10 * 60 + 10 * 25;
+            //dailyView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
         }
     }
 
     public void InitState(int index,Dictionary<string,object> detailInfo,List<object> issuedData = null)
     {
-        int day = 0;
         float maxY = 0;
         switch (indexCurret)
         {
             case 0:
-                day = DateTime.DaysInMonth(yearCurrent, monthCurrent);
-                maxY = day * 150 + day * 20 + 200;
-                for (int i = 0; i < slipItems.Count; i++)
+                if (detailInfo != null)
                 {
-                    if((day - i) > 0)
-                    {
-                        int money = UnityEngine.Random.Range(20, 30);
-                        slipItems[i].SetInit(index, money,yearCurrent, monthCurrent, day-i);
-                    }
-                    else
-                    {
-                        slipItems[i].HideItem();
-                    }
-                }
-                incomeText.text = string.Format("收入{0:N2}", 1800);
-                toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-                //toolView.GetComponent<GridLayoutGroup>().padding.top = 200;
-                break;
-            case 1:
-                if(whichWeek >= 1)
-                {
+                    grandText.text = string.Format("{0:N2}", detailInfo["total"]);
+                    List<object> dayData = detailInfo["data"] as List<object>;
+                    maxY = dayData.Count * 150 + dayData.Count * 20 + 200;
                     for (int i = 0; i < slipItems.Count; i++)
                     {
-                        if (whichWeek > i)
+                        if (i < dayData.Count)
                         {
-                            int money = UnityEngine.Random.Range(1500, 3000);
-                            Tuple<DateTime, DateTime> tuple = GetFirstEndDayOfWeek(DateTime.Now.Year, whichWeek - i, System.Globalization.CultureInfo.InvariantCulture);
-                            slipItems[i].SetInit(index, tuple.Item1, tuple.Item2,money);
+                            Dictionary<string, object> data1 = dayData[i] as Dictionary<string, object>;
+                            slipItems[i].SetInit(index, data1);
                         }
                         else
                         {
@@ -189,62 +171,137 @@ public class IncomePanel : MonoBehaviour
                         }
                     }
                 }
-                maxY = whichWeek * 150 + whichWeek * 20 + 50;
+                else
+                {
+                    maxY = 0;
+                    grandText.text = "0.00";
+                    for (int i = 0; i < slipItems.Count; i++)
+                    {
+                        slipItems[i].HideItem();
+                    }
+                }
+                toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
+                //incomeText.text = string.Format("收入{0:N2}", 1800);
+                //toolView.GetComponent<GridLayoutGroup>().padding.top = 200;
+                break;
+            case 1:
+                if (detailInfo != null)
+                {
+                    grandText.text = string.Format("{0:N2}", detailInfo["total"]);
+                    List<object> dayData = detailInfo["data"] as List<object>;
+                    maxY = dayData.Count * 150 + dayData.Count * 20 + 200;
+                    for (int i = 0; i < slipItems.Count; i++)
+                    {
+                        if (i < dayData.Count)
+                        {
+                            Dictionary<string, object> data1 = dayData[i] as Dictionary<string, object>;
+                            slipItems[i].SetInit(index, data1);
+                        }
+                        else
+                        {
+                            slipItems[i].HideItem();
+                        }
+                    }
+                }
+                else
+                {
+                    maxY = 0;
+                    grandText.text = "0.00";
+                    for (int i = 0; i < slipItems.Count; i++)
+                    {
+                        slipItems[i].HideItem();
+                    }
+                }
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             case 2:
-                grandText.text = string.Format("{0:N2}", detailInfo["total"]);
-                List<object> monthData = detailInfo["data"] as List<object>;
-                for (int i = 0; i < slipItems.Count; i++)
+                if(detailInfo != null)
                 {
-                    if(i < monthData.Count)
+                    grandText.text = string.Format("{0:N2}", detailInfo["total"]);
+                    List<object> monthData = detailInfo["data"] as List<object>;
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
-                        Dictionary<string, object> data1 = monthData[i] as Dictionary<string, object>;
-                        string[] dates = data1["month"].ToString().Split('-');
-                        slipItems[i].SetInit(index,float.Parse(data1["fxrsf"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(data1["id"].ToString()));
+                        if (i < monthData.Count)
+                        {
+                            Dictionary<string, object> data1 = monthData[i] as Dictionary<string, object>;
+                            string[] dates = data1["month"].ToString().Split('-');
+                            slipItems[i].SetInit(index, float.Parse(data1["fxrsf"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(data1["id"].ToString()));
+                        }
+                        else
+                        {
+                            slipItems[i].HideItem();
+                        }
                     }
-                    else
+                    maxY = monthData.Count * 150 + monthData.Count * 20 + 50;
+                }
+                else
+                {
+                    maxY = 0;
+                    grandText.text = "0.00";
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
                         slipItems[i].HideItem();
                     }
                 }
-                maxY = monthData.Count * 150 + monthData.Count * 20 + 50;
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             case 3:
-                for (int i = 0; i < slipItems.Count; i++)
+                if(issuedData != null)
                 {
-                    if (i < issuedData.Count)
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
-                        Dictionary<string, object> data1 = issuedData[i] as Dictionary<string, object>;
-                        string[] dates = data1["salary_date"].ToString().Split('-');
-                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(dates[2]));
+                        if (i < issuedData.Count)
+                        {
+                            Dictionary<string, object> data1 = issuedData[i] as Dictionary<string, object>;
+                            string[] dates = data1["salary_date"].ToString().Split('-');
+                            slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), int.Parse(dates[2]));
+                        }
+                        else
+                        {
+                            slipItems[i].HideItem();
+                        }
                     }
-                    else
+                    maxY = issuedData.Count * 150 + issuedData.Count * 20 + 50;
+                }
+                else
+                {
+                    maxY = 0;
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
                         slipItems[i].HideItem();
                     }
                 }
-                maxY = issuedData.Count * 150 + issuedData.Count * 20 + 50;
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             case 4:
-                grandText.text = string.Format("{0:N2}", detailInfo["total"]);
-                List<object> operating = detailInfo["datas"] as List<object>;
-                for (int i = 0; i < slipItems.Count; i++)
+                if(detailInfo != null)
                 {
-                    if (i < operating.Count)
+                    grandText.text = string.Format("{0:N2}", detailInfo["total"]);
+                    List<object> operating = detailInfo["datas"] as List<object>;
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
-                        Dictionary<string, object> data1 = operating[i] as Dictionary<string, object>;
-                        string[] dates = data1["salary_month"].ToString().Split('-');
-                        slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]),0);
+                        if (i < operating.Count)
+                        {
+                            Dictionary<string, object> data1 = operating[i] as Dictionary<string, object>;
+                            string[] dates = data1["salary_month"].ToString().Split('-');
+                            slipItems[i].SetInit(index, float.Parse(data1["sfze"].ToString()), int.Parse(dates[0]), int.Parse(dates[1]), 0);
+                        }
+                        else
+                        {
+                            slipItems[i].HideItem();
+                        }
                     }
-                    else
+                    maxY = operating.Count * 150 + operating.Count * 20 + 50;
+                }
+                else
+                {
+                    maxY = 0;
+                    grandText.text = "0.00";
+                    for (int i = 0; i < slipItems.Count; i++)
                     {
                         slipItems[i].HideItem();
                     }
                 }
-                maxY = operating.Count * 150 + operating.Count * 20 + 50;
                 toolView.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
                 break;
             default:
@@ -256,7 +313,7 @@ public class IncomePanel : MonoBehaviour
     private void OpenOperatin()
     {
         ClcikButton(4);
-        DataTool.salaryEntry = SalaryEntry.Operating_1;
+        DataTool.salaryEntry = SalaryEntry.operating_1;
         if (Application.platform == RuntimePlatform.Android)
         {
             DataTool.CallNative(187, 0);
@@ -271,7 +328,7 @@ public class IncomePanel : MonoBehaviour
     private void OpenIssued()
     {
         ClcikButton(3);
-        DataTool.salaryEntry = SalaryEntry.Issued_1;
+        DataTool.salaryEntry = SalaryEntry.issued_1;
         if (Application.platform == RuntimePlatform.Android)
         {
             DataTool.CallNative(185, 0);
@@ -301,26 +358,44 @@ public class IncomePanel : MonoBehaviour
     private void OpenPayro()
     {
         ClcikButton(1);
-        InitState(1, null);
+        DataTool.salaryEntry = SalaryEntry.weeklyend_1;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            DataTool.CallNative(166, 0);
+        }
+        else
+        {
+            UIManager.Instance.Acceptance_Android("Monthly1");
+        }
+        //InitState(1, null);
     }
 
     private void OpenDaily()
     {
         ClcikButton(0);
-        InitState(0, null);
-    }
-
-    private void OpenMonth()
-    {
-        if(dailyParent.activeInHierarchy)
+        DataTool.salaryEntry = SalaryEntry.dayknot_1;
+        if (Application.platform == RuntimePlatform.Android)
         {
-            dailyParent.SetActive(false);
+            DataTool.CallNative(170, 0);
         }
         else
         {
-            dailyParent.SetActive(true);
+            UIManager.Instance.Acceptance_Android("Monthly1");
         }
+        //InitState(0, null);
     }
+
+    //private void OpenMonth()
+    //{
+    //    if(dailyParent.activeInHierarchy)
+    //    {
+    //        dailyParent.SetActive(false);
+    //    }
+    //    else
+    //    {
+    //        dailyParent.SetActive(true);
+    //    }
+    //}
 
     private void ClcikButton(int index)
     {
@@ -336,13 +411,13 @@ public class IncomePanel : MonoBehaviour
 
     public void ClickMonth(int year, int month,int index)
     {
-        monthSelect[monthIndex].HideImage(false);
+        //monthSelect[monthIndex].HideImage(false);
         monthIndex = index;
-        monthSelect[monthIndex].HideImage(true);
+        //monthSelect[monthIndex].HideImage(true);
         monthCurrent = month;
         yearCurrent = year;
-        monthText.text = string.Format("{0}年{1}月", year, month);
-        dailyParent.gameObject.SetActive(false);
+        //monthText.text = string.Format("{0}年{1}月", year, month);
+        //dailyParent.gameObject.SetActive(false);
         if (DataTool.isUnit)
         {
             OpenOperatin();
@@ -435,6 +510,8 @@ public class PaySlipItem
     private float money;
 
     private Transform slipItem;
+    private int[] housData = new int[2];
+    private float[] moneysData = new float[2];
     public PaySlipItem(Transform parent)
     {
         slipItem = parent;
@@ -444,13 +521,32 @@ public class PaySlipItem
         payBtn.onClick.AddListener(OpenBill);
     }
 
-    public void SetInit(int type,DateTime star, DateTime end, float money)
+    public void SetInit(int type,Dictionary<string,object> dataInfo)
     {
         this.type = type;
-        this.money = money;
-        this.year = star.Year;
-        dateText.text = string.Format("{0}月{1}日-{2}月{3}日",star.Month,star.Day,end.Month,end.Day);
-        moneyText.text = string.Format("￥{0:N2}", money);
+        housData[0] = int.Parse(dataInfo["work_hours"].ToString());
+        housData[1] = int.Parse(dataInfo["ot_hours"].ToString());
+        moneysData[0] = int.Parse(dataInfo["work_sum"].ToString());
+        moneysData[1] = int.Parse(dataInfo["ot_sum"].ToString());
+       
+        if (type == 0)
+        {
+            this.money = float.Parse(dataInfo["daily_sum"].ToString());
+            string[] dates = dataInfo["daily_salary_date"].ToString().Split('-');
+            this.year = int.Parse(dates[0]);
+            dateText.text = string.Format("{0}月{1}日", dates[1], dates[2]);
+            moneyText.text = string.Format("+{0:N2}", money);
+        }
+        else if (type == 1)
+        {
+            this.money = float.Parse(dataInfo["week_sum"].ToString());
+            string[] dates1 = dataInfo["salary_cal_week_startdate"].ToString().Split('-');
+            string[] dates2 = dataInfo["salary_cal_week_enddate"].ToString().Split('-');
+            this.year = int.Parse(dates2[0]);
+            moneyText.text = string.Format("+{0:N2}", money);
+            dateText.text = string.Format("{0}月{1}日-{2}月{3}日", dates1[1], dates1[2], dates2[1], dates2[2]);
+        }
+        slipItem.gameObject.SetActive(true);
     }
 
 
@@ -464,10 +560,10 @@ public class PaySlipItem
         slipItem.gameObject.SetActive(true);
         switch (type)
         {
-            case 0:
-                dateText.text = string.Format("{0}月{1}日", month, day);
-                moneyText.text = string.Format("+{0:N2}", money);
-                break;
+            //case 0:
+            //    dateText.text = string.Format("{0}月{1}日", month, day);
+            //    moneyText.text = string.Format("+{0:N2}", money);
+            //    break;
             //case 1:
             //    dateText.text = string.Format("{0}年{1}月工资单", year, month);
             //    moneyText.text = string.Format("￥{0:N2}", money);
@@ -499,10 +595,10 @@ public class PaySlipItem
         switch (type)
         {
             case 0:
-                UIManager.Instance.dayKnotPanel.OpenPanel("日结明细",string.Format("【{0}年】{1}",year ,dateText.text),money);
+                UIManager.Instance.dayKnotPanel.OpenPanel("日结明细",string.Format("【{0}年】{1}",year ,dateText.text),money, housData,moneysData);
                 break;
             case 1:
-                UIManager.Instance.dayKnotPanel.OpenPanel("周结明细", string.Format("【{0}年】{1}", year, dateText.text), money);
+                UIManager.Instance.dayKnotPanel.OpenPanel("周结明细", string.Format("【{0}年】{1}", year, dateText.text), money, housData, moneysData);
                 break;
             case 2:
                 UIManager.Instance.salaryPanel.SetHeadFile(year,month);
@@ -521,7 +617,7 @@ public class PaySlipItem
                 break;
             case 4:
                 UIManager.Instance.operatingPanel.SetHeadFile(year, month, moneyText.text);
-                DataTool.salaryEntry = SalaryEntry.Operating_2;
+                DataTool.salaryEntry = SalaryEntry.operating_2;
                 if (Application.platform == RuntimePlatform.Android)
                 {
                     DataTool.CallNative(190,0,string.Format("{0:D2}-{1:D2}", year, month));

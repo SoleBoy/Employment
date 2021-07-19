@@ -63,14 +63,14 @@ public class HallPanel : MonoBehaviour
         certiBtn.onClick.AddListener(OpenCerti);
         infoBtn.onClick.AddListener(OpenDetails);
        
-        InitData();
+        //InitData();
     }
 
     public void InitData()
     {
-        firmText.text = "XXX公司技术服务中心";
-        statusText.text = "工作中";
+        statusText.text = "休息中......";
         certeiText.text = "点击认证";
+        firmText.text = DataTool.theCompany;
         titleText.text = DataTool.roleTitle;
         gradeText.text = string.Format("LV.{0}", DataTool.roleLevel);
         expText.text = string.Format("{0}/{1}", DataTool.roleExp, DataTool.roleExp_Max);

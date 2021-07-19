@@ -24,15 +24,18 @@ public class UnitPanel : MonoBehaviour
             infos.Add(item);
             //item.SetInfo(1);
         }
-        if(DataTool.isUnit)
+    }
+    public void InitData()
+    {
+        if (DataTool.isUnit)
         {
             for (int i = 0; i < infos.Count; i++)
             {
                 if (i == 4)
                 {
-                    infos[4].HideInfo(false);
+                    infos[i].HideInfo(false);
                 }
-                else if (i >= 5)
+                else
                 {
                     infos[i].HideInfo(true);
                 }
@@ -42,18 +45,17 @@ public class UnitPanel : MonoBehaviour
         {
             for (int i = 0; i < infos.Count; i++)
             {
-                if (i == 4)
+                if (i < 5)
                 {
                     infos[4].HideInfo(true);
                 }
-                else if (i >= 5)
+                else
                 {
                     infos[i].HideInfo(false);
                 }
             }
         }
     }
-
     public void OpenPanel()
     {
         gameObject.SetActive(true);

@@ -30,22 +30,16 @@ public class BusinessPanel : MonoBehaviour
         gameObject.SetActive(true);
         attestInfo.SetActive(false);
         licenseImage.gameObject.SetActive(false);
-        try
-        {
-            StartCoroutine(RequestAddress(tokenData["url"].ToString()));
-        }
-        catch (System.Exception)
-        {
-            attestInfo.SetActive(true);
-            UIManager.Instance.loadingPanel.ClosePanel();
-        }
+        StartCoroutine(RequestAddress(tokenData["url"].ToString()));
     }
     private IEnumerator RequestAddress(string url)
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(url);
         yield return webRequest.SendWebRequest();
+        UIManager.Instance.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
+            attestInfo.SetActive(true);
             Debug.Log("请求网络错误:" + webRequest.error);
         }
         else
@@ -63,7 +57,6 @@ public class BusinessPanel : MonoBehaviour
                 licenseImage.texture = texture;
                 licenseImage.SetNativeSize();
                 licenseImage.gameObject.SetActive(true);
-                UIManager.Instance.loadingPanel.ClosePanel();
             }
         }
     }

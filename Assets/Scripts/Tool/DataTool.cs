@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MiniJSON;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class DataTool
     public static int roleRanking;//排名
     public static string roleTitle;//头衔
     public static string roleName;//姓名
+    public static string theCompany;//公司名字
 
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
@@ -165,20 +167,42 @@ public class DataTool
         }
     }
 
-    //安卓JSON
-    public static void JsonStrForUnity(string activityInfo)
+    //获取字典
+    public static Dictionary<string,object> GetDictionary(string activityInfo)
     {
-        UIManager.Instance.CloningTips(activityInfo);
+        try
+        {
+            return Json.Deserialize(activityInfo) as Dictionary<string, object>;
+        }
+        catch (System.Exception)
+        {
+            return new Dictionary<string, object>();
+        }
     }
+    //获取list
+    public static List<object> GetList(string activityInfo)
+    {
+        try
+        {
+            return Json.Deserialize(activityInfo) as List<object>;
+        }
+        catch (System.Exception)
+        {
+            return new List<object>();
+        }
+    }
+
 }
 
 public enum SalaryEntry
 {
+    dayknot_1,
+    weeklyend_1,
     month_1,
     month_2,
     month_3,
-    Operating_1,
-    Operating_2,
-    Issued_1,
+    operating_1,
+    operating_2,
+    issued_1,
     business_1
 }

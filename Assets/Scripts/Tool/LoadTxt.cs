@@ -53,6 +53,20 @@ public class LoadTxt : MonoBehaviour
         //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
         //Application.OpenURL(tokenData["url"].ToString());
     }
+    public void GetMonthly_8()
+    {
+        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[7].ToString()) as Dictionary<string, object>;
+        UIManager.Instance.incomePanel.InitState(0,tokenData);
+        //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+        //Application.OpenURL(tokenData["url"].ToString());
+    }
+    public void GetMonthly_9()
+    {
+        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[8].ToString()) as Dictionary<string, object>;
+        UIManager.Instance.incomePanel.InitState(1, tokenData);
+        //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+        //Application.OpenURL(tokenData["url"].ToString());
+    }
 
     //"http://api.map.baidu.com/location/ip?ak=bretF4dm6W5gqjQAXuvP0NXW6FeesRXb&coor=bd09ll"
     private IEnumerator RequestAddress(string url)

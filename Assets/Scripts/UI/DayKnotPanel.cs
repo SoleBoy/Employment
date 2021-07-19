@@ -13,8 +13,8 @@ public class DayKnotPanel : MonoBehaviour
 
     private Transform kontItem;
     private Transform knotParent;
-    private int[] hous = {8,2,2};
-    private float[] moneys = {0.7f,0.2f,0.1f};
+    //private int[] hous = {8,2};
+    //private float[] moneys = {0.7f,0.3f};
     private List<DayKnotItem> dayKnots = new List<DayKnotItem>();
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class DayKnotPanel : MonoBehaviour
         wageText = transform.Find("Info/WageText").GetComponent<Text>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         backBtn.onClick.AddListener(ClosePanel);
-        string[] messg = {"工作时长","加班","补贴" };
+        string[] messg = {"工作时长","加班" };
         for (int i = 0; i < messg.Length; i++)
         {
             var item = Instantiate(kontItem);
@@ -37,12 +37,12 @@ public class DayKnotPanel : MonoBehaviour
         }
     }
 
-    public void OpenPanel(string titleMessg,string messgInfo,float money)
+    public void OpenPanel(string titleMessg,string messgInfo,float money, int[] hous,float[] moneys)
     {
         gameObject.SetActive(true);
         for (int i = 0; i < dayKnots.Count; i++)
         {
-            dayKnots[i].SetHour(hous[i],money * moneys[i]);
+            dayKnots[i].SetHour(hous[i],moneys[i]);
         }
         titleText.text = titleMessg;
         dateText.text = messgInfo;

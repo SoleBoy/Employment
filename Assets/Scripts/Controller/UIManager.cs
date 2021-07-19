@@ -48,10 +48,12 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
-        //AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个体工商户\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
+        hallPanel.Init();
+        homePanel.Init();
+        unitPanel.Init();
 #if UNITY_ANDROID
         Debug.Log("UNITY_ANDROID测试");//true 个体工商户  //false 个人
-        AcceptData_Android("{\"name\":\"张大牛\",\"goto\":\"个体工商户\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
+        AcceptData_Android("{\"name\":\"张大牛\",\"cust_name\":\"XXX有限公司\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
 #endif
         DataTool.StartActivity(0);
     }
@@ -197,10 +199,12 @@ public class UIManager : MonoSingleton<UIManager>
             {
                 DataTool.isUnit = true;
             }
+            
             DataTool.InitData(jsonData["name"].ToString());
-            hallPanel.Init();
-            homePanel.Init();
-            unitPanel.Init();
+            DataTool.theCompany = jsonData["cust_name"].ToString(); //"cust_name";
+            hallPanel.InitData();
+            homePanel.InitData();
+            unitPanel.InitData();
             unitPanel.CertificationInfo(jsonData);
             hallPanel.CheckRecord(DataTool.isClock);
         }
@@ -215,77 +219,49 @@ public class UIManager : MonoSingleton<UIManager>
         Debug.Log(DataTool.salaryEntry + ":" + messg);
         if (Application.platform == RuntimePlatform.Android)
         {
-            try
+            switch (DataTool.salaryEntry)
             {
-                switch (DataTool.salaryEntry)
-                {
-                    case SalaryEntry.month_1:
-                        Dictionary<string, object> month_1 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        incomePanel.InitState(2, month_1);
-                        break;
-                    case SalaryEntry.month_2:
-                        Dictionary<string, object> month_2 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        salaryPanel.OpenPanel(month_2["data"] as Dictionary<string, object>);
-                        break;
-                    case SalaryEntry.month_3:
-                        Dictionary<string, object> month_3 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        payrollPanel.OpenPanel(month_3["data"] as Dictionary<string, object>);
-                        break;
-                    case SalaryEntry.Operating_1:
-                        Dictionary<string, object> Operating_1 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        incomePanel.InitState(4, Operating_1);
-                        break;
-                    case SalaryEntry.Operating_2:
-                        Dictionary<string, object> Operating_2 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        operatingPanel.OpenPanel(Operating_2);
-                        break;
-                    case SalaryEntry.Issued_1:
-                        List<object> Issued_1 = Json.Deserialize(messg) as List<object>;
-                        incomePanel.InitState(3, null, Issued_1);
-                        break;
-                    case SalaryEntry.business_1:
-                        Dictionary<string, object> business_1 = Json.Deserialize(messg) as Dictionary<string, object>;
-                        businessPanel.OpenPanel(business_1);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (System.Exception e)
-            {
-                CloningTips("数据返回失败"+ e.ToString());
-                switch (DataTool.salaryEntry)
-                {
-                    case SalaryEntry.month_1:
-                        loadTxt.GetMonthly_1();
-                        break;
-                    case SalaryEntry.month_2:
-                        loadTxt.GetMonthly_2();
-                        break;
-                    case SalaryEntry.month_3:
-                        loadTxt.GetMonthly_3();
-                        break;
-                    case SalaryEntry.Operating_1:
-                        loadTxt.GetMonthly_4();
-                        break;
-                    case SalaryEntry.Operating_2:
-                        loadTxt.GetMonthly_5();
-                        break;
-                    case SalaryEntry.Issued_1:
-                        loadTxt.GetMonthly_6();
-                        break;
-                    case SalaryEntry.business_1:
-                        loadTxt.GetMonthly_7();
-                        break;
-                    default:
-                        break;
-                }
+                case SalaryEntry.dayknot_1:
+                    incomePanel.InitState(0, DataTool.GetDictionary(messg));
+                    break;
+                case SalaryEntry.weeklyend_1:
+                    incomePanel.InitState(1, DataTool.GetDictionary(messg));
+                    break;
+                case SalaryEntry.month_1:
+                    incomePanel.InitState(2, DataTool.GetDictionary(messg));
+                    break;
+                case SalaryEntry.month_2:
+                    salaryPanel.OpenPanel(DataTool.GetDictionary(messg)["data"] as Dictionary<string, object>);
+                    break;
+                case SalaryEntry.month_3:
+                    payrollPanel.OpenPanel(DataTool.GetDictionary(messg)["data"] as Dictionary<string, object>);
+                    break;
+                case SalaryEntry.operating_1:
+                    incomePanel.InitState(4, DataTool.GetDictionary(messg));
+                    break;
+                case SalaryEntry.operating_2:
+                    operatingPanel.OpenPanel(DataTool.GetDictionary(messg));
+                    break;
+                case SalaryEntry.issued_1:
+                    incomePanel.InitState(3, null, DataTool.GetList(messg));
+                    break;
+                case SalaryEntry.business_1:
+                    businessPanel.OpenPanel(DataTool.GetDictionary(messg));
+                    break;
+                default:
+                    break;
             }
         }
         else
         {
             switch (DataTool.salaryEntry)
             {
+                case SalaryEntry.dayknot_1:
+                    loadTxt.GetMonthly_8();
+                    break;
+                case SalaryEntry.weeklyend_1:
+                    loadTxt.GetMonthly_9();
+                    break;
                 case SalaryEntry.month_1:
                     loadTxt.GetMonthly_1();
                     break;
@@ -295,13 +271,13 @@ public class UIManager : MonoSingleton<UIManager>
                 case SalaryEntry.month_3:
                     loadTxt.GetMonthly_3();
                     break;
-                case SalaryEntry.Operating_1:
+                case SalaryEntry.operating_1:
                     loadTxt.GetMonthly_4();
                     break;
-                case SalaryEntry.Operating_2:
+                case SalaryEntry.operating_2:
                     loadTxt.GetMonthly_5();
                     break;
-                case SalaryEntry.Issued_1:
+                case SalaryEntry.issued_1:
                     loadTxt.GetMonthly_6();
                     break;
                 case SalaryEntry.business_1:
@@ -312,5 +288,6 @@ public class UIManager : MonoSingleton<UIManager>
             }
         }
     }
+
 
 }

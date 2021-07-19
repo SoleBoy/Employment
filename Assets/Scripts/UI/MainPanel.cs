@@ -40,7 +40,7 @@ public class MainPanel : MonoBehaviour
     //退出
     private void OpenDrop()
     {
-        UIManager.Instance.dropPanel.OpenPanel();
+        UIManager.Instance.dropPanel.OpenPanel("是否退出登录？");
     }
     //隐私
     private void OpenPolicy()

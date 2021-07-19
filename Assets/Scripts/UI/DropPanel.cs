@@ -8,8 +8,11 @@ public class DropPanel : MonoBehaviour
     private Button fixBtn;
     private Button cloceBtn;
 
+    private Text infoText;
+
     private void Awake()
     {
+        infoText = transform.Find("InfoText").GetComponent<Text>();
         fixBtn = transform.Find("determine").GetComponent<Button>();
         cloceBtn = transform.Find("CancelBtn").GetComponent<Button>();
 
@@ -17,9 +20,10 @@ public class DropPanel : MonoBehaviour
         fixBtn.onClick.AddListener(ReLog);
     }
 
-    public void OpenPanel()
+    public void OpenPanel(string messgTip)
     {
         gameObject.SetActive(true);
+        infoText.text = messgTip;
     }
 
     public void ClosePanel()
