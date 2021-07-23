@@ -36,6 +36,7 @@ public class UIManager : MonoSingleton<UIManager>
     public FightPanel fightPanel;
     public PayrollPanel payrollPanel;
     public LoadingPanel loadingPanel;
+    public Employerpanel employerpanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
@@ -48,13 +49,6 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
-        hallPanel.Init();
-        homePanel.Init();
-        unitPanel.Init();
-#if UNITY_ANDROID
-        Debug.Log("UNITY_ANDROID测试");//true 个体工商户  //false 个人
-        AcceptData_Android("{\"name\":\"张大牛\",\"cust_name\":\"XXX有限公司\",\"goto\":\"个人\",\"bank_card_bind_status\":\"0\",\"jiangsubank_ii_status\":\"0\",\"realname_auth_status\":\"1\",\"signature_status\":\"0\"}");
-#endif
         DataTool.StartActivity(0);
     }
 
@@ -108,6 +102,12 @@ public class UIManager : MonoSingleton<UIManager>
         fightPanel = transform.Find("FightPanel").GetComponent<FightPanel>();
         payrollPanel = transform.Find("PayrollPanel").GetComponent<PayrollPanel>();
         loadingPanel = transform.Find("LoadingPanel").GetComponent<LoadingPanel>();
+        employerpanel = transform.Find("Employerpanel").GetComponent<Employerpanel>();
+
+        hallPanel.Init();
+        homePanel.Init();
+        unitPanel.Init();
+        personalPanel.Init();
     }
     //获取点击对象
 	private GameObject ClickOnUI()
@@ -191,22 +191,38 @@ public class UIManager : MonoSingleton<UIManager>
         {
             Debug.Log("安卓初始数据" + messgInfo);
             Dictionary<string, object> jsonData = Json.Deserialize(messgInfo) as Dictionary<string, object>;
-            if (jsonData["goto"].ToString() == "个人")
+            DataTool.InitData();
+            DataTool.roleType = jsonData["goto"].ToString();
+            DataTool.theCompany = jsonData["cust_name"].ToString(); //"cust_name";
+            if (DataTool.roleType.Contains("雇主"))
             {
-                DataTool.isUnit = false;
+                DataTool.inviteCode = jsonData["invite_code"].ToString();
+                DataTool.inviteType = jsonData["invite_type"].ToString();
+                employerpanel.OpenPanel();
+                personalPanel.CertificationInfo(jsonData);
+                hallPanel.gameObject.SetActive(false);
+                homePanel.gameObject.SetActive(false);
             }
             else
             {
-                DataTool.isUnit = true;
+                if (DataTool.roleType == "个人")
+                {
+                    DataTool.isUnit = false;
+                }
+                else
+                {
+                    DataTool.isUnit = true;
+                }
+                DataTool.roleName = jsonData["name"].ToString();
+                hallPanel.gameObject.SetActive(true);
+                homePanel.gameObject.SetActive(true);
+                employerpanel.gameObject.SetActive(false);
+                hallPanel.InitData();
+                homePanel.InitData();
+                unitPanel.InitData();
+                unitPanel.CertificationInfo(jsonData);
+                hallPanel.CheckRecord(DataTool.isClock);
             }
-            
-            DataTool.InitData(jsonData["name"].ToString());
-            DataTool.theCompany = jsonData["cust_name"].ToString(); //"cust_name";
-            hallPanel.InitData();
-            homePanel.InitData();
-            unitPanel.InitData();
-            unitPanel.CertificationInfo(jsonData);
-            hallPanel.CheckRecord(DataTool.isClock);
         }
         catch (System.Exception e)
         {

@@ -1,0 +1,15 @@
+{
+    "name":"张大牛",
+    "goto":"个体工商户",
+    "cust_name":"XXX有限公司",
+    "invite_code":"10000151",
+    "invite_type":"1",
+    "bank_card_bind_status":"0",
+    "jiangsubank_ii_status":"0",
+    "realname_auth_status":"1",
+    "signature_status":"0",
+    "com_bank_acct_open_permit_status":"1",
+    "com_fr_realname_auth_status":"1",
+    "com_fr_signature_status":"1",
+    "com_identity_register_status":"1"
+}

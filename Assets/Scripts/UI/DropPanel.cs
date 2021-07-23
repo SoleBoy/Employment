@@ -35,7 +35,10 @@ public class DropPanel : MonoBehaviour
     {
         Debug.Log("退出登录");
         gameObject.SetActive(false);
-        UIManager.Instance.homePanel.OpenHome();
+        if(DataTool.roleType != "雇主")
+        {
+            UIManager.Instance.homePanel.OpenHome();
+        }
         DataTool.StartActivity(0);
     }
 }

@@ -168,6 +168,7 @@ public class UnitPanel : MonoBehaviour
             {
                 infoText.text = "已完成";
                 finish.SetActive(true);
+                infoBtn.enabled = false;
             }
             else if (index == 2)
             {

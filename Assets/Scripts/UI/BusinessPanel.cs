@@ -28,9 +28,17 @@ public class BusinessPanel : MonoBehaviour
     {
         UIManager.Instance.loadingPanel.OpenPanel();
         gameObject.SetActive(true);
-        attestInfo.SetActive(false);
         licenseImage.gameObject.SetActive(false);
-        StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+        if (tokenData["code"].ToString() == "200")
+        {
+            attestInfo.SetActive(false);
+            StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+        }
+        else
+        {
+            attestInfo.SetActive(true);
+            UIManager.Instance.loadingPanel.ClosePanel();
+        }
     }
     private IEnumerator RequestAddress(string url)
     {

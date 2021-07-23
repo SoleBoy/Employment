@@ -13,7 +13,10 @@ public class LoadTxt : MonoBehaviour
     //07-05  16:53  河南省郑州市管城回族区城东路街道城东路98号正商向阳广场
     private void Start()
     {
-        //GetMonthly_7();
+#if UNITY_EDITOR
+        UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
+        
+#endif
     }
     //total字段累计收入
     public void GetMonthly_1()
@@ -68,9 +71,34 @@ public class LoadTxt : MonoBehaviour
         //Application.OpenURL(tokenData["url"].ToString());
     }
 
+    private IEnumerator RequestAddress()
+    {
+        WWWForm form = new WWWForm();
+        form.AddField("appToken", "3e5e876-4c81-48ff-b6f9-86b908eQ2df");
+        form.AddField("mobile", "19145724473");
+        form.AddField("qncode", "Cc5695a7b32a4a3a91c6989c4aede073");
+        UnityWebRequest webRequest = UnityWebRequest.Post("http://ad.lianginfo.com/api/submitqrcode", form);
+        DownloadHandlerTexture tx = new DownloadHandlerTexture();
+        webRequest.downloadHandler = tx;
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            //try
+            {
+                Debug.Log(webRequest.downloadHandler.text);
+            }
+        }
+    }
+
     //"http://api.map.baidu.com/location/ip?ak=bretF4dm6W5gqjQAXuvP0NXW6FeesRXb&coor=bd09ll"
     private IEnumerator RequestAddress(string url)
     {
+        WWWForm form = new WWWForm();
+
         UnityWebRequest webRequest = UnityWebRequest.Get(url);
         DownloadHandlerTexture tx = new DownloadHandlerTexture();
         webRequest.downloadHandler = tx;
