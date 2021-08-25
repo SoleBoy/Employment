@@ -9,6 +9,10 @@ using UnityEngine.UI;
 
 public class BusinessPanel : MonoBehaviour
 {
+
+    private Text nameText;
+    private Text firmText;
+
     private RawImage licenseImage;
     private Button backBtn;
     private GameObject attestInfo;
@@ -17,6 +21,9 @@ public class BusinessPanel : MonoBehaviour
 
     private void Awake()
     {
+        nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
+        firmText = transform.Find("TopBg/Text").GetComponent<Text>();
+
         attestInfo = transform.Find("InfoText").gameObject;
         licenseImage = transform.Find("License").GetComponent<RawImage>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
@@ -26,8 +33,10 @@ public class BusinessPanel : MonoBehaviour
 
     public void OpenPanel(Dictionary<string, object> tokenData)
     {
-        UIManager.Instance.loadingPanel.OpenPanel();
         gameObject.SetActive(true);
+        nameText.text = DataTool.roleName;
+        firmText.text = DataTool.theCompany;
+        UIManager.Instance.loadingPanel.OpenPanel();
         licenseImage.gameObject.SetActive(false);
         if (tokenData["code"].ToString() == "200")
         {
@@ -59,7 +68,7 @@ public class BusinessPanel : MonoBehaviour
                 int pageCount = pdfDocument.GetPageCount();
 
                 PDFRenderer renderer = new PDFRenderer();
-                texture = renderer.RenderPageToTexture(pdfDocument.GetPage((int)m_Page % pageCount), 1280, 900);
+                texture = renderer.RenderPageToTexture(pdfDocument.GetPage((int)m_Page % pageCount), 834, 640);
                 texture.filterMode = FilterMode.Bilinear;
                 texture.anisoLevel = 8;
                 licenseImage.texture = texture;

@@ -37,6 +37,8 @@ public class UIManager : MonoSingleton<UIManager>
     public PayrollPanel payrollPanel;
     public LoadingPanel loadingPanel;
     public Employerpanel employerpanel;
+    public ServicePanel servicePanel;
+    public CheckPanel checkPanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
@@ -45,6 +47,10 @@ public class UIManager : MonoSingleton<UIManager>
     public override void Init()
     {
         Debug.Log("初始信息");
+        if(Application.platform == RuntimePlatform.Android)
+        {
+            AndroidStatusBar.statusBarState = AndroidStatusBar.States.TranslucentOverContent;
+        }
         FindPanel();
     }
     private void Start()
@@ -54,20 +60,20 @@ public class UIManager : MonoSingleton<UIManager>
 
     private void Update()
     {
-        battlePanel.SetUpdata(Time.deltaTime);
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject onUI;
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                onUI = ClickOnUI();
-                if(onUI && onUI.CompareTag("Player"))
-                {
-                    hallPanel.AddExperience(3 * DataTool.roleLevel);
-                    CloningTips("经验值+"+ 3 * DataTool.roleLevel);
-                }
-            }
-        }
+        //battlePanel.SetUpdata(Time.deltaTime);
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    GameObject onUI;
+        //    if (EventSystem.current.IsPointerOverGameObject())
+        //    {
+        //        onUI = ClickOnUI();
+        //        if(onUI && onUI.CompareTag("Player"))
+        //        {
+        //            hallPanel.AddExperience(3 * DataTool.roleLevel);
+        //            CloningTips("经验值+"+ 3 * DataTool.roleLevel);
+        //        }
+        //    }
+        //}
     }
     //查找面板
     private void FindPanel()
@@ -87,7 +93,7 @@ public class UIManager : MonoSingleton<UIManager>
         beastPanel = transform.Find("BeastPanel").GetComponent<BeastPanel>();
         backpackPanel = transform.Find("BackpackPanel").GetComponent<BackpackPanel>();
         dropPanel = transform.Find("DropPanel").GetComponent<DropPanel>();
-        personalPanel = transform.Find("PersonalPanel").GetComponent<PersonalPanel>();
+        personalPanel = transform.Find("Employerpanel/PersonalPanel").GetComponent<PersonalPanel>();
         unitPanel = transform.Find("UnitPanel").GetComponent<UnitPanel>();
         businessPanel = transform.Find("BusinessPanel").GetComponent<BusinessPanel>();
         privacyPanel = transform.Find("PrivacyPanel").GetComponent<PrivacyPanel>();
@@ -103,6 +109,8 @@ public class UIManager : MonoSingleton<UIManager>
         payrollPanel = transform.Find("PayrollPanel").GetComponent<PayrollPanel>();
         loadingPanel = transform.Find("LoadingPanel").GetComponent<LoadingPanel>();
         employerpanel = transform.Find("Employerpanel").GetComponent<Employerpanel>();
+        servicePanel = transform.Find("ServicePanel").GetComponent<ServicePanel>();
+        checkPanel = transform.Find("CheckPanel").GetComponent<CheckPanel>();
 
         hallPanel.Init();
         homePanel.Init();
@@ -233,7 +241,7 @@ public class UIManager : MonoSingleton<UIManager>
     public void Acceptance_Android(string messg)
     {
         Debug.Log(DataTool.salaryEntry + ":" + messg);
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             switch (DataTool.salaryEntry)
             {

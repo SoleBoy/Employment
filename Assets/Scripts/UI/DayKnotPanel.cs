@@ -21,8 +21,8 @@ public class DayKnotPanel : MonoBehaviour
         kontItem = transform.Find("Info/Item");
         knotParent = transform.Find("Info/Scroll View/Viewport/Content");
         titleText = transform.Find("TitleText").GetComponent<Text>();
-        dateText = transform.Find("Info/DateText").GetComponent<Text>();
-        wageText = transform.Find("Info/WageText").GetComponent<Text>();
+        dateText = transform.Find("TopBg/DateText").GetComponent<Text>();
+        wageText = transform.Find("TopBg/WageText").GetComponent<Text>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         backBtn.onClick.AddListener(ClosePanel);
         string[] messg = {"工作时长","加班" };

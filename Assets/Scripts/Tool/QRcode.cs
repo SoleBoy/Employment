@@ -18,7 +18,7 @@ public class QRcode : MonoBehaviour
     private Vector3 rearAngle = new Vector3(0, 0, -90);
     private void Awake()
     {
-        closeBtn = transform.Find("Button").GetComponent<Button>();
+        closeBtn = transform.Find("BackBtn").GetComponent<Button>();
         closeBtn.onClick.AddListener(ClosePanel);
     }
 
@@ -44,6 +44,7 @@ public class QRcode : MonoBehaviour
                 cameraTexture.transform.localEulerAngles = rearAngle;
                 // 设置相机渲染宽高，并运行相机
                 webCameraTexture = new WebCamTexture(webCamDevices[0].name, 768, 1024, 25);
+                //webCameraTexture = new WebCamTexture(webCamDevices[0].name, Screen.width, Screen.height, 25);
                 webCameraTexture.Play();
                 // 把获取的图像渲染到画布上
                 cameraTexture.texture = webCameraTexture;
@@ -110,6 +111,9 @@ public class QRcode : MonoBehaviour
                     pluginClass.CallStatic("pcLogin",mesgg);
                 }
             }
+
+        }else if(Application.platform == RuntimePlatform.IPhonePlayer)
+        {
 
         }
     }

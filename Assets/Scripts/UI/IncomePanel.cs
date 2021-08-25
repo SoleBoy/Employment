@@ -12,8 +12,10 @@ public class IncomePanel : MonoBehaviour
     public Sprite norSprite;
     public Image[] clickImage;
     public Text[] clickText;
+    public GameObject[] clickObject;
 
     private Text grandText;
+    private Text firmText;
     //private Text monthText;
    // private Text incomeText;
 
@@ -53,6 +55,7 @@ public class IncomePanel : MonoBehaviour
         //dailyState = transform.Find("DailyState").gameObject;
         
         grandText = transform.Find("Grand/MoneyText").GetComponent<Text>();
+        firmText = transform.Find("TitleText").GetComponent<Text>();
         //monthText = transform.Find("DailyState/monthBtn").GetComponent<Text>();
         //incomeText = transform.Find("DailyState/IncomeText").GetComponent<Text>();
 
@@ -61,7 +64,7 @@ public class IncomePanel : MonoBehaviour
         monthlyBtn = transform.Find("Header/MonthlyBtn").GetComponent<Button>();
         issuedBtn = transform.Find("Header/IssuedBtn").GetComponent<Button>();
         operatingBtn = transform.Find("Header/OperatingBtn").GetComponent<Button>();
-        //monthBtn = transform.Find("DailyState/monthBtn").GetComponent<Button>();
+        //monthBtn = transform.Find("DailyState/monthBtn").GetComponent<Button>();TitleText
 
         dailyBtn.onClick.AddListener(OpenDaily);
         payrollBtn.onClick.AddListener(OpenPayro);
@@ -76,7 +79,8 @@ public class IncomePanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        if(DataTool.isUnit)
+        firmText.text = DataTool.theCompany;
+        if (DataTool.isUnit)
         {
             OpenOperatin();
         }
@@ -314,7 +318,7 @@ public class IncomePanel : MonoBehaviour
     {
         ClcikButton(4);
         DataTool.salaryEntry = SalaryEntry.operating_1;
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(187, 0);
         }
@@ -329,7 +333,7 @@ public class IncomePanel : MonoBehaviour
     {
         ClcikButton(3);
         DataTool.salaryEntry = SalaryEntry.issued_1;
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(185, 0);
         }
@@ -344,7 +348,7 @@ public class IncomePanel : MonoBehaviour
     {
         ClcikButton(2);
         DataTool.salaryEntry = SalaryEntry.month_1;
-        if(Application.platform == RuntimePlatform.Android)
+        if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(172, 0);
         }
@@ -359,7 +363,7 @@ public class IncomePanel : MonoBehaviour
     {
         ClcikButton(1);
         DataTool.salaryEntry = SalaryEntry.weeklyend_1;
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(166, 0);
         }
@@ -374,7 +378,7 @@ public class IncomePanel : MonoBehaviour
     {
         ClcikButton(0);
         DataTool.salaryEntry = SalaryEntry.dayknot_1;
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(170, 0);
         }
@@ -402,11 +406,13 @@ public class IncomePanel : MonoBehaviour
         if(indexCurret >= 0)
         {
             clickImage[indexCurret].sprite = norSprite;
-            clickText[indexCurret].color = norColor;
+            //clickText[indexCurret].color = norColor;
+            clickObject[indexCurret].SetActive(false);
         }
         indexCurret = index;
         clickImage[indexCurret].sprite = pickSprite;
-        clickText[indexCurret].color = pickColor;
+        //clickText[indexCurret].color = pickColor;
+        clickObject[indexCurret].SetActive(true);
     }
 
     public void ClickMonth(int year, int month,int index)
@@ -618,7 +624,7 @@ public class PaySlipItem
             case 4:
                 UIManager.Instance.operatingPanel.SetHeadFile(year, month, moneyText.text);
                 DataTool.salaryEntry = SalaryEntry.operating_2;
-                if (Application.platform == RuntimePlatform.Android)
+                if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
                 {
                     DataTool.CallNative(190,0,string.Format("{0:D2}-{1:D2}", year, month));
                 }

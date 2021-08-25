@@ -58,8 +58,8 @@ public class PayrollPanel : MonoBehaviour
             lateSub_item.Add(item);
         }
 
-        dateText = transform.Find("Info/DateText").GetComponent<Text>();
-        wageText = transform.Find("Info/WageText").GetComponent<Text>();
+        dateText = transform.Find("TopBg/DateText").GetComponent<Text>();
+        wageText = transform.Find("TopBg/WageText").GetComponent<Text>();
 
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         backBtn.onClick.AddListener(ClosePanel);

@@ -109,6 +109,7 @@ public class LocationService : MonoBehaviour
             if (Input.location.lastData.longitude == 0 && Input.location.lastData.latitude == 0)
             {
                 UIManager.Instance.CloningTips("位置获取失败,请检查GPS是否开启");
+                PlayerPrefs.SetString("ClockInAddress","位置获取失败");
                 string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
                 PlayerPrefs.SetString("ClockInTime", messgInfo);
                 UIManager.Instance.hallPanel.CheckRecord(true);
@@ -177,7 +178,7 @@ public class LocationService : MonoBehaviour
             PlayerPrefs.SetString("ClockInAddress", pairs1["formatted_address"].ToString());
             Debug.Log(JsonUtility.ToJson(string.Format("{0}{1}", messgInfo, pairs1["formatted_address"].ToString())));
             UIManager.Instance.hallPanel.CheckRecord(true);
-            UIManager.Instance.CloningTips("打卡成功");
+            UIManager.Instance.checkPanel.OpenPanel();
         }
     }
 }

@@ -5,35 +5,55 @@ using UnityEngine.UI;
 
 public class Employerpanel : MonoBehaviour
 {
+    public Sprite[] pickSprite;
+    public Sprite[] norSprite;
+    public Image[] clickImage;
+    public GameObject[] clickObject;
+
     public QRcode qRcode;
     private Text firmText;
     private Text codeText;
     private Text askText;
 
     private Button logBtn;
-    private Button certiBtn;
+    //private Button certiBtn;
     private Button copyBtn;
-    private Button backBtn;
+    //private Button backBtn;
+
+    private Button homeBtn;
+    private Button mainBtn;
+
+    private int indexCurret;
+    private GameObject copyPanel;
+
+    public PersonalPanel personalPanel;
     //invite_type：1代表对个人的邀请码，2代表对工商户的邀请码
     private void Awake()
     {
+        copyPanel = transform.Find("CopyPanel").gameObject;
+        personalPanel = transform.Find("PersonalPanel").GetComponent<PersonalPanel>();
         firmText = transform.Find("InfoBg/FirmText").GetComponent<Text>();
         codeText = transform.Find("InfoBg/CodeText").GetComponent<Text>();
         askText = transform.Find("InfoBg/AskText").GetComponent<Text>();
 
+        homeBtn = transform.Find("HomeBtn").GetComponent<Button>();
+        mainBtn = transform.Find("MainBtn").GetComponent<Button>();
         logBtn = transform.Find("LogBtn").GetComponent<Button>();
-        certiBtn = transform.Find("CertiBtn").GetComponent<Button>();
+        //certiBtn = transform.Find("CertiBtn").GetComponent<Button>();
         copyBtn = transform.Find("InfoBg").GetComponent<Button>();
-        backBtn = transform.Find("BackBtn").GetComponent<Button>();
+        //backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
-        certiBtn.onClick.AddListener(OpenPersonal);
+        //certiBtn.onClick.AddListener(OpenPersonal);
         copyBtn.onClick.AddListener(CopyToClipboard);
-        backBtn.onClick.AddListener(ClosePanel);
+        //backBtn.onClick.AddListener(ClosePanel);
         logBtn.onClick.AddListener(OpenLog);
+        homeBtn.onClick.AddListener(OpenHome);
+        mainBtn.onClick.AddListener(OpenMain);
     }
     public void OpenPanel()
     {
         gameObject.SetActive(true);
+        ClcikButton(0);
         firmText.text = DataTool.theCompany;
         codeText.text = DataTool.inviteCode;
         if (DataTool.inviteType == "1")
@@ -52,9 +72,36 @@ public class Employerpanel : MonoBehaviour
         UIManager.Instance.dropPanel.OpenPanel("是否退出登录？");
     }
 
+    public void OpenHome()
+    {
+        ClcikButton(0);
+        personalPanel.ClosePanel();
+    }
+
+    //营业执照
+    public void OpenLicense()
+    {
+        DataTool.salaryEntry = SalaryEntry.business_1;
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            DataTool.CallNative(195, 0);
+        }
+        else
+        {
+            UIManager.Instance.Acceptance_Android("Monthly7");
+        }
+        //UIManager.Instance.businessPanel.OpenPanel();
+    }
+
+    private void OpenMain()
+    {
+        ClcikButton(1);
+        personalPanel.OpenPanel();
+    }
+
     private void OpenPersonal()
     {
-        UIManager.Instance.personalPanel.OpenPanel();
+        personalPanel.OpenPanel();
     }
     //UnityReflection.onClickCopy("xxxx")
     private void CopyToClipboard()
@@ -68,7 +115,8 @@ public class Employerpanel : MonoBehaviour
         }
         else
         {
-            UIManager.Instance.CloningTips("邀请码复制成功！");
+            copyPanel.SetActive(true);
+            //UIManager.Instance.CloningTips("邀请码复制成功！");
         }
         
 //        string input = codeText.text;
@@ -86,8 +134,19 @@ public class Employerpanel : MonoBehaviour
 //    tool.CallStatic("CopyTextToClipboard", currentActivity, input);
 //#endif
     }
+
+
     private void OpenLog()
     {
         StartCoroutine(qRcode.OpenRcode());
+    }
+
+    private void ClcikButton(int index)
+    {
+        clickImage[indexCurret].sprite = norSprite[indexCurret];
+        clickObject[indexCurret].SetActive(false);
+        indexCurret = index;
+        clickImage[indexCurret].sprite = pickSprite[indexCurret];
+        clickObject[indexCurret].SetActive(true);
     }
 }

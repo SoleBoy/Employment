@@ -89,7 +89,7 @@ public class ClockinPanel : MonoBehaviour
                 isFlip = false;
                 string webCamName = webCamDevices[1].name;
                 // 设置相机渲染宽高，并运行相机
-                webCamTexture = new WebCamTexture(webCamName, 768, 1024);
+                webCamTexture = new WebCamTexture(webCamName, 784, 496);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.transform.localEulerAngles = frontAngle;
@@ -100,7 +100,7 @@ public class ClockinPanel : MonoBehaviour
                 isFlip = true;
                 string webCamName = webCamDevices[0].name;
                 // 设置相机渲染宽高，并运行相机
-                webCamTexture = new WebCamTexture(webCamName, 768, 1024);
+                webCamTexture = new WebCamTexture(webCamName, 784, 496);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.transform.localEulerAngles = rearAngle;
@@ -137,7 +137,7 @@ public class ClockinPanel : MonoBehaviour
                     webCamName = webCamDevices[0].name;
                 }
                 // 设置相机渲染宽高，并运行相机
-                webCamTexture = new WebCamTexture(webCamName, 768, 1024,25);
+                webCamTexture = new WebCamTexture(webCamName, 784, 496,25);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.texture = webCamTexture;

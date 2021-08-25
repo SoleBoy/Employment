@@ -22,6 +22,10 @@ public class DataTool
     public static bool isClock;//打卡记录
     public static byte[] cheackByte;
     public static SalaryEntry salaryEntry;
+
+
+    public static Color color_Blue;
+    public static Color color_Green;
     //获取头衔等级
     public static string GetTitle(int rankIndex)
     {
@@ -98,7 +102,17 @@ public class DataTool
         roleLevel = PlayerPrefs.GetFloat("CurretLevel",1);
         roleExp = PlayerPrefs.GetFloat("CurretExp");
         roleExp_Max = float.Parse(roleData.exp) + float.Parse(roleData.exp_upgrade) * (roleLevel-1);
+
+        color_Blue = GetColor("003dff");
+        color_Green = GetColor("1fad15");
     }
+    private static Color GetColor(string color)
+    {
+        Color skyColor;
+        ColorUtility.TryParseHtmlString("#" + color, out skyColor);
+        return skyColor;
+    }
+
     //加经验值
     public static bool AddExperience(float exp)
     {
@@ -130,6 +144,10 @@ public class DataTool
 
             currentActivity.Call("startActivity", intentObj);
         }
+        else if(Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+
+        }
     }
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
     public static void CallNative(int mesgg,int id,string month = "")
@@ -146,6 +164,9 @@ public class DataTool
                     pluginClass.CallStatic("RequestUserInfo", mesgg,id, month);
                 }
             }
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
 
         }
     }
@@ -165,6 +186,9 @@ public class DataTool
                     pluginClass.CallStatic("uploadingSignInInfo", lat, lng,System.Convert.ToBase64String(cheackByte));
                 }
             }
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
 
         }
     }

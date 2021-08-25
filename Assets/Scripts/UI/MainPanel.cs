@@ -6,36 +6,54 @@ using UnityEngine.UI;
 
 public class MainPanel : MonoBehaviour
 {
+    private Text firmText;
+    private Text nameText;
+
     private Button licenseBtn;
     private Button certiBtn;
     private Button serverBtn;
     private Button policyBtn;
     private Button dropBtn;
+    private Button serviceBtn;
 
+    private Transform btnParent;
     private void Awake()
     {
-        licenseBtn = transform.Find("Btn/LicenseBtn").GetComponent<Button>();
-        certiBtn = transform.Find("Btn/CertiBtn").GetComponent<Button>();
-        serverBtn = transform.Find("Btn/ServerBtn").GetComponent<Button>();
-        policyBtn = transform.Find("Btn/PolicyBtn").GetComponent<Button>();
-        dropBtn = transform.Find("Btn/DropBtn").GetComponent<Button>();
+        btnParent = transform.Find("Btn1/Viewport/Content");
+        licenseBtn = btnParent.Find("LicenseBtn").GetComponent<Button>();
+        certiBtn = btnParent.Find("CertiBtn").GetComponent<Button>();
+        serverBtn = btnParent.Find("ServerBtn").GetComponent<Button>();
+        policyBtn = btnParent.Find("PolicyBtn").GetComponent<Button>();
+        dropBtn = btnParent.Find("DropBtn").GetComponent<Button>();
+        serviceBtn = btnParent.Find("ServiceBtn").GetComponent<Button>();
+
+        firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
+        nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
 
         licenseBtn.onClick.AddListener(OpenLicense);
         certiBtn.onClick.AddListener(OpenCerti);
         serverBtn.onClick.AddListener(OpenServer);
         policyBtn.onClick.AddListener(OpenPolicy);
         dropBtn.onClick.AddListener(OpenDrop);
+        serviceBtn.onClick.AddListener(OpenService);
 
         licenseBtn.gameObject.SetActive(DataTool.isUnit);
     }
     public void OpenPanel()
     {
         gameObject.SetActive(true);
+        firmText.text = DataTool.theCompany;
+        nameText.text = DataTool.roleName;
     }
 
     public void ClosePanel()
     {
         gameObject.SetActive(false);
+    }
+    //客服
+    private void OpenService()
+    {
+        UIManager.Instance.servicePanel.OpenPanel();
     }
     //退出
     private void OpenDrop()
@@ -61,7 +79,7 @@ public class MainPanel : MonoBehaviour
     private void OpenLicense()
     {
         DataTool.salaryEntry = SalaryEntry.business_1;
-        if (Application.platform == RuntimePlatform.Android)
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
         {
             DataTool.CallNative(195, 0);
         }

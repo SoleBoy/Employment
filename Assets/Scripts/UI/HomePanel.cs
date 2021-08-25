@@ -12,10 +12,10 @@ public class HomePanel : MonoBehaviour
     public Sprite[] pickSprite;
     public Sprite[] norSprite;
     public Image[] clickImage;
-    public Text[] clickText;
+    public GameObject[] clickObject;
 
-    private Text nameText;
-    private Text dutyText;
+    //private Text nameText;
+    //private Text dutyText;
 
     private Image headImage;
 
@@ -26,8 +26,8 @@ public class HomePanel : MonoBehaviour
     private int indexCurret;
     public void Init()
     {
-        nameText = transform.Find("Head/NameText").GetComponent<Text>();
-        dutyText = transform.Find("Bottom/InfoText").GetComponent<Text>();
+        //nameText = transform.Find("Head/NameText").GetComponent<Text>();
+        //dutyText = transform.Find("Bottom/InfoText").GetComponent<Text>();
 
         headImage = transform.Find("Head/Sprite").GetComponent<Image>();
 
@@ -42,7 +42,7 @@ public class HomePanel : MonoBehaviour
 
     public void InitData()
     {
-        nameText.text = DataTool.roleName;
+        //nameText.text = DataTool.roleName;
         OpenPanel();
     }
 
@@ -54,12 +54,12 @@ public class HomePanel : MonoBehaviour
             if(indexCurret == i)
             {
                 clickImage[indexCurret].sprite = pickSprite[indexCurret];
-                clickText[indexCurret].color = pickColor;
+                clickObject[indexCurret].SetActive(true);
             }
             else
             {
                 clickImage[i].sprite = norSprite[i];
-                clickText[i].color = norColor;
+                clickObject[indexCurret].SetActive(false);
             }
         }
         UIManager.Instance.hallPanel.OpenPanel();
@@ -86,10 +86,10 @@ public class HomePanel : MonoBehaviour
     private void ClcikButton(int index)
     {
         clickImage[indexCurret].sprite = norSprite[indexCurret];
-        clickText[indexCurret].color = norColor;
+        clickObject[indexCurret].SetActive(false);
         indexCurret = index;
         clickImage[indexCurret].sprite = pickSprite[indexCurret];
-        clickText[indexCurret].color = pickColor;
+        clickObject[indexCurret].SetActive(true);
     }
 
     private void ClosePanel(int index)

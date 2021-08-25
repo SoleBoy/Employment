@@ -15,7 +15,6 @@ public class LoadTxt : MonoBehaviour
     {
 #if UNITY_EDITOR
         UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
-        
 #endif
     }
     //total字段累计收入

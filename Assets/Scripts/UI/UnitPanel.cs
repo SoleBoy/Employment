@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UnitPanel : MonoBehaviour
 {
+    private Text firmText;
+    private Text nameText;
     private Button backBtn;
 
     private Transform infoParent;
@@ -14,6 +16,8 @@ public class UnitPanel : MonoBehaviour
     public void Init()
     {
         infoParent = transform.Find("Info/PayrollView/Viewport/Content");
+        firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
+        nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
         backBtn.onClick.AddListener(ClosePanel);
@@ -27,6 +31,8 @@ public class UnitPanel : MonoBehaviour
     }
     public void InitData()
     {
+        firmText.text = DataTool.theCompany;
+        nameText.text = DataTool.roleName;
         if (DataTool.isUnit)
         {
             for (int i = 0; i < infos.Count; i++)
@@ -86,17 +92,17 @@ public class UnitPanel : MonoBehaviour
     {
         private Text infoText;
         private Button infoBtn;
-        private GameObject finish;
+        //private GameObject finish;
         private GameObject infoObject;
         private int attestIndex;
         public InfoItem(Transform parent,int index)
         {
             attestIndex = index;
             infoObject = parent.gameObject;
-            finish = parent.Find("Image").gameObject;
+            //finish = parent.Find("Image").gameObject;
             infoBtn = parent.GetComponent<Button>();
             infoText = parent.Find("Amount").GetComponent<Text>();
-            finish.SetActive(false);
+            //finish.SetActive(false);
             infoBtn.onClick.AddListener(OpenAttest);
         }
         private void OpenAttest()
@@ -163,19 +169,22 @@ public class UnitPanel : MonoBehaviour
             if(index == 0)
             {
                 infoText.text = "必填项";
+                infoText.color = DataTool.color_Blue;
             }
             else if(index == 1)
             {
                 infoText.text = "已完成";
-                finish.SetActive(true);
+                infoText.color = DataTool.color_Green;
                 infoBtn.enabled = false;
             }
             else if (index == 2)
             {
+                infoText.color = DataTool.color_Blue;
                 infoText.text = "未完成";
             }
             else
             {
+                infoText.color = DataTool.color_Blue;
                 infoText.text = "审核待处理";
             }
         }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class PersonalPanel : MonoBehaviour
 {
     private Text nameText;
+    private Text firmText;
+
     private Button backBtn;
     private Transform infoParent;
     private List<InfoItem> infos = new List<InfoItem>();
@@ -15,10 +17,11 @@ public class PersonalPanel : MonoBehaviour
     {
         infoParent = transform.Find("Info/PayrollView/Viewport/Content");
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
-        nameText = transform.Find("Head/NameText").GetComponent<Text>();
+        nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
+        firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
 
         backBtn.onClick.AddListener(ClosePanel);
-        for (int i = 0; i < infoParent.childCount; i++)
+        for (int i = 0; i < 3; i++)
         {
             InfoItem item = new InfoItem(infoParent.Find("Item" + (i + 1)), i);
             infos.Add(item);
@@ -28,7 +31,8 @@ public class PersonalPanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        nameText.text = DataTool.theCompany;
+        nameText.text = DataTool.roleName;
+        firmText.text = DataTool.theCompany;
     }
 
     public void ClosePanel()
@@ -55,17 +59,17 @@ public class PersonalPanel : MonoBehaviour
     {
         private Text infoText;
         private Button infoBtn;
-        private GameObject finish;
+        //private GameObject finish;
         private GameObject infoObject;
         private int attestIndex;
         public InfoItem(Transform parent, int index)
         {
             attestIndex = index;
             infoObject = parent.gameObject;
-            finish = parent.Find("Image").gameObject;
+            //finish = parent.Find("Image").gameObject;
             infoBtn = parent.GetComponent<Button>();
             infoText = parent.Find("Amount").GetComponent<Text>();
-            finish.SetActive(false);
+            //finish.SetActive(false);
             //infoBtn.onClick.AddListener(OpenAttest);
         }
         private void OpenAttest()
@@ -102,19 +106,22 @@ public class PersonalPanel : MonoBehaviour
             if (index == 0)
             {
                 infoText.text = "必填项";
+                infoText.color = DataTool.color_Blue;
             }
             else if (index == 1)
             {
                 infoText.text = "已完成";
-                finish.SetActive(true);
+                infoText.color = DataTool.color_Green;
             }
             else if (index == 2)
             {
                 infoText.text = "未完成";
+                infoText.color = DataTool.color_Blue;
             }
             else
             {
                 infoText.text = "审核待处理";
+                infoText.color = DataTool.color_Blue;
             }
         }
     }
