@@ -53,6 +53,7 @@ public class Employerpanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
+        personalPanel.ClosePanel();
         ClcikButton(0);
         firmText.text = DataTool.theCompany;
         codeText.text = DataTool.inviteCode;

@@ -1,7 +1,7 @@
 {
     "name":"张大牛",
     "goto":"个人",
-    "cust_name":"蜜蜂临工平台服务",
+    "cust_name":"蜜蜂灵工平台服务",
     "invite_code":"10000151",
     "invite_type":"1",
     "bank_card_bind_status":"0",

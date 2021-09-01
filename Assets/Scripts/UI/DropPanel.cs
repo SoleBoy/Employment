@@ -35,7 +35,11 @@ public class DropPanel : MonoBehaviour
     {
         Debug.Log("退出登录");
         gameObject.SetActive(false);
-        if(DataTool.roleType != "雇主")
+        if(DataTool.roleType == "雇主")
+        {
+            UIManager.Instance.employerpanel.OpenPanel();
+        }
+        else
         {
             UIManager.Instance.homePanel.OpenHome();
         }

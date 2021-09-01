@@ -59,7 +59,7 @@ public class HomePanel : MonoBehaviour
             else
             {
                 clickImage[i].sprite = norSprite[i];
-                clickObject[indexCurret].SetActive(false);
+                clickObject[i].SetActive(false);
             }
         }
         UIManager.Instance.hallPanel.OpenPanel();

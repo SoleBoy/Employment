@@ -43,7 +43,7 @@ public class QRcode : MonoBehaviour
 
                 cameraTexture.transform.localEulerAngles = rearAngle;
                 // 设置相机渲染宽高，并运行相机
-                webCameraTexture = new WebCamTexture(webCamDevices[0].name, 768, 1024, 25);
+                webCameraTexture = new WebCamTexture(webCamDevices[0].name, 784, 784, 25);
                 //webCameraTexture = new WebCamTexture(webCamDevices[0].name, Screen.width, Screen.height, 25);
                 webCameraTexture.Play();
                 // 把获取的图像渲染到画布上
