@@ -1,0 +1,13 @@
+{
+    "code":"200",
+    "data":{
+        "fxrsf":"0.0",
+        "id":108,
+        "yf_after_add":0,
+        "yf_after_deduct":0,
+        "yf_before_add":"0",
+        "yf_before_deduct":"0",
+        "yfze":"0"
+    },
+    "msg":"查询成功"
+}

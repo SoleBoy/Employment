@@ -1,0 +1,17 @@
+{
+    "datas":[
+        {
+            "salary_month":"2021-01",
+            "sfze":0
+        },
+        {
+            "salary_month":"2020-12",
+            "sfze":0
+        },
+        {
+            "salary_month":"2020-10",
+            "sfze":0
+        }
+    ],
+    "total":0
+}

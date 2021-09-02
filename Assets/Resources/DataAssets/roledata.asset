@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c2d7ba5ff872745837174d66da4961, type: 3}
+  m_Name: roledata
+  m_EditorClassIdentifier: 
+  items:
+  - id: 1001
+    name: "\u73A9\u5BB6\u57FA\u7840\u89D2\u8272A"
+    quality: -1
+    exp: 10
+    exp_upgrade: 70
+    hp: 100
+    hp_upgrade: 10
+    attack: 20
+    attack_upgrade: 2
+    def: 5
+    def_upgrade: 1
+    talentId: -1
+  - id: 1002
+    name: "\u73A9\u5BB6\u57FA\u7840\u89D2\u8272B"
+    quality: -1
+    exp: 10
+    exp_upgrade: 70
+    hp: 100
+    hp_upgrade: 10
+    attack: 15
+    attack_upgrade: 1.5
+    def: 7
+    def_upgrade: 1
+    talentId: -1
+  - id: 2001
+    name: "\u517D1"
+    quality: 3
+    exp: 5
+    exp_upgrade: 10
+    hp: 60
+    hp_upgrade: 2
+    attack: 15
+    attack_upgrade: 2
+    def: 2
+    def_upgrade: 1
+    talentId: 4001
+  - id: 2002
+    name: "\u517D2"
+    quality: 5
+    exp: 5
+    exp_upgrade: 15
+    hp: 80
+    hp_upgrade: 4
+    attack: 20
+    attack_upgrade: 3
+    def: 3
+    def_upgrade: 1
+    talentId: 4002
+  - id: 2003
+    name: "\u517D3"
+    quality: 7
+    exp: 5
+    exp_upgrade: 20
+    hp: 100
+    hp_upgrade: 5
+    attack: 25
+    attack_upgrade: 5
+    def: 4
+    def_upgrade: 1
+    talentId: 4003
+  - id: 2004
+    name: "\u517D1"
+    quality: 3
+    exp: 5
+    exp_upgrade: 10
+    hp: 60
+    hp_upgrade: 2
+    attack: 15
+    attack_upgrade: 2
+    def: 2
+    def_upgrade: 1
+    talentId: 4001
+  - id: 2005
+    name: "\u517D2"
+    quality: 5
+    exp: 5
+    exp_upgrade: 15
+    hp: 80
+    hp_upgrade: 4
+    attack: 20
+    attack_upgrade: 3
+    def: 3
+    def_upgrade: 1
+    talentId: 4002
+  - id: 2006
+    name: "\u517D3"
+    quality: 7
+    exp: 5
+    exp_upgrade: 20
+    hp: 100
+    hp_upgrade: 5
+    attack: 25
+    attack_upgrade: 5
+    def: 4
+    def_upgrade: 1
+    talentId: 4003
