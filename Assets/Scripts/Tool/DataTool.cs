@@ -1,10 +1,19 @@
 ﻿using MiniJSON;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class DataTool
 {
+	#if UNITY_IOS     
+	[DllImport ("__Internal")]
+	private static extern void iOSFunForUnity_requestUserInfo(int mesgg, int id, string month);
+
+	[DllImport ("__Internal")]
+	private static extern void iOSFunForUnity_startPage (int pageId);
+	#endif     
+	  
     public static RoleData roleData;
     public static float roleLevel;//等级
     public static float roleExp;//经验
@@ -146,7 +155,8 @@ public class DataTool
         }
         else if(Application.platform == RuntimePlatform.IPhonePlayer)
         {
-
+			// iOSFunForUnity_startPage(pageId);
+            iOSFunForUnity_requestUserInfo(1, 2, "abcdedf");
         }
     }
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
