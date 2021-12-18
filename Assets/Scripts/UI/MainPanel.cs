@@ -15,6 +15,7 @@ public class MainPanel : MonoBehaviour
     private Button policyBtn;
     private Button dropBtn;
     private Button serviceBtn;
+    private Button agreementBtn;
 
     private Transform btnParent;
     private void Awake()
@@ -26,6 +27,7 @@ public class MainPanel : MonoBehaviour
         policyBtn = btnParent.Find("PolicyBtn").GetComponent<Button>();
         dropBtn = btnParent.Find("DropBtn").GetComponent<Button>();
         serviceBtn = btnParent.Find("ServiceBtn").GetComponent<Button>();
+        agreementBtn = btnParent.Find("Agreement").GetComponent<Button>();
 
         firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
         nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
@@ -36,6 +38,7 @@ public class MainPanel : MonoBehaviour
         policyBtn.onClick.AddListener(OpenPolicy);
         dropBtn.onClick.AddListener(OpenDrop);
         serviceBtn.onClick.AddListener(OpenService);
+        agreementBtn.onClick.AddListener(OpenAgreement);
 
         licenseBtn.gameObject.SetActive(DataTool.isUnit);
     }
@@ -74,6 +77,11 @@ public class MainPanel : MonoBehaviour
     private void OpenCerti()
     {
         UIManager.Instance.unitPanel.OpenPanel();
+    }
+    //我的协议
+    private void OpenAgreement()
+    {
+        UIManager.Instance.protocolPanel.OpenPanel();
     }
     //营业执照
     private void OpenLicense()

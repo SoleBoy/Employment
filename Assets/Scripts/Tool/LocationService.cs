@@ -10,7 +10,8 @@ using System.Collections.Generic;
 public class LocationService : MonoBehaviour
 {
     private string GetGps = "";
-    private const string key = "ac611ea2fc1e9b9309cbb0486904e101";		//去高德地图开发者申请
+    //880ef1cb42dd34128b666542829fdff5
+    private const string key = "ac611ea2fc1e9b9309cbb0486904e101";		//去高德地图开发者申请  880
     /// <summary>
     /// 初始化一次位置
     /// </summary>

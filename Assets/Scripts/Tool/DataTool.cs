@@ -25,6 +25,7 @@ public class DataTool
     public static string theCompany;//公司名字
     public static string inviteCode;//邀请码
     public static string inviteType;//邀请类型
+    public static string taskDuration;//邀请类型
 
     public static int blindBox;//盲盒次数
     public static bool isUnit;//个体 个人
@@ -148,6 +149,7 @@ public class DataTool
             var intentObj = new AndroidJavaObject("android.content.Intent");
             var activityCls = new AndroidJavaClass("com.example.jinchang.RegActivity");
             intentObj.Call<AndroidJavaObject>("setClass", currentActivity, activityCls);
+            intentObj.Call<AndroidJavaObject>("addCategory", "android.intent.category.LAUNCHER");//.addCategory(Intent.CATEGORY_LAUNCHER);
 
             intentObj.Call<AndroidJavaObject>("putExtra", "pageId", pageId);
 
@@ -155,8 +157,10 @@ public class DataTool
         }
         else if(Application.platform == RuntimePlatform.IPhonePlayer)
         {
-			// iOSFunForUnity_startPage(pageId);
+            // iOSFunForUnity_startPage(pageId);
+#if UNITY_IOS
             iOSFunForUnity_requestUserInfo(1, 2, "abcdedf");
+#endif
         }
     }
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份

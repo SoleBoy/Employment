@@ -4,13 +4,76 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class TestData : MonoBehaviour
 {
+    class Class1
+    {
+        internal static int count = 0;
+        static Class1()
+        {
+            count++;
+            Debug.Log("static" + count);
+        }
+        public Class1()
+        {
+            count++;
+            Debug.Log(count);
+        }
+    }
+
+
+    public class A
+    {
+        public A()
+        {
+            PrintFields();
+        }
+        public virtual void PrintFields() { }
+    }
+    public class B : A
+    {
+        int x = 1;
+        int y;
+        public B()
+        {
+            y = -1;
+            Debug.Log("wozhix:"+y);
+        }
+        public override void PrintFields()
+        {
+            Debug.Log(string.Format("x={0},y={1}", x, y));
+        }
+    }
+
+    Material material;
+
     void Start()
     {
+        //for (int i = 0; i < 30; i++)
+        //{
+        //   //Debug.Log(GetNumberAtPos(i));
+        //   Debug.Log(getNumber(i));
+        //}
+        Class1 class1 = new Class1();
+        Class1 class2 = new Class1();
+        B aaaa = new B();
+        
 
-        Debug.Log(GetR());
+        string strTmp = "a1某某某";
+        var asda = System.Text.Encoding.Default.GetBytes(strTmp);
+        for (int i = 0; i < asda.Length; i++)
+        {
+            Debug.Log(asda[i].ToString());
+        }
+       
+        Debug.Log(strTmp.Length);
+
+        //int? a = 1;
+        //material = GetComponent<Renderer>().material;
+        //material.DOFloat(-0.5f, "_DisappearOffset", 1);
+        //Debug.Log(GetR());
 
         //var director = new Director();
         //var builder = new ConcreteBuilder();
@@ -31,6 +94,35 @@ public class TestData : MonoBehaviour
 
         //Button button=GetComponent<Button>();
         //button.onClick.AddListener(()=> { });
+    }
+    public int GetNumberAtPos(int pos)
+    {
+        if (pos == 0 || pos == 1)
+        {
+            return 1;
+        }
+        int res = GetNumberAtPos(pos - 1) + GetNumberAtPos(pos - 2);
+        return res;
+    }
+
+    public int getNumber(int pos)
+    {
+        int one = 1;
+        int two = 1;
+        if (pos == 0 || pos == 1)
+        {
+            return 1;
+        }
+        int i = 3;
+        int sum = 1;
+        while (i <= pos)
+        {
+            sum = one + two;
+            one = two;
+            two = sum;
+            i++;
+        }
+        return sum;
     }
     /// <summary>
     /// 获取一年中的周

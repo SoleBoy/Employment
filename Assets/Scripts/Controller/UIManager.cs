@@ -39,11 +39,18 @@ public class UIManager : MonoSingleton<UIManager>
     public Employerpanel employerpanel;
     public ServicePanel servicePanel;
     public CheckPanel checkPanel;
+    public TaskPanel taskPanel;
+    public TaskConfirmPanel taskConfirmPanel;
+    public ProtocolPanel protocolPanel;
+    public BankCardPanel bankCardPanel;
+    public InvitationPanel invitationPanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
     private Transform bloodParent;
     private Transform bloodPrefab;
+
+    private bool isInit;
     public override void Init()
     {
         Debug.Log("初始信息");
@@ -55,9 +62,10 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
+        maskPanel.SetActive(false);
         DataTool.StartActivity(0);
     }
-
+     
     private void Update()
     {
         //battlePanel.SetUpdata(Time.deltaTime);
@@ -111,6 +119,11 @@ public class UIManager : MonoSingleton<UIManager>
         employerpanel = transform.Find("Employerpanel").GetComponent<Employerpanel>();
         servicePanel = transform.Find("ServicePanel").GetComponent<ServicePanel>();
         checkPanel = transform.Find("CheckPanel").GetComponent<CheckPanel>();
+        taskPanel = transform.Find("TaskPanel").GetComponent<TaskPanel>();
+        taskConfirmPanel = transform.Find("TaskConfirmPanel").GetComponent<TaskConfirmPanel>();
+        protocolPanel = transform.Find("ProtocolPanel").GetComponent<ProtocolPanel>();
+        bankCardPanel = transform.Find("BankCardPanel").GetComponent<BankCardPanel>();
+        invitationPanel = transform.Find("InvitationPanel").GetComponent<InvitationPanel>();
 
         hallPanel.Init();
         homePanel.Init();
@@ -182,7 +195,10 @@ public class UIManager : MonoSingleton<UIManager>
         }
         else
         {
-
+            //if(!isInit)
+            //{
+            //    DataTool.StartActivity(0);
+            //}
         }
     }
     private void OnApplicationQuit()
@@ -194,6 +210,7 @@ public class UIManager : MonoSingleton<UIManager>
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
     public void AcceptData_Android(string messgInfo)
     {
+        isInit = true;
         maskPanel.SetActive(false);
         try
         {

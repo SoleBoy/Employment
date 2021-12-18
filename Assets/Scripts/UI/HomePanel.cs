@@ -22,6 +22,7 @@ public class HomePanel : MonoBehaviour
     private Button homeBtn;
     private Button incomeBtn;
     private Button mainBtn;
+    private Button taskBtn;
 
     private int indexCurret;
     public void Init()
@@ -34,10 +35,12 @@ public class HomePanel : MonoBehaviour
         homeBtn = transform.Find("Bottom/HomeBtn").GetComponent<Button>();
         incomeBtn = transform.Find("Bottom/IncomeBtn").GetComponent<Button>();
         mainBtn = transform.Find("Bottom/MainBtn").GetComponent<Button>();
+        taskBtn = transform.Find("Bottom/TaskBtn").GetComponent<Button>();
 
         homeBtn.onClick.AddListener(OpenHome);
         incomeBtn.onClick.AddListener(OpenInconme);
         mainBtn.onClick.AddListener(OpenMain);
+        taskBtn.onClick.AddListener(OpenTask);
     }
 
     public void InitData()
@@ -83,6 +86,12 @@ public class HomePanel : MonoBehaviour
         UIManager.Instance.hallPanel.OpenPanel();
     }
 
+    public void OpenTask()
+    {
+        ClosePanel(3);
+        UIManager.Instance.taskPanel.OpenPanel();
+    }
+
     private void ClcikButton(int index)
     {
         clickImage[indexCurret].sprite = norSprite[indexCurret];
@@ -105,6 +114,10 @@ public class HomePanel : MonoBehaviour
         else if (indexCurret == 2)
         {
             UIManager.Instance.mainPanel.ClosePanel();
+        }
+        else if (indexCurret == 3)
+        {
+            UIManager.Instance.taskPanel.ClosePanel();
         }
         ClcikButton(index);
     }
