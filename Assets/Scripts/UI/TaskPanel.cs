@@ -1,11 +1,20 @@
-﻿using System;
+﻿using MiniJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
+using LitJson;
 
 public class TaskPanel : MonoBehaviour
 {
+    public Color selectedColor;
+    public Color clickColor;
+    public Color cancelColor;
+
+    public Text[] clickText;
+
     private Button filterBtn;
     private Button recomBtn;
     private Button assignBtn;
@@ -16,6 +25,7 @@ public class TaskPanel : MonoBehaviour
 
     private Text araeNameText;
     private Text typeNameText;
+    private Text filterText;
 
     public GameObject[] clickHide;
     public GameObject taskItem;
@@ -30,13 +40,17 @@ public class TaskPanel : MonoBehaviour
     private Transform mineParent;
     private Transform areaParent;
     private Transform typeParent;
+    private Transform areaIcon;
+    private Transform typeIcon;
 
     private bool isArea;
     private bool isType;
     private int index_click;
-    private string[] messgName = { "场站保洁服务","驾校代驾服务","快递服务","某某公司保洁服务","家政保洁服务"};
-    private string[] araeName = { "上海","江苏","河南","河北","广东","厦门","深圳", "郑州" };
-    private string[] typeName = { "保洁","保安","代驾", "腾讯搜活帮", "百度众测", "京东微工", "有道众包" };
+    private string provinceId;
+
+    private Vector3 selectedAngle = new Vector3(0,0,90);
+    private Vector3 cancelAngle = new Vector3(0,0,180);
+    private List<TaskDetails> taskDetails = new List<TaskDetails>();
     private void Awake()
     {
         filterPanel = transform.Find("FilterPanel").gameObject;
@@ -48,9 +62,12 @@ public class TaskPanel : MonoBehaviour
         mineParent = transform.Find("MineTask/Viewport/Content");
         areaParent = transform.Find("FilterPanel/Area/Viewport/Content");
         typeParent = transform.Find("FilterPanel/Type/Viewport/Content");
+        areaIcon = transform.Find("FilterPanel/AreaBtn/icon");
+        typeIcon = transform.Find("FilterPanel/TypeBtn/icon");
 
         araeNameText = transform.Find("FilterPanel/AreaBtn/Text").GetComponent<Text>();
         typeNameText = transform.Find("FilterPanel/TypeBtn/Text").GetComponent<Text>();
+        filterText = transform.Find("FilterBtn/Text").GetComponent<Text>();
 
         filterBtn = transform.Find("FilterBtn").GetComponent<Button>();
         recomBtn = transform.Find("Header/RecomBtn").GetComponent<Button>();
@@ -70,40 +87,9 @@ public class TaskPanel : MonoBehaviour
         areaBtn.onClick.AddListener(RegionSelection);
         typeBtn.onClick.AddListener(TypeSelection);
 
-        for (int i = 0; i < 5; i++)
-        {
-            var item = Instantiate(taskItem);
-            item.SetActive(true);
-            item.transform.SetParent(itemParent);
-            item.transform.localScale = Vector3.one;
-            item.GetComponent<TaskDetails>().SetInfo(messgName[i]);
-        }
-        float maxY = 5 * 150 + 5 * 100;
-        itemParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-
-        for (int i = 0; i < typeName.Length; i++)
-        {
-            var item = Instantiate(araeItem);
-            item.SetActive(true);
-            item.transform.SetParent(typeParent);
-            item.transform.localScale = Vector3.one;
-            AraeClass arae = new AraeClass(item.transform);
-            arae.SetName(typeName[i]);
-        }
-        float typeY = araeName.Length * 100;
-        typeParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, typeY);
-
-        for (int i = 0; i < araeName.Length; i++)
-        {
-            var item = Instantiate(araeItem);
-            item.SetActive(true);
-            item.transform.SetParent(areaParent);
-            item.transform.localScale = Vector3.one;
-            AraeClass arae = new AraeClass(item.transform);
-            arae.SetName(araeName[i]);
-        }
-        float araeY = araeName.Length * 100;
-        areaParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, araeY);
+        StartCoroutine(RequestTaskType(DataTool.typeTaskUrl));
+        StartCoroutine(RequestAddress(DataTool.placeTaskUrl));
+        //StartCoroutine(RequestSeachTask(DataTool.seachTaskUrl,"0"));
     }
 
     private void SetTaskType()
@@ -111,21 +97,16 @@ public class TaskPanel : MonoBehaviour
         if(index_click == 0)
         {
             filterObject.SetActive(true);
-            mineParent.parent.parent.gameObject.SetActive(false);
-            itemParent.parent.parent.gameObject.SetActive(true);
         }
         else if(index_click == 1)
         {
             filterObject.SetActive(false);
-            mineParent.parent.parent.gameObject.SetActive(false);
-            itemParent.parent.parent.gameObject.SetActive(true);
         }
         else if(index_click == 2)
         {
             filterObject.SetActive(false);
-            mineParent.parent.parent.gameObject.SetActive(true);
-            itemParent.parent.parent.gameObject.SetActive(false);
         }
+        
     }
 
     private void OpenRecommend()
@@ -147,12 +128,16 @@ public class TaskPanel : MonoBehaviour
     {
         if(filterPanel.activeSelf)
         {
+            filterText.color = cancelColor;
             filterPanel.SetActive(false);
         }
         else
         {
             isArea = true;
             isType = true;
+            filterText.color = selectedColor;
+            areaIcon.localEulerAngles = cancelAngle;
+            typeIcon.localEulerAngles = cancelAngle;
             araeNameText.text = "地区";
             typeNameText.text = "类型";
             filterPanel.SetActive(true);
@@ -163,6 +148,10 @@ public class TaskPanel : MonoBehaviour
 
     private void ConfirmArea()
     {
+        if(araeNameText.text != "地区" && typeNameText.text != "类型")
+        {
+            StartCoroutine(RequestSeachTask(DataTool.seachTaskUrl,"0", provinceId, typeNameText.text));
+        }
         filterPanel.SetActive(false);
     }
 
@@ -172,11 +161,13 @@ public class TaskPanel : MonoBehaviour
         {
             isArea = false;
             areaPanel.SetActive(true);
+            areaIcon.localEulerAngles = selectedAngle;
         }
         else
         {
             isArea = true;
             areaPanel.SetActive(false);
+            areaIcon.localEulerAngles = cancelAngle;
         }
     }
 
@@ -186,20 +177,31 @@ public class TaskPanel : MonoBehaviour
         {
             isType = false;
             typePanel.SetActive(true);
+            typeIcon.localEulerAngles = selectedAngle;
         }
         else
         {
             isType = true;
             typePanel.SetActive(false);
+            typeIcon.localEulerAngles = cancelAngle;
         }
     }
 
-    private void OpenSubscript(int index)
+    public void OpenSubscript(int index)
     {
-        clickHide[index_click].gameObject.SetActive(false);
+        for (int i = 0; i < clickHide.Length; i++)
+        {
+            clickHide[i].gameObject.SetActive(false);
+        }
+        for (int i = 0; i < clickText.Length; i++)
+        {
+            clickText[i].color = cancelColor;
+        }
         index_click = index;
         clickHide[index_click].gameObject.SetActive(true);
+        clickText[index_click].color = clickColor;
         SetTaskType();
+        StartCoroutine(RequestSeachTask(DataTool.seachTaskUrl, index_click.ToString()));
     }
 
     public void OpenPanel()
@@ -208,18 +210,8 @@ public class TaskPanel : MonoBehaviour
         filterPanel.SetActive(false);
         filterObject.SetActive(true);
         index_click = 0;
-        SetTaskType();
-        for (int i = 0; i < clickHide.Length; i++)
-        {
-            if(i == index_click)
-            {
-                clickHide[i].gameObject.SetActive(true);
-            }
-            else
-            {
-                clickHide[i].gameObject.SetActive(false);
-            }
-        }
+        filterText.color = cancelColor;
+        OpenRecommend();
     }
 
 
@@ -227,14 +219,15 @@ public class TaskPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-
-    public void RegionSelection(string messgName)
+    //筛选当前任务
+    public void FilterSelection(string messgName,string provinceId)
     {
         if(!isArea)
         {
             isArea = true;
             areaPanel.SetActive(false);
             araeNameText.text = messgName;
+            this.provinceId = provinceId;
         }
         else if (!isType)
         {
@@ -245,11 +238,149 @@ public class TaskPanel : MonoBehaviour
        
     }
 
+    //获取任务类型列表
+    private IEnumerator RequestTaskType(string url)
+    {
+
+        UnityWebRequest webRequest = UnityWebRequest.Get(url);
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            //Debug.Log("任务类型" + webRequest.downloadHandler.text);
+            Dictionary<string, object> taskType = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+            if (taskType["msg"].ToString() == "SUCCESS")
+            {
+                List<object> taskInfo = taskType["data"] as List<object>;
+                for (int i = 0; i < taskInfo.Count; i++)
+                {
+                    var item = Instantiate(araeItem);
+                    item.SetActive(true);
+                    item.transform.SetParent(typeParent);
+                    item.transform.localScale = Vector3.one;
+                    AraeClass arae = new AraeClass(item.transform);
+                    arae.SetName(taskInfo[i].ToString(),"");
+                }
+                float typeY = taskInfo.Count * 100;
+                typeParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, typeY);
+            }
+        }
+    }
+
+    //获取任务地址列表
+    private IEnumerator RequestAddress(string url)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(url);
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            //Debug.Log("行政区" + webRequest.downloadHandler.text);
+            Dictionary<string, object> taskType = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+            if (taskType["msg"].ToString() == "SUCCESS")
+            {
+                List<object> taskInfo = taskType["data"] as List<object>;
+                for (int i = 0; i < taskInfo.Count; i++)
+                {
+                    Dictionary<string,object> info= taskInfo[i] as Dictionary<string, object>;
+                    var item = Instantiate(araeItem);
+                    item.SetActive(true);
+                    item.transform.SetParent(areaParent);
+                    item.transform.localScale = Vector3.one;
+                    AraeClass arae = new AraeClass(item.transform);
+                    arae.SetName(info["name"].ToString(), info["id"].ToString());
+                }
+                float araeY = taskInfo.Count * 100;
+                areaParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, araeY);
+            }
+        }
+    }
+
+    //筛选任务
+    private IEnumerator RequestSeachTask(string url,string taskType, string provinceId = "", string taskTypeName = "")
+    {
+        JsonData data = new JsonData();
+        data["page"] = "1";
+        data["pageSize"] = "100";
+        data["taskType"] = taskType;
+        data["provinceId"] = provinceId;
+        data["taskTypeName"] = taskTypeName;
+        if(taskType == "0")
+        {
+            data["lat"] = DataTool.latitude;
+            data["lgn"] = DataTool.longitude;
+        }
+        else
+        {
+            data["lat"] = "";
+            data["lgn"] = "";
+        }
+
+        UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        byte[] postBytes = System.Text.Encoding.Default.GetBytes(data.ToJson());
+        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
+        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+        UIManager.Instance.MaskTest(true);
+        yield return webRequest.SendWebRequest();
+        UIManager.Instance.MaskTest(false);
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            Debug.Log("任务"+ taskType + webRequest.downloadHandler.text);
+            bool istaskType = taskType == "2";
+            for (int i = 0; i < taskDetails.Count; i++)
+            {
+                taskDetails[i].gameObject.SetActive(false);
+            }
+            Dictionary<string, object> taskTotal = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+            if (taskTotal["msg"].ToString() == "SUCCESS")
+            {
+                Dictionary<string, object> taskData = taskTotal["data"] as Dictionary<string, object>;
+                List<object> taskList = taskData["list"] as List<object>;
+                for (int i = 0; i < taskList.Count; i++)
+                {
+                    Dictionary<string, object> info = taskList[i] as Dictionary<string, object>;
+                    if (i >= taskDetails.Count)
+                    {
+                        var item = Instantiate(taskItem);
+                        item.SetActive(true);
+                        item.transform.SetParent(itemParent);
+                        item.transform.localScale = Vector3.one;
+                        item.GetComponent<TaskDetails>().SetInfo(istaskType, taskList[i] as Dictionary<string, object>,i == taskList.Count-1);
+                        taskDetails.Add(item.GetComponent<TaskDetails>());
+                    }
+                    else
+                    {
+                        taskDetails[i].gameObject.SetActive(true);
+                        taskDetails[i].SetInfo(istaskType,taskList[i] as Dictionary<string, object>,i == taskList.Count - 1);
+                    }
+                }
+                float maxY = taskList.Count * 180 + taskList.Count * 100;
+                itemParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
+            }
+        }
+    }
     class AraeClass
     {
         private Text nameText;
         private Button areaBtn;
-        
+        private string provinceId;
         public AraeClass(Transform parent)
         {
             areaBtn = parent.GetComponent<Button>();
@@ -259,11 +390,12 @@ public class TaskPanel : MonoBehaviour
 
         private void ClickEvent()
         {
-            UIManager.Instance.taskPanel.RegionSelection(nameText.text);
+            UIManager.Instance.taskPanel.FilterSelection(nameText.text,provinceId);
         }
 
-        public void SetName(string messgName)
+        public void SetName(string messgName,string messgId)
         {
+            provinceId = messgId;
             nameText.text = messgName;
         }
 

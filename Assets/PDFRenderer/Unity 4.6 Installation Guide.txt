@@ -1,1 +1,0 @@
-For Unity 4.6, you must move the "Assets/Paroxe/FPDFenderer/Plugins" folder to "Assets/Plugins" and restart Unity.

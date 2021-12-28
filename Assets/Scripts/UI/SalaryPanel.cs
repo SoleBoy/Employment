@@ -88,16 +88,16 @@ public class SalaryPanel : MonoBehaviour
 
         private void OpenDetails()
         {
-            UIManager.Instance.payrollPanel.SetInfo(dateInfo, durationText.text, amountText.text);
-            DataTool.salaryEntry = SalaryEntry.month_3;
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                DataTool.CallNative(174, UIManager.Instance.salaryPanel.infoID);
-            }
-            else
-            {
-                UIManager.Instance.Acceptance_Android("Monthly3");
-            }
+            //UIManager.Instance.payrollPanel.SetInfo(dateInfo, durationText.text, amountText.text);
+            //DataTool.salaryEntry = SalaryEntry.month_3;
+            //if (Application.platform == RuntimePlatform.Android)
+            //{
+            //    DataTool.CallNative(174, UIManager.Instance.salaryPanel.infoID);
+            //}
+            //else
+            //{
+            //    UIManager.Instance.Acceptance_Android("Monthly3");
+            //}
         }
     }
 }

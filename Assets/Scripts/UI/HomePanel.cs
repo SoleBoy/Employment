@@ -57,12 +57,12 @@ public class HomePanel : MonoBehaviour
             if(indexCurret == i)
             {
                 clickImage[indexCurret].sprite = pickSprite[indexCurret];
-                clickObject[indexCurret].SetActive(true);
+                //clickObject[indexCurret].SetActive(true);
             }
             else
             {
                 clickImage[i].sprite = norSprite[i];
-                clickObject[i].SetActive(false);
+                //clickObject[i].SetActive(false);
             }
         }
         UIManager.Instance.hallPanel.OpenPanel();
@@ -95,10 +95,10 @@ public class HomePanel : MonoBehaviour
     private void ClcikButton(int index)
     {
         clickImage[indexCurret].sprite = norSprite[indexCurret];
-        clickObject[indexCurret].SetActive(false);
+        //clickObject[indexCurret].SetActive(false);
         indexCurret = index;
         clickImage[indexCurret].sprite = pickSprite[indexCurret];
-        clickObject[indexCurret].SetActive(true);
+        //clickObject[indexCurret].SetActive(true);
     }
 
     private void ClosePanel(int index)

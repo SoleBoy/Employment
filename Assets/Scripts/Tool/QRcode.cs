@@ -3,6 +3,7 @@ using System.Collections;
 using ZXing;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using LitJson;
 
 public class QRcode : MonoBehaviour
 {
@@ -88,15 +89,38 @@ public class QRcode : MonoBehaviour
         if (br != null)
         {
             //txtQRcode.text = br.Text;
-            CallNative(br.Text);
+            //CallNative(br.Text);
+            StartCoroutine(ScanCode(DataTool.scanCodeUrl, br.Text));
             isScan = false;
             webCameraTexture.Stop();
             gameObject.SetActive(false);
-           
-            //UIManager.Instance.CloningTips("扫描成功");
         }
     }
-    
+
+    private IEnumerator ScanCode(string url,string codeData)
+    {
+        JsonData data = new JsonData();
+        data["data"] = codeData;
+
+        UnityWebRequest webRequest = new UnityWebRequest(url, "Post");
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        byte[] postBytes = System.Text.Encoding.Default.GetBytes(data.ToJson());
+        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
+        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            Debug.Log("扫码成功" + webRequest.downloadHandler.text);
+        }
+
+    }
 
     public static void CallNative(string mesgg)
     {

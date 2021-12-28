@@ -1,7 +1,9 @@
-﻿using System;
+﻿using LitJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class TaskConfirmPanel : MonoBehaviour
@@ -11,6 +13,8 @@ public class TaskConfirmPanel : MonoBehaviour
     private Button cloceBtn;
 
     private GameObject successPanel;
+
+    private string taskId;
     private void Awake()
     {
         successPanel = transform.Find("success").gameObject;
@@ -21,16 +25,25 @@ public class TaskConfirmPanel : MonoBehaviour
 
         backBtn.onClick.AddListener(ClosePanel);
         fixBtn.onClick.AddListener(OpenSuccess);
-        cloceBtn.onClick.AddListener(ClosePanel);
+        cloceBtn.onClick.AddListener(BackTask);
     }
 
     private void OpenSuccess()
     {
+        StartCoroutine(TaskOrder(DataTool.receiverTaskUrl));
         successPanel.SetActive(true);
     }
 
-    public void OpenPanel()
+    private void BackTask()
     {
+        gameObject.SetActive(false);
+        UIManager.Instance.taskPanel.OpenSubscript(2);
+    }
+
+    public void OpenPanel(string taskId)
+    {
+        this.taskId = taskId;
+        Debug.Log("任务ID："+ taskId);
         gameObject.SetActive(true);
         successPanel.SetActive(false);
     }
@@ -38,5 +51,31 @@ public class TaskConfirmPanel : MonoBehaviour
     public void ClosePanel()
     {
         gameObject.SetActive(false);
+    }
+
+
+    //筛选任务
+    private IEnumerator TaskOrder(string url)
+    {
+        JsonData data = new JsonData();
+        data["taskId"] = taskId;
+
+        UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        byte[] postBytes = System.Text.Encoding.Default.GetBytes(data.ToJson());
+        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
+        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            Debug.Log("接单"+webRequest.downloadHandler.text);
+        }
     }
 }

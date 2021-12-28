@@ -6,12 +6,18 @@ using System.IO;
 using System;
 using MiniJSON;
 using System.Collections.Generic;
+using UnityEngine.Networking;
+using ZXing;
+using LitJson;
 
 public class LocationService : MonoBehaviour
 {
     private string GetGps = "";
     //880ef1cb42dd34128b666542829fdff5
-    private const string key = "ac611ea2fc1e9b9309cbb0486904e101";		//去高德地图开发者申请  880
+    private const string key = "880ef1cb42dd34128b666542829fdff5";      //去高德地图开发者申请  ac611ea2fc1e9b9309cbb0486904e101
+
+    private float lat = 0;
+    private float lon = 0;
     /// <summary>
     /// 初始化一次位置
     /// </summary>
@@ -50,13 +56,12 @@ public class LocationService : MonoBehaviour
         else
         {
             GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
+            //StartCoroutine(RequestAddress(Input.location.lastData.latitude.ToString(), Input.location.lastData.longitude.ToString(),"0"));
             yield return new WaitForSeconds(100);
         }
         // 如果不需要连续查询位置更新则停止服务
         Input.location.Stop();
     }
-
-
     /// <summary>
     /// 刷新位置信息（按钮的点击事件）
     /// </summary>
@@ -78,7 +83,7 @@ public class LocationService : MonoBehaviour
         // LocationService.isEnabledByUser 用户设置里的定位服务是否启用  
         if (!Input.location.isEnabledByUser)
         {
-            GetGps = "isEnabledByUser value is:" + Input.location.isEnabledByUser.ToString() + " Please turn on the GPS";
+            //GetGps = "isEnabledByUser value is:" + Input.location.isEnabledByUser.ToString() + " Please turn on the GPS";
             yield return false;
         }
 
@@ -95,35 +100,67 @@ public class LocationService : MonoBehaviour
 
         if (maxWait < 1)
         {
-            GetGps = "Init GPS service time out";
+            //GetGps = "Init GPS service time out";
             yield return false;
         }
 
         if (Input.location.status == LocationServiceStatus.Failed)
         {
-            GetGps = "Unable to determine device location";
+            //GetGps = "Unable to determine device location";
             yield return false;
         }
         else
         {
             GetGps = "N:" + Input.location.lastData.latitude + " E:" + Input.location.lastData.longitude;
-            if (Input.location.lastData.longitude == 0 && Input.location.lastData.latitude == 0)
+            lat = Input.location.lastData.latitude;
+            lon = Input.location.lastData.longitude;
+            if (lat == 0 && lon == 0)
             {
                 UIManager.Instance.CloningTips("位置获取失败,请检查GPS是否开启");
-                PlayerPrefs.SetString("ClockInAddress","位置获取失败");
+                PlayerPrefs.SetString("ClockInAddress", "位置获取失败");
                 string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
                 PlayerPrefs.SetString("ClockInTime", messgInfo);
                 UIManager.Instance.hallPanel.CheckRecord(true);
             }
             else
             {
-                GetLocationByLngLat(Input.location.lastData.longitude, Input.location.lastData.latitude);
+                StartCoroutine(RequestAddress(lat.ToString(), lon.ToString()));
+                GetLocationByLngLat(lon, lat);
             }
-            DataTool.CallClockInfo(Input.location.lastData.latitude, Input.location.lastData.longitude);
+            //DataTool.CallClockInfo(Input.location.lastData.latitude, Input.location.lastData.longitude);
             Input.location.Stop();
             yield return new WaitForSeconds(100);
         }
     }
+
+    private IEnumerator RequestAddress(string lat, string lgn)
+    {
+        JsonData data = new JsonData();
+        data["lat"] = lat;
+        data["lgn"] = lgn;
+        data["lockType"] = "1";
+        data["pic"] = DataTool.checkAddress;
+        data["taskId"] = DataTool.currentTask;
+
+        UnityWebRequest webRequest = new UnityWebRequest(DataTool.clockUrl, "POST");
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
+
+        byte[] postBytes = System.Text.Encoding.Default.GetBytes(data.ToJson());
+        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
+        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            Debug.Log("打卡成功"+webRequest.downloadHandler.text);
+        }
+    }
+
     /// <summary>
     /// 根据经纬度获取地址
     /// </summary>
@@ -171,15 +208,25 @@ public class LocationService : MonoBehaviour
         }
         if(strResult != "")
         {
+            Debug.Log("最新地址：" + strResult);
+            Debug.Log("N:" + lat + " E:" + lon);
             Dictionary<string, object> tokenData = Json.Deserialize(strResult) as Dictionary<string, object>;
-            Dictionary<string, object> pairs1 = tokenData["regeocode"] as Dictionary<string, object>;
+            
+            if (tokenData["status"].ToString() == "1")
+            {
+                Dictionary<string, object> pairs1 = tokenData["regeocode"] as Dictionary<string, object>;
 
-            string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
-            PlayerPrefs.SetString("ClockInTime", messgInfo);
-            PlayerPrefs.SetString("ClockInAddress", pairs1["formatted_address"].ToString());
-            Debug.Log(JsonUtility.ToJson(string.Format("{0}{1}", messgInfo, pairs1["formatted_address"].ToString())));
-            UIManager.Instance.hallPanel.CheckRecord(true);
-            UIManager.Instance.checkPanel.OpenPanel();
+                string messgInfo = string.Format("{0:D2}-{1:D2} " + " {2:D2}:{3:D2}  ", DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute);
+                PlayerPrefs.SetString("ClockInTime", messgInfo);
+                PlayerPrefs.SetString("ClockInAddress", pairs1["formatted_address"].ToString());
+                UIManager.Instance.hallPanel.CheckRecord(true);
+                UIManager.Instance.checkPanel.OpenPanel();
+                lat = 0; lon = 0;
+            }
+            else
+            {
+                UIManager.Instance.CloningTips("位置获取失败,错误信息:"+ tokenData["status"].ToString());
+            }
         }
     }
 }

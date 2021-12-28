@@ -10,14 +10,20 @@ public class BankCardPanel : MonoBehaviour
     private Text bankText;
     private Text cardText;
 
-    private void Awake()
+    public void Init()
     {
-        bankText = transform.Find("Info/info3/Text").GetComponent<Text>();
-        cardText = transform.Find("Info/info3/Text").GetComponent<Text>();
+        bankText = transform.Find("Info/line/Name").GetComponent<Text>();
+        cardText = transform.Find("Info/line/Code").GetComponent<Text>();
 
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
         backBtn.onClick.AddListener(ClosePanel);
+    }
+    public void InitData()
+    {
+        bankText.text = DataTool.bankName;
+        string bankNo = DataTool.bankNo;
+        cardText.text = System.Text.RegularExpressions.Regex.Replace(bankNo, @"(\w{4})", "$1 ").Trim(' ');
     }
 
     public void OpenPanel()

@@ -40,13 +40,21 @@ public class MainPanel : MonoBehaviour
         serviceBtn.onClick.AddListener(OpenService);
         agreementBtn.onClick.AddListener(OpenAgreement);
 
-        licenseBtn.gameObject.SetActive(DataTool.isUnit);
+        licenseBtn.gameObject.SetActive(false);
     }
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        firmText.text = DataTool.theCompany;
-        nameText.text = DataTool.roleName;
+        if (DataTool.theCompany == "")
+        {
+            nameText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+        }
+        else
+        {
+            nameText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+        }
+        //nameText.text = DataTool.roleName;
+        //firmText.text = DataTool.theCompany;
     }
 
     public void ClosePanel()
@@ -86,15 +94,15 @@ public class MainPanel : MonoBehaviour
     //营业执照
     private void OpenLicense()
     {
-        DataTool.salaryEntry = SalaryEntry.business_1;
-        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            DataTool.CallNative(195, 0);
-        }
-        else
-        {
-            UIManager.Instance.Acceptance_Android("Monthly7");
-        }
+        //DataTool.salaryEntry = SalaryEntry.business_1;
+        //if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        //{
+        //    DataTool.CallNative(195, 0);
+        //}
+        //else
+        //{
+        //    UIManager.Instance.Acceptance_Android("Monthly7");
+        //}
         //UIManager.Instance.businessPanel.OpenPanel();
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using LitJson;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class Employerpanel : MonoBehaviour
@@ -57,14 +59,7 @@ public class Employerpanel : MonoBehaviour
         ClcikButton(0);
         firmText.text = DataTool.theCompany;
         codeText.text = DataTool.inviteCode;
-        if (DataTool.inviteType == "1")
-        {
-            askText.text = "雇主邀请码(个人)";
-        }
-        else
-        {
-            askText.text = "雇主邀请码(个体工商户)";
-        }
+        askText.text = "雇主邀请码";
     }
 
     public void ClosePanel()
@@ -82,16 +77,9 @@ public class Employerpanel : MonoBehaviour
     //营业执照
     public void OpenLicense()
     {
-        DataTool.salaryEntry = SalaryEntry.business_1;
-        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            DataTool.CallNative(195, 0);
-        }
-        else
-        {
-            UIManager.Instance.Acceptance_Android("Monthly7");
-        }
-        //UIManager.Instance.businessPanel.OpenPanel();
+        //DataTool.employerInfo["buzLicensePic"].ToString()
+        UIManager.Instance.businessPanel.OpenPanel("");
+        //UIManager.Instance.loadTxt.GetMonthly_7();
     }
 
     private void OpenMain()

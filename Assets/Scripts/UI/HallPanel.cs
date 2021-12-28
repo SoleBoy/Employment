@@ -9,17 +9,14 @@ using MiniJSON;
 
 public class HallPanel : MonoBehaviour
 {
+    public GameObject[] beastObject;
     private Text firmText;
     private Text addText;
     private Text statusText;
-    //private Text certeiText;
-    //private Text gradeText;
-    //private Text expText;
-    //private Text titleText;
     private Text clockText;
 
+    private Image statusImage;
     private Image roleImage;
-    //private Image expImage;
     private GameObject checkRecord;
 
     private Button gachaBtn;
@@ -28,28 +25,23 @@ public class HallPanel : MonoBehaviour
     private Button packBtn;
     private Button certiBtn;
     private Button infoBtn;
+    private Button clockinBtn;
 
     private Transform roleParent;
     private Transform petParent;
-    //private GameObject clockIn;
     public void Init()
     {
         checkRecord = transform.Find("Head/Boom").gameObject;
-        //clockIn = transform.Find("Head/Clock").gameObject;
         roleParent = transform.Find("Bracket/RoleImage");
         petParent = transform.Find("PetParent");
 
         firmText = transform.Find("Head/Text").GetComponent<Text>();
         addText = transform.Find("Head/Boom/Address/Text").GetComponent<Text>();
-        statusText = transform.Find("Status/Text").GetComponent<Text>();
-        //certeiText = transform.Find("CertiBtn/Text").GetComponent<Text>();
-        //gradeText = transform.Find("GradeBar/GradeText").GetComponent<Text>();
-        //expText = transform.Find("GradeBar/ExpText").GetComponent<Text>();
-        //titleText = transform.Find("GradeBar/NameText").GetComponent<Text>();
+        statusText = transform.Find("Head/Status/Text").GetComponent<Text>();
         clockText = transform.Find("Head/Boom/Clock/Text").GetComponent<Text>();
 
+        statusImage = transform.Find("Head/Status/Image").GetComponent<Image>();
         roleImage = transform.Find("Bracket/RoleImage").GetComponent<Image>();
-        //expImage = transform.Find("GradeBar/Bar").GetComponent<Image>();
 
         gachaBtn = transform.Find("GachaBtn").GetComponent<Button>();
         battleBtn = transform.Find("BattleBtn").GetComponent<Button>();
@@ -57,6 +49,7 @@ public class HallPanel : MonoBehaviour
         packBtn = transform.Find("PackBtn").GetComponent<Button>();
         certiBtn = transform.Find("CertiBtn").GetComponent<Button>();
         infoBtn = transform.Find("GradeBar/InfoBtn").GetComponent<Button>();
+        clockinBtn= transform.Find("ClockinBtn").GetComponent<Button>();
 
         gachaBtn.onClick.AddListener(OpneGacha);
         battleBtn.onClick.AddListener(OpneBattle);
@@ -64,20 +57,27 @@ public class HallPanel : MonoBehaviour
         packBtn.onClick.AddListener(OpnePack);
         certiBtn.onClick.AddListener(OpenCerti);
         infoBtn.onClick.AddListener(OpenDetails);
-       
-        //InitData();
+        clockinBtn.onClick.AddListener(OpenClockin);
+    }
+
+    private void OpenClockin()
+    {
+        UIManager.Instance.photographPanel.OpenPanel(true);
     }
 
     public void InitData()
     {
-        statusText.text = "休息中......";
-        firmText.text = DataTool.theCompany;
-        //certeiText.text = "点击认证";
-        //titleText.text = DataTool.roleTitle;
-        //gradeText.text = string.Format("LV.{0}", DataTool.roleLevel);
-        //expText.text = string.Format("{0}/{1}", DataTool.roleExp, DataTool.roleExp_Max);
-        //expImage.fillAmount = DataTool.roleExp / DataTool.roleExp_Max;
-        //StartCoroutine(RequestAddress());
+        statusText.text = string.Format("当月累计任务时长{0}小时",DataTool.taskDuration);
+        statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
+        if (DataTool.theCompany == "")
+        {
+            firmText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+        }
+        else
+        {
+            firmText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+        }
+       
     }
 
     public void OpenPanel()
@@ -110,24 +110,28 @@ public class HallPanel : MonoBehaviour
     {
         petParent.GetChild(index).gameObject.SetActive(isHide);
     }
-    //增加经验
-    public void AddExperience(float exp)
-    {
-        //if(DataTool.AddExperience(exp))
-        //{
-        //    gradeText.text = string.Format("LV.{0}", DataTool.roleLevel);
-        //}
-        //expText.text = string.Format("{0}/{1}", DataTool.roleExp, DataTool.roleExp_Max);
-        //expImage.fillAmount = DataTool.roleExp / DataTool.roleExp_Max;
-    }
+
     private void OpnePack()
     {
         UIManager.Instance.backpackPanel.OpenPanel();
     }
-
+    private bool isBeast;
     private void OpneBeast()
     {
-        UIManager.Instance.beastPanel.OpenPanel();
+        if(isBeast)
+        {
+            isBeast = false;
+            for (int i = 0; i < beastObject.Length; i++)
+            {
+                beastObject[i].SetActive(false);
+            }
+        }
+        else
+        {
+            isBeast = true;
+            beastObject[UnityEngine.Random.Range(0,beastObject.Length)].SetActive(true);
+        }
+        //UIManager.Instance.beastPanel.OpenPanel();
     }
 
     private void OpneBattle()

@@ -1,0 +1,21 @@
+ {
+ "code": 0,
+  "msg": "SUCCESS",
+  "data": {
+    "id": 2,
+    "currentMonthTime": "当月累计任务时长5",
+    "companyId": 1,
+    "companyName": "2",
+    "taskTypeId": 2,
+    "taskName": "321",
+    "taskPlanStartDate": "2021-12-12 03:39:41",
+    "taskPlanEndDate": "2022-01-01 08:39:45",
+    "taskStartDate": "2021-12-12 03:39:52",
+    "taskEndDate": "2022-01-01 13:39:57",
+    "taskAddress": "浦东大道",
+    "planPeopleNumber": 3,
+    "provinceId": null,
+    "taskLat": null,
+    "taskLgn": null
+  }
+}

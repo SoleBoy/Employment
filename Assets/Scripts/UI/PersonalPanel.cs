@@ -10,9 +10,9 @@ public class PersonalPanel : MonoBehaviour
 
     private Button backBtn;
     private Transform infoParent;
-    private List<InfoItem> infos = new List<InfoItem>();
+    //private List<InfoItem> infos = new List<InfoItem>();
     //企业法人实名认证  营业执照登记  银行开户许可证 签名验证
-    private string[] fieldInfo = { "com_fr_realname_auth_status", "com_identity_register_status", "com_bank_acct_open_permit_status",  "com_fr_signature_status" };
+    //private string[] fieldInfo = { "com_fr_realname_auth_status", "com_identity_register_status", "com_bank_acct_open_permit_status",  "com_fr_signature_status" };
     public void Init()
     {
         infoParent = transform.Find("Info/PayrollView/Viewport/Content");
@@ -21,11 +21,11 @@ public class PersonalPanel : MonoBehaviour
         firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
 
         backBtn.onClick.AddListener(ClosePanel);
-        for (int i = 0; i < 3; i++)
-        {
-            InfoItem item = new InfoItem(infoParent.Find("Item" + (i + 1)), i);
-            infos.Add(item);
-        }
+        //for (int i = 0; i < 3; i++)
+        //{
+        //    InfoItem item = new InfoItem(infoParent.Find("Item" + (i + 1)), i);
+        //    infos.Add(item);
+        //}
     }
 
     public void OpenPanel()
@@ -40,20 +40,20 @@ public class PersonalPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void CertificationInfo(Dictionary<string, object> pairs)
-    {
-        for (int i = 0; i < infos.Count; i++)
-        {
-            if (pairs.ContainsKey(fieldInfo[i]))
-            {
-                infos[i].SetInfo(int.Parse(pairs[fieldInfo[i]].ToString()));
-            }
-            else
-            {
-                infos[i].SetInfo(2);
-            }
-        }
-    }
+    //public void CertificationInfo(Dictionary<string, object> pairs)
+    //{
+    //    for (int i = 0; i < infos.Count; i++)
+    //    {
+    //        if (pairs.ContainsKey(fieldInfo[i]))
+    //        {
+    //            infos[i].SetInfo(int.Parse(pairs[fieldInfo[i]].ToString()));
+    //        }
+    //        else
+    //        {
+    //            infos[i].SetInfo(2);
+    //        }
+    //    }
+    //}
     //认证信息
     private class InfoItem
     {
@@ -106,22 +106,22 @@ public class PersonalPanel : MonoBehaviour
             if (index == 0)
             {
                 infoText.text = "必填项";
-                infoText.color = DataTool.color_Blue;
+                infoText.color = DataTool.color_progress;
             }
             else if (index == 1)
             {
                 infoText.text = "已完成";
-                infoText.color = DataTool.color_Green;
+                infoText.color = DataTool.color_submitted;
             }
             else if (index == 2)
             {
                 infoText.text = "未完成";
-                infoText.color = DataTool.color_Blue;
+                infoText.color = DataTool.color_start;
             }
             else
             {
                 infoText.text = "审核待处理";
-                infoText.color = DataTool.color_Blue;
+                infoText.color = DataTool.color_review;
             }
         }
     }

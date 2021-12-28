@@ -13,15 +13,38 @@ public class LoadTxt : MonoBehaviour
     //07-05  16:53  河南省郑州市管城回族区城东路街道城东路98号正商向阳广场
     private void Start()
     {
+        //StartCoroutine(RequestAddress("http://appapi.brilliantnetwork.cn:5002/api/basicdata/getAddressFromGeo?lgn=121.459&lat=31.187117"));
+        //UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
+        //TaskTest(TxtFile[10].ToString());
 #if UNITY_EDITOR
         UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
 #endif
     }
+
+    public void TaskTest(string messg)
+    {
+        Debug.Log("当前任务信息" + messg);
+        Dictionary<string, object> taskData = Json.Deserialize(messg) as Dictionary<string, object>;
+        if (taskData["data"].ToString() != "")
+        {
+            Dictionary<string, object>  taskInfo = taskData["data"] as Dictionary<string, object>;
+            DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
+            foreach (var item in taskInfo)
+            {
+                Debug.Log(item.Key + ":" + item.Value);
+            }
+        }
+        else
+        {
+            Debug.Log("无当前任务");
+        }
+    }
+
     //total字段累计收入
     public void GetMonthly_1()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[0].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.incomePanel.InitState(2,tokenData);
+        //UIManager.Instance.incomePanel.InitState(2,tokenData);
     }
     public void GetMonthly_2()
     {
@@ -36,7 +59,7 @@ public class LoadTxt : MonoBehaviour
     public void GetMonthly_4()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[3].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.incomePanel.InitState(4, tokenData);
+        //UIManager.Instance.incomePanel.InitState(4, tokenData);
     }
     public void GetMonthly_5()
     {
@@ -46,26 +69,26 @@ public class LoadTxt : MonoBehaviour
     public void GetMonthly_6()
     {
         List<object> tokenData = Json.Deserialize(TxtFile[5].ToString()) as List<object>;
-        UIManager.Instance.incomePanel.InitState(3,null,tokenData);
+        //UIManager.Instance.incomePanel.InitState(3,null,tokenData);
     }
     public void GetMonthly_7()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[6].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.businessPanel.OpenPanel(tokenData);
+        //UIManager.Instance.businessPanel.OpenPanel(tokenData);
         //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
         //Application.OpenURL(tokenData["url"].ToString());
     }
     public void GetMonthly_8()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[7].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.incomePanel.InitState(0,tokenData);
+        //UIManager.Instance.incomePanel.InitState(0,tokenData);
         //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
         //Application.OpenURL(tokenData["url"].ToString());
     }
     public void GetMonthly_9()
     {
         Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[8].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.incomePanel.InitState(1, tokenData);
+        //UIManager.Instance.incomePanel.InitState(1, tokenData);
         //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
         //Application.OpenURL(tokenData["url"].ToString());
     }
@@ -96,11 +119,15 @@ public class LoadTxt : MonoBehaviour
     //"http://api.map.baidu.com/location/ip?ak=bretF4dm6W5gqjQAXuvP0NXW6FeesRXb&coor=bd09ll"
     private IEnumerator RequestAddress(string url)
     {
-        WWWForm form = new WWWForm();
-
+        //http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskTypeNames
+        //WWWForm form = new WWWForm();
+        //form.AddField("token", "eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTYzOTkwODQyMSwic3ViIjoie1widXNlcklkXCI6OSxcInVzZXJUeXBlXCI6MH0iLCJleHAiOjE2NDI1MDA0MjF9.OcSge3V-mekLuWtnl_imZQV5-H9C7fH4vgBQjkynohM");
         UnityWebRequest webRequest = UnityWebRequest.Get(url);
-        DownloadHandlerTexture tx = new DownloadHandlerTexture();
-        webRequest.downloadHandler = tx;
+        //webRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.Default.GetBytes("eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTYzOTkxNzc0NCwic3ViIjoie1widXNlcklkXCI6MTQsXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQyNTA5NzQ0fQ.FMyYlG_WUbOV459-dx15VnuR2JVW0g4duGR9m6Qv5Ao"));
+        webRequest.SetRequestHeader("Authorization", "eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTYzOTkxNzc0NCwic3ViIjoie1widXNlcklkXCI6MTQsXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQyNTA5NzQ0fQ.FMyYlG_WUbOV459-dx15VnuR2JVW0g4duGR9m6Qv5Ao");
+        //webRequest.downloadHandler = new DownloadHandlerBuffer();
+        //DownloadHandlerTexture tx = new DownloadHandlerTexture();
+        //webRequest.downloadHandler = tx;
         yield return webRequest.SendWebRequest();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
@@ -111,11 +138,11 @@ public class LoadTxt : MonoBehaviour
             //try
             {
                 Debug.Log(webRequest.downloadHandler.text);
-                byte[] data = webRequest.downloadHandler.data;
-                Texture2D tex = new Texture2D(100, 100);
-                tex.LoadImage(data);
+                //byte[] data = webRequest.downloadHandler.data;
+                //Texture2D tex = new Texture2D(100, 100);
+                //tex.LoadImage(data);
 
-                Image_sprite.texture = tex;
+                //Image_sprite.texture = tex;
 
                 //Dictionary<string, object> tokenData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
                 //Dictionary<string, object> pairs = tokenData["content"] as Dictionary<string, object>;
