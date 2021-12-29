@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum TaskStatus
+{
+    start,
+    submit,
+}
+
 public class TaskDetails : MonoBehaviour
 {
     private Text taskText;
@@ -11,12 +17,15 @@ public class TaskDetails : MonoBehaviour
     private Text timeText;
     private Text addressText;
     private Text stateText;
+    private Text submitText;
     private Button confirmBtn;
     private Button submitBtn;
 
     private GameObject line_1;
     private GameObject line_2;
 
+    private TaskStatus taskStatus;
+    private string taskType;
     Dictionary<string, object> infoTask = new Dictionary<string, object>();
     private void Awake()
     {
@@ -25,6 +34,7 @@ public class TaskDetails : MonoBehaviour
         timeText = transform.Find("time").GetComponent<Text>();
         addressText = transform.Find("address").GetComponent<Text>();
         stateText = transform.Find("stateText").GetComponent<Text>();
+        submitText = transform.Find("SubmitBtn/Text").GetComponent<Text>();
         confirmBtn = transform.Find("ConfirmBtn").GetComponent<Button>();
         submitBtn = transform.Find("SubmitBtn").GetComponent<Button>();
 
@@ -36,13 +46,12 @@ public class TaskDetails : MonoBehaviour
 
     private void SubmitPanel()
     {
-        UIManager.Instance.taskSubmitPanel.OpenPanel(infoTask["id"].ToString());
+        UIManager.Instance.taskSubmitPanel.OpenPanel(taskStatus , infoTask["id"].ToString(), taskType);
     }
 
     public void SetInfo(bool isMe,Dictionary<string,object> pairs,bool isend)
     {
         infoTask = pairs;
-        //line_1.SetActive(isstart);
         line_2.SetActive(isend);
         if (infoTask["taskName"] != null)
         {
@@ -65,11 +74,11 @@ public class TaskDetails : MonoBehaviour
             stateText.gameObject.SetActive(false);
             if (infoTask["unitAmount"] == null)
             {
-                priceText.text = string.Format("{0}元/天", 100);
+                priceText.text = string.Format("{0:N2}元/天", 100);//string.Format("{0:N2}", taskData["data"].ToString());
             }
             else
             {
-                priceText.text = string.Format("{0}元/天", infoTask["unitAmount"].ToString());
+                priceText.text = string.Format("{0:N2}元/天", infoTask["unitAmount"].ToString());
             }
         }
     }
@@ -88,7 +97,11 @@ public class TaskDetails : MonoBehaviour
         }
         else if (messg == "2")
         {
+            taskType = "2";
             stateText.text = "已接单";
+            taskStatus = TaskStatus.start;
+            submitText.text = "开始";
+            submitBtn.gameObject.SetActive(true);
             return DataTool.color_submitted;
         }
         else if (messg == "3")
@@ -98,12 +111,19 @@ public class TaskDetails : MonoBehaviour
         }
         else if (messg == "4")
         {
+            taskType = "4";
+            taskStatus = TaskStatus.start;
             stateText.text = "待开始";
+            submitText.text = "开始";
+            submitBtn.gameObject.SetActive(true);
             return DataTool.color_issued;
         }
         else if (messg == "5")
         {
+            taskType = "5";
+            taskStatus = TaskStatus.submit;
             stateText.text = "进行中";
+            submitText.text = "提交";
             submitBtn.gameObject.SetActive(true);
             return DataTool.color_progress;
         }
@@ -122,10 +142,15 @@ public class TaskDetails : MonoBehaviour
             stateText.text = "已结算";
             return DataTool.color_submitted;
         }
-        else
+        else if (messg == "9")
         {
             stateText.text = "雇主取消加入";
             return DataTool.color_issued;
+        }
+        else
+        {
+            stateText.text = "状态异常";
+            return Color.red;
         }
     }
 //    状态:0：待确认，任务发布个人抢单后

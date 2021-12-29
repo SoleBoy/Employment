@@ -72,6 +72,8 @@ public class DataTool
     public static string currentTask = "";
     public static string filePath = Application.persistentDataPath + "/" + "ClockIn.png";
     public static SalaryEntry salaryEntry;
+    public static Vector3 frontAngle = new Vector3(0, 180, 90);
+    public static Vector3 rearAngle = new Vector3(0, 0, -90);
 
 
     public static Color color_review;
@@ -140,23 +142,23 @@ public class DataTool
     public static Dictionary<string, TalentData> talentDatas = new Dictionary<string, TalentData>();
     public static void InitData()
     {
-        PackageRole role = Resources.Load<PackageRole>("DataAssets/roledata");
-        roleDatas = role.GetItems();
-        PackageType type = Resources.Load<PackageType>("DataAssets/typedata");
-        typeDatas = type.GetItems();
-        PackageTalent talent = Resources.Load<PackageTalent>("DataAssets/talentdata");
-        talentDatas = talent.GetItems();
+        //PackageRole role = Resources.Load<PackageRole>("DataAssets/roledata");
+        //roleDatas = role.GetItems();
+        //PackageType type = Resources.Load<PackageType>("DataAssets/typedata");
+        //typeDatas = type.GetItems();
+        //PackageTalent talent = Resources.Load<PackageTalent>("DataAssets/talentdata");
+        //talentDatas = talent.GetItems();
 
-        roleData = roleDatas["1001"];
-        //数据
-        isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString()+ "Clock") == "Clock";
-        blindBox = PlayerPrefs.GetInt("CurretBlindBox", 5);
-        roleRanking = Random.Range(800,2000);
-        roleTitle = GetTitle(roleRanking);
-        roleLevel = PlayerPrefs.GetFloat("CurretLevel",1);
-        roleExp = PlayerPrefs.GetFloat("CurretExp");
-        roleExp_Max = float.Parse(roleData.exp) + float.Parse(roleData.exp_upgrade) * (roleLevel-1);
+        //roleData = roleDatas["1001"];
+        ////数据
 
+        //blindBox = PlayerPrefs.GetInt("CurretBlindBox", 5);
+        //roleRanking = Random.Range(800,2000);
+        //roleTitle = GetTitle(roleRanking);
+        //roleLevel = PlayerPrefs.GetFloat("CurretLevel",1);
+        //roleExp = PlayerPrefs.GetFloat("CurretExp");
+        //roleExp_Max = float.Parse(roleData.exp) + float.Parse(roleData.exp_upgrade) * (roleLevel-1);
+        isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString() + "Clock") == "Clock";
 
         color_review = GetColor("2D56E9");//待审核 #D9680F
         color_start = GetColor("3CC83F");//待开始 #4CB006

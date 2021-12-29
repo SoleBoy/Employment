@@ -15,9 +15,6 @@ public class ClockinPanel : MonoBehaviour
     private Button backBtn;
 
     private Transform clockinPanel;
-
-    private Vector3 frontAngle = new Vector3(0, 180, 90);
-    private Vector3 rearAngle = new Vector3(0, 0, -90);
     private void Awake()
     {
         clockinPanel = transform.Find("ClockinPanel");
@@ -36,17 +33,17 @@ public class ClockinPanel : MonoBehaviour
         UIManager.Instance.gameObject.SetActive(true);
     }
 
-    public void OpenPanel(bool isFlip, Texture texture)
+    public void OpenPanel(bool isFlip)
     {
         gameObject.SetActive(true);
         rawImage.texture = ByteToTex2d(DataTool.cheackByte);
         if (isFlip)
         {
-            rawImage.transform.localEulerAngles = rearAngle;
+            rawImage.transform.localEulerAngles = DataTool.frontAngle;
         }
         else
         {
-            rawImage.transform.localEulerAngles = frontAngle;
+            rawImage.transform.localEulerAngles = DataTool.rearAngle;
         }
     }
 

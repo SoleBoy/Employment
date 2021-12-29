@@ -20,25 +20,13 @@ public class UIManager : MonoSingleton<UIManager>
     public HomePanel homePanel;
     public IncomePanel incomePanel;
     public MainPanel mainPanel;
-    public CardPanel cardPanel;
-    public GachaPanel gachaPanel;
-    public BeastPanel beastPanel;
-    public BackpackPanel backpackPanel;
     public DropPanel dropPanel;
     public PersonalPanel personalPanel;
     public UnitPanel unitPanel;
     public BusinessPanel businessPanel;
     public PrivacyPanel privacyPanel;
     public TermsPanel termsPanel;
-    public LevelPanel levelPanel;
-    public DayKnotPanel dayKnotPanel;
-    public SalaryPanel salaryPanel;
-    public OperatingPanel operatingPanel;
-    public DetailsPanel detailsPanel;
-    public BattlePanel battlePanel;
-    public RankingPanel rankingPanel;
-    public FightPanel fightPanel;
-    public PayrollPanel payrollPanel;
+
     public LoadingPanel loadingPanel;
     public Employerpanel employerpanel;
     public ServicePanel servicePanel;
@@ -56,7 +44,6 @@ public class UIManager : MonoSingleton<UIManager>
     private GameObject maskPanel;
     private Transform tipPanel;
     private Transform bloodParent;
-    private Transform bloodPrefab;
 
     private bool isInit;
     public override void Init()
@@ -76,56 +63,24 @@ public class UIManager : MonoSingleton<UIManager>
         maskPanel.SetActive(false);
         DataTool.StartActivity(0);
     }
-     
-    private void Update()
-    {
-        //battlePanel.SetUpdata(Time.deltaTime);
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    GameObject onUI;
-        //    if (EventSystem.current.IsPointerOverGameObject())
-        //    {
-        //        onUI = ClickOnUI();
-        //        if(onUI && onUI.CompareTag("Player"))
-        //        {
-        //            hallPanel.AddExperience(3 * DataTool.roleLevel);
-        //            CloningTips("经验值+"+ 3 * DataTool.roleLevel);
-        //        }
-        //    }
-        //}
-    }
     //查找面板
     private void FindPanel()
     {
         maskPanel = transform.Find("MaskPanel").gameObject;
         tipPanel = transform.Find("TipPanel");
         bloodParent = transform.Find("DriftingBlood");
-        bloodPrefab = bloodParent.Find("BloodText");
         maskPanel.SetActive(true);
 
         hallPanel = transform.Find("HallPanel").GetComponent<HallPanel>();
         homePanel = transform.Find("HomePanel").GetComponent<HomePanel>();
         incomePanel = transform.Find("IncomePanel").GetComponent<IncomePanel>();
         mainPanel = transform.Find("MainPanel").GetComponent<MainPanel>();
-        cardPanel = transform.Find("CardPanel").GetComponent<CardPanel>();
-        gachaPanel = transform.Find("GachaPanel").GetComponent<GachaPanel>();
-        beastPanel = transform.Find("BeastPanel").GetComponent<BeastPanel>();
-        backpackPanel = transform.Find("BackpackPanel").GetComponent<BackpackPanel>();
         dropPanel = transform.Find("DropPanel").GetComponent<DropPanel>();
         personalPanel = transform.Find("Employerpanel/PersonalPanel").GetComponent<PersonalPanel>();
         unitPanel = transform.Find("UnitPanel").GetComponent<UnitPanel>();
         businessPanel = transform.Find("BusinessPanel").GetComponent<BusinessPanel>();
         privacyPanel = transform.Find("PrivacyPanel").GetComponent<PrivacyPanel>();
         termsPanel = transform.Find("TermsPanel").GetComponent<TermsPanel>();
-        levelPanel = transform.Find("LevelPanel").GetComponent<LevelPanel>();
-        dayKnotPanel = transform.Find("DayKnotPanel").GetComponent<DayKnotPanel>();
-        salaryPanel = transform.Find("SalaryPanel").GetComponent<SalaryPanel>();
-        operatingPanel = transform.Find("OperatingPanel").GetComponent<OperatingPanel>();
-        detailsPanel = transform.Find("DetailsPanel").GetComponent<DetailsPanel>();
-        battlePanel = transform.Find("BattlePanel").GetComponent<BattlePanel>();
-        rankingPanel = transform.Find("RankingPanel").GetComponent<RankingPanel>();
-        fightPanel = transform.Find("FightPanel").GetComponent<FightPanel>();
-        payrollPanel = transform.Find("PayrollPanel").GetComponent<PayrollPanel>();
         loadingPanel = transform.Find("LoadingPanel").GetComponent<LoadingPanel>();
         employerpanel = transform.Find("Employerpanel").GetComponent<Employerpanel>();
         servicePanel = transform.Find("ServicePanel").GetComponent<ServicePanel>();
@@ -163,24 +118,7 @@ public class UIManager : MonoSingleton<UIManager>
         }
         return null;
     }
-    //生成血条
-    public void CloningBlood(Vector3 point,float hurt)
-    {
-        var go = ObjectPool.Instance.CreateObject(bloodPrefab.name,bloodPrefab.gameObject);
-        go.transform.SetParent(bloodParent);
-        go.transform.localPosition = point;
-        go.transform.localScale = Vector3.zero;
-        go.transform.DOScale(Vector3.one, 0.2f);
-        float maxY = go.transform.localPosition.y + 260;
-        go.transform.DOLocalMoveY(maxY, 0.3f);
-        go.GetComponent<Text>().text = string.Format("-{0}", hurt);
-        StartCoroutine(BloodAnimal(go));
-    }
-    private IEnumerator BloodAnimal(GameObject go)
-    {
-        yield return new WaitForSeconds(0.5f);
-        go.SetActive(false);
-    }
+
     //生成提示
     public void CloningTips(string messg)
     {
@@ -213,27 +151,27 @@ public class UIManager : MonoSingleton<UIManager>
         }
     }
    
-    //切换后台
-    private void OnApplicationPause(bool focus)
-    {
-        if (focus)
-        {
-            battlePanel.ServiceData();
-            Debug.Log("OnApplicationPause保存数据");
-        }
-        else
-        {
-            //if(!isInit)
-            //{
-            //    DataTool.StartActivity(0);
-            //}
-        }
-    }
-    private void OnApplicationQuit()
-    {
-        battlePanel.ServiceData();
-        Debug.Log("OnApplicationQuit保存数据");
-    }
+    ////切换后台
+    //private void OnApplicationPause(bool focus)
+    //{
+    //    if (focus)
+    //    {
+    //        battlePanel.ServiceData();
+    //        Debug.Log("OnApplicationPause保存数据");
+    //    }
+    //    else
+    //    {
+    //        //if(!isInit)
+    //        //{
+    //        //    DataTool.StartActivity(0);
+    //        //}
+    //    }
+    //}
+    //private void OnApplicationQuit()
+    //{
+    //    battlePanel.ServiceData();
+    //    Debug.Log("OnApplicationQuit保存数据");
+    //}
     //雇主 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDE2MTIzMSwic3ViIjoie1wiY29tcGFueUlkXCI6MzQsXCJ1c2VySWRcIjoxLFwidXNlclR5cGVcIjoxfSIsImV4cCI6MTY0Mjc1MzIzMX0.amlxYbYn2nfzkOlW09n-EndvVcsTdzzBjissfkmc1Bc
     //个人 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDQ5NTYxMCwic3ViIjoie1widXNlcklkXCI6MjksXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzMDg3NjEwfQ.GGzpd-u1EcwE0V0-RW4PyoPm4f7MwBPuMpuOoDgR8iU
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
@@ -261,30 +199,10 @@ public class UIManager : MonoSingleton<UIManager>
                 DataTool.latitude = information["lat"].ToString();
                 DataTool.longitude = information["lgn"].ToString();
                 DataTool.clockInAddress = information["locationAddress"].ToString();
-                if (information["cust_name"] == null)
-                {
-                    DataTool.theCompany = ""; //
-                }
-                else
-                {
-                    DataTool.theCompany = information["cust_name"].ToString(); //"cust_name";
-                }
-                if (information["invite_code"] == null || information["invite_code"].ToString() == "")
-                {
-                    DataTool.inviteCode = "-1";
-                }
-                else
-                {
-                    DataTool.inviteCode = information["invite_code"].ToString();
-                }
+                
                 hallPanel.gameObject.SetActive(true);
                 homePanel.gameObject.SetActive(true);
                 employerpanel.gameObject.SetActive(false);
-                hallPanel.InitData();
-                homePanel.InitData();
-                unitPanel.InitData();
-                bankCardPanel.InitData();
-                hallPanel.CheckRecord(DataTool.isClock);
                 StartCoroutine(RequestAddress(DataTool.currentTaskUrl));
                 StartCoroutine(WorkerInfo(DataTool.workerInfo));
             }
@@ -363,8 +281,30 @@ public class UIManager : MonoSingleton<UIManager>
             if (pageData["msg"].ToString() == "SUCCESS")
             {
                 Dictionary<string, object> data = pageData["data"] as Dictionary<string, object>;
-                UIManager.Instance.protocolPanel.GetSignature(data["signaturePic"].ToString());
+                if (data["invitationCompayName"] == null)
+                {
+                    DataTool.theCompany = "";
+                }
+                else
+                {
+                    DataTool.theCompany = data["invitationCompayName"].ToString();
+                }
+                if (data["invitationCode"] == null || data["invitationCode"].ToString() == "")
+                {
+                    DataTool.inviteCode = "-1";
+                }
+                else
+                {
+                    DataTool.inviteCode = data["invitationCode"].ToString();
+                }
+                protocolPanel.GetSignature(data["signaturePic"].ToString());
             }
+            hallPanel.InitData();
+            homePanel.InitData();
+            unitPanel.InitData();
+            bankCardPanel.InitData();
+            hallPanel.CheckRecord(DataTool.isClock);
+
         }
     }
     //获取当前任务信息
@@ -382,11 +322,13 @@ public class UIManager : MonoSingleton<UIManager>
         {
             Debug.Log("当前任务信息" + webRequest.downloadHandler.text);
             Dictionary<string, object> taskData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskData["data"].ToString() != "")
+            if (taskData["msg"].ToString() == "SUCCESS")
             {
                 Dictionary<string, object>  taskInfo = taskData["data"] as Dictionary<string, object>;
-                DataTool.currentTask = taskInfo["id"].ToString();
-                DataTool.taskDuration = taskInfo["currentMonthTime"].ToString().Substring(8);
+                if(taskInfo["id"] != null)
+                    DataTool.currentTask = taskInfo["id"].ToString();
+                if (taskInfo["currentMonthTime"] != null)
+                    DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
             }
             hallPanel.InitData();
             StartCoroutine(RequestAddress(DataTool.latitude, DataTool.longitude, "0"));
@@ -435,7 +377,7 @@ public class UIManager : MonoSingleton<UIManager>
             }
             else
             {
-                UIManager.Instance.CloningTips("打卡失败,错误信息:" + clockData["msg"].ToString());
+                UIManager.Instance.CloningTips(clockData["msg"].ToString());
             }
         }
     }
@@ -472,6 +414,7 @@ public class UIManager : MonoSingleton<UIManager>
     public void CheckUrl()
     {
         gameObject.SetActive(true);
+        MaskTest(true);
         StartCoroutine(CheckAddress(DataTool.pictureUrl));
     }
     private IEnumerator CheckAddress(string url)
@@ -480,8 +423,9 @@ public class UIManager : MonoSingleton<UIManager>
 
         form.AddBinaryData("file", DataTool.cheackByte, "ClockIn.png", DataTool.filePath);
         UnityWebRequest webRequest = UnityWebRequest.Post(url, form);
-
+        
         yield return webRequest.SendWebRequest();
+        MaskTest(false);
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -497,7 +441,30 @@ public class UIManager : MonoSingleton<UIManager>
             }
         }
     }
+    //获取当前任务信息
+    public IEnumerator CurretAddress(string url)
+    {
+        UnityWebRequest webRequest = UnityWebRequest.Get(url);
+        webRequest.SetRequestHeader("Authorization", DataTool.token);
 
+        yield return webRequest.SendWebRequest();
+        if (webRequest.isNetworkError || webRequest.error != null)
+        {
+            Debug.Log("请求网络错误:" + webRequest.error);
+        }
+        else
+        {
+            Debug.Log("当前任务信息" + webRequest.downloadHandler.text);
+            Dictionary<string, object> taskData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+            if (taskData["msg"].ToString() == "SUCCESS")
+            {
+                Dictionary<string, object> taskInfo = taskData["data"] as Dictionary<string, object>;
+                DataTool.currentTask = taskInfo["id"].ToString();
+                DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
+            }
+            hallPanel.UpdateTask();
+        }
+    }
     //接收收入信息
     //public void Acceptance_Android(string messg)
     //{

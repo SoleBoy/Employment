@@ -13,15 +13,15 @@ public class IncomePanel : MonoBehaviour
 
     private Transform toolParent;
     private Transform taskItem;
+    private GameObject bg_grey;
 
     List<TaskDetails> taskDetails = new List<TaskDetails>();
     private void Awake()
     {
+        bg_grey = transform.Find("ToolView/Image").gameObject;
         toolParent = transform.Find("ToolView/Viewport/Content");
         taskItem = toolParent.Find("Item");
         totalText = transform.Find("TopBg/MoneyText").GetComponent<Text>();
-
-       
     }
 
     public void OpenPanel()
@@ -112,6 +112,11 @@ public class IncomePanel : MonoBehaviour
                 }
                 float detaMax = taskList.Count * 200 + taskList.Count * 20;
                 toolParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, detaMax);
+                bg_grey.SetActive(taskList.Count <= 0);
+            }
+            else
+            {
+                bg_grey.SetActive(true);
             }
         }
     }

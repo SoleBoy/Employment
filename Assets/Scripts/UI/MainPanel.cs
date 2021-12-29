@@ -45,6 +45,13 @@ public class MainPanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
+        SetCompany();
+        //nameText.text = DataTool.roleName;
+        //firmText.text = DataTool.theCompany;
+    }
+
+    public void SetCompany()
+    {
         if (DataTool.theCompany == "")
         {
             nameText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
@@ -53,8 +60,6 @@ public class MainPanel : MonoBehaviour
         {
             nameText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
         }
-        //nameText.text = DataTool.roleName;
-        //firmText.text = DataTool.theCompany;
     }
 
     public void ClosePanel()

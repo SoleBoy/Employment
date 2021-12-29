@@ -213,13 +213,13 @@ public class BeastItem
         {
             isPick = false;
             frameObject.SetActive(false);
-            UIManager.Instance.beastPanel.CancelSelected();
+            //UIManager.Instance.beastPanel.CancelSelected();
         }
         else
         {
             isPick = true;
             frameObject.SetActive(true);
-            UIManager.Instance.beastPanel.SelectedItem(orderIndex,beastData.name,beastData.quality, beastData.talentId);
+            //UIManager.Instance.beastPanel.SelectedItem(orderIndex,beastData.name,beastData.quality, beastData.talentId);
         }
     }
     public void HideFrame()

@@ -55,7 +55,7 @@ public class GachaPanel : MonoBehaviour
                 PlayerPrefs.SetInt("CurretBlindBox", DataTool.blindBox);
                 numberText.text = string.Format("剩余次数：{0}", DataTool.blindBox);
             }
-            UIManager.Instance.cardPanel.OpenPanel("爱丽儿");
+            //UIManager.Instance.cardPanel.OpenPanel("爱丽儿");
         }
         else
         {

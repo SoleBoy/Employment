@@ -10,7 +10,7 @@ public class Employerpanel : MonoBehaviour
     public Sprite[] pickSprite;
     public Sprite[] norSprite;
     public Image[] clickImage;
-    public GameObject[] clickObject;
+    //public GameObject[] clickObject;
 
     public QRcode qRcode;
     private Text firmText;
@@ -133,9 +133,9 @@ public class Employerpanel : MonoBehaviour
     private void ClcikButton(int index)
     {
         clickImage[indexCurret].sprite = norSprite[indexCurret];
-        clickObject[indexCurret].SetActive(false);
+        //clickObject[indexCurret].SetActive(false);
         indexCurret = index;
         clickImage[indexCurret].sprite = pickSprite[indexCurret];
-        clickObject[indexCurret].SetActive(true);
+        //clickObject[indexCurret].SetActive(true);
     }
 }

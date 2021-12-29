@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class UnitPanel : MonoBehaviour
 {
+    public Text inviteText;
+
     private Text firmText;
     private Text nameText;
     private Button backBtn;
@@ -12,7 +14,7 @@ public class UnitPanel : MonoBehaviour
     private Transform infoParent;
     private List<InfoItem> infos = new List<InfoItem>();
     //                                输入邀请码               实名认证                银行卡绑定,             签名验证，           江苏银行二类卡开卡,      活体认证，                意愿视频，          税务办理，           农业二类卡开卡，          银税签订协议
-    private string[] fieldInfo = { "invite_code", "realname_auth_status", "bank_card_bind_status", "signature_status", "jiangsubank_ii_status", "living_check_status", "entrust_video_status", "tax_deal_status", "abc_bank_card_bind_status", "tripartite_agreement_status" };
+    //private string[] fieldInfo = { "invite_code", "realname_auth_status", "bank_card_bind_status", "signature_status", "jiangsubank_ii_status", "living_check_status", "entrust_video_status", "tax_deal_status", "abc_bank_card_bind_status", "tripartite_agreement_status" };
     public void Init()
     {
         infoParent = transform.Find("PayrollView/Viewport/Content");
@@ -22,28 +24,36 @@ public class UnitPanel : MonoBehaviour
 
         backBtn.onClick.AddListener(ClosePanel);
 
-        for (int i = 0; i < infoParent.childCount; i++)
-        {
-            InfoItem item = new InfoItem(infoParent.Find("Item"+(i+1)),i);
-            infos.Add(item);
-            //item.SetInfo(1);
-        }
+        //for (int i = 0; i < infoParent.childCount; i++)
+        //{
+        //    InfoItem item = new InfoItem(infoParent.Find("Item"+(i+1)),i);
+        //    infos.Add(item);
+        //    //item.SetInfo(1);
+        //}
     }
     public void InitData()
     {
         //firmText.text = DataTool.theCompany;
         nameText.text = DataTool.roleName;
-        for (int i = 0; i < infos.Count; i++)
+        if(DataTool.inviteCode != "-1")
         {
-            if (DataTool.information.ContainsKey(fieldInfo[i]))
-            {
-                infos[i].SetInfo(int.Parse(DataTool.information[fieldInfo[i]].ToString()));
-            }
-            else
-            {
-                infos[i].SetInfo(2);
-            }
+            UpdateStatus("已输入");
         }
+        else
+        {
+            UpdateStatus("");
+        }
+        //for (int i = 0; i < infos.Count; i++)
+        //{
+        //    if (DataTool.information.ContainsKey(fieldInfo[i]))
+        //    {
+        //        infos[i].SetInfo(int.Parse(DataTool.information[fieldInfo[i]].ToString()));
+        //    }
+        //    else
+        //    {
+        //        infos[i].SetInfo(2);
+        //    }
+        //}
     }
     public void OpenPanel()
     {
@@ -55,10 +65,28 @@ public class UnitPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void UpdateStatus(int index,string info)
+    public void UpdateStatus(string info)
     {
-        infos[index].SetInfo(info);
+        inviteText.text = info;
     }
+
+    public void OpenBankCard()
+    {
+        UIManager.Instance.bankCardPanel.OpenPanel();
+    }
+
+    public void OpenInvitation(Text infoText)
+    {
+        if (infoText.text == "已输入")
+        {
+            UIManager.Instance.successCodePanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.invitationPanel.OpenPanel();
+        }
+    }
+
 
     //认证信息
     private class InfoItem

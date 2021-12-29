@@ -13,6 +13,7 @@ public class PhotographPanel : MonoBehaviour
     public int high = 720;
 
     private RawImage rawImage;
+    private Text infoText;
     //private RawImage textImage;
     //private Button submitBtn;
     private Button takeBtn;
@@ -25,9 +26,6 @@ public class PhotographPanel : MonoBehaviour
     //private Transform clockinPanel;
     private WebCamDevice[] webCamDevices;
 
-    private Vector3 frontAngle = new Vector3(0, 180, 90);
-    private Vector3 rearAngle = new Vector3(0, 0, -90);
-
     private bool isFlip;
     private bool isClock;
     private void Awake()
@@ -35,6 +33,7 @@ public class PhotographPanel : MonoBehaviour
         //clockinPanel = transform.Find("ClockinPanel");
 
         rawImage = transform.Find("RawImage").GetComponent<RawImage>();
+        infoText = transform.Find("InfoText").GetComponent<Text>();
         //textImage = transform.Find("ClockinPanel/Image").GetComponent<RawImage>();
         //submitBtn = transform.Find("ClockinPanel/SubmitBtn").GetComponent<Button>();
         takeBtn = transform.Find("TakeBtn").GetComponent<Button>();
@@ -55,11 +54,13 @@ public class PhotographPanel : MonoBehaviour
         UIManager.Instance.gameObject.SetActive(true);
     }
 
-    public void OpenPanel(bool isClock)
+    public void OpenPanel(bool isClock,string messgInfo)
     {
         this.isClock = isClock;
         gameObject.SetActive(true);
         rawImage.texture = null;
+        infoText.text = messgInfo;
+        ObjectPool.Instance.Clear("TipPanel");
         UIManager.Instance.gameObject.SetActive(false);
         // 打开相机
         StartCoroutine("OpenCamera");
@@ -73,11 +74,11 @@ public class PhotographPanel : MonoBehaviour
         UIManager.Instance.CheckUrl();
         if (isClock)
         {
-            UIManager.Instance.clockinPanel.OpenPanel(isFlip, rawImage.texture);
+            UIManager.Instance.clockinPanel.OpenPanel(!isFlip);
         }
         else
         {
-            UIManager.Instance.taskSubmitPanel.OpenReplenish(rawImage.texture);
+            UIManager.Instance.taskSubmitPanel.OpenReplenish(!isFlip);
         }
         rawImage.texture = null;
         webCamTexture.Stop();
@@ -96,7 +97,7 @@ public class PhotographPanel : MonoBehaviour
                 webCamTexture = new WebCamTexture(webCamName, width, high);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
-                rawImage.transform.localEulerAngles = frontAngle;
+                rawImage.transform.localEulerAngles = DataTool.frontAngle;
                 rawImage.texture = webCamTexture;
             }
             else
@@ -107,7 +108,7 @@ public class PhotographPanel : MonoBehaviour
                 webCamTexture = new WebCamTexture(webCamName, width, high);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
-                rawImage.transform.localEulerAngles = rearAngle;
+                rawImage.transform.localEulerAngles = DataTool.rearAngle;
                 rawImage.texture = webCamTexture;
             }
         }
@@ -131,13 +132,13 @@ public class PhotographPanel : MonoBehaviour
                 if (webCamDevices.Length > 1)
                 {
                     isFlip = false;
-                    rawImage.transform.localEulerAngles = frontAngle;
+                    rawImage.transform.localEulerAngles = DataTool.frontAngle;
                     webCamName = webCamDevices[1].name;
                 }
                 else
                 {
                     isFlip = true;
-                    rawImage.transform.localEulerAngles = rearAngle;
+                    rawImage.transform.localEulerAngles = DataTool.rearAngle;
                     webCamName = webCamDevices[0].name;
                 }
                 // 设置相机渲染宽高，并运行相机

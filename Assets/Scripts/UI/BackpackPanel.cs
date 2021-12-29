@@ -111,11 +111,11 @@ public class BackItem
     private void Selected()
     {
         Debug.Log(orderIndex);
-        UIManager.Instance.backpackPanel.SelectedItem(orderIndex);
+        //UIManager.Instance.backpackPanel.SelectedItem(orderIndex);
     }
 
     public void CancelSelection()
     {
-        UIManager.Instance.CloningTips("碎片数量不足");
+        //UIManager.Instance.CloningTips("碎片数量不足");
     }
 }

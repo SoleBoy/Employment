@@ -62,7 +62,7 @@ public class HallPanel : MonoBehaviour
 
     private void OpenClockin()
     {
-        UIManager.Instance.photographPanel.OpenPanel(true);
+        UIManager.Instance.photographPanel.OpenPanel(true,"");
     }
 
     public void InitData()
@@ -77,7 +77,6 @@ public class HallPanel : MonoBehaviour
         {
             firmText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
         }
-       
     }
 
     public void OpenPanel()
@@ -113,7 +112,7 @@ public class HallPanel : MonoBehaviour
 
     private void OpnePack()
     {
-        UIManager.Instance.backpackPanel.OpenPanel();
+        //UIManager.Instance.backpackPanel.OpenPanel();
     }
     private bool isBeast;
     private void OpneBeast()
@@ -142,16 +141,22 @@ public class HallPanel : MonoBehaviour
 
     private void OpneGacha()
     {
-        UIManager.Instance.gachaPanel.OpenPanel();
+        ///UIManager.Instance.gachaPanel.OpenPanel();
     }
 
     private void OpenCerti()
     {
-        UIManager.Instance.unitPanel.OpenPanel();
+        //UIManager.Instance.unitPanel.OpenPanel();
     }
 
     private void OpenDetails()
     {
-        UIManager.Instance.detailsPanel.OpenPanel();
+        //UIManager.Instance.detailsPanel.OpenPanel();
     }
+    public void UpdateTask()
+    {
+        statusText.text = string.Format("当月累计任务时长{0}小时", DataTool.taskDuration);
+        statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
+    }
+   
 }

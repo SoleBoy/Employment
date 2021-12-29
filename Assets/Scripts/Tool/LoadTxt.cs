@@ -40,58 +40,58 @@ public class LoadTxt : MonoBehaviour
         }
     }
 
-    //total字段累计收入
-    public void GetMonthly_1()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[0].ToString()) as Dictionary<string, object>;
-        //UIManager.Instance.incomePanel.InitState(2,tokenData);
-    }
-    public void GetMonthly_2()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[1].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.salaryPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
-    }
-    public void GetMonthly_3()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[2].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.payrollPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
-    }
-    public void GetMonthly_4()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[3].ToString()) as Dictionary<string, object>;
-        //UIManager.Instance.incomePanel.InitState(4, tokenData);
-    }
-    public void GetMonthly_5()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[4].ToString()) as Dictionary<string, object>;
-        UIManager.Instance.operatingPanel.OpenPanel(tokenData);
-    }
-    public void GetMonthly_6()
-    {
-        List<object> tokenData = Json.Deserialize(TxtFile[5].ToString()) as List<object>;
-        //UIManager.Instance.incomePanel.InitState(3,null,tokenData);
-    }
-    public void GetMonthly_7()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[6].ToString()) as Dictionary<string, object>;
-        //UIManager.Instance.businessPanel.OpenPanel(tokenData);
-        //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
-        //Application.OpenURL(tokenData["url"].ToString());
-    }
-    public void GetMonthly_8()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[7].ToString()) as Dictionary<string, object>;
-        //UIManager.Instance.incomePanel.InitState(0,tokenData);
-        //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
-        //Application.OpenURL(tokenData["url"].ToString());
-    }
-    public void GetMonthly_9()
-    {
-        Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[8].ToString()) as Dictionary<string, object>;
-        //UIManager.Instance.incomePanel.InitState(1, tokenData);
-        //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
-        //Application.OpenURL(tokenData["url"].ToString());
-    }
+    ////total字段累计收入
+    //public void GetMonthly_1()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[0].ToString()) as Dictionary<string, object>;
+    //    //UIManager.Instance.incomePanel.InitState(2,tokenData);
+    //}
+    //public void GetMonthly_2()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[1].ToString()) as Dictionary<string, object>;
+    //    UIManager.Instance.salaryPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+    //}
+    //public void GetMonthly_3()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[2].ToString()) as Dictionary<string, object>;
+    //    UIManager.Instance.payrollPanel.OpenPanel(tokenData["data"] as Dictionary<string, object>);
+    //}
+    //public void GetMonthly_4()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[3].ToString()) as Dictionary<string, object>;
+    //    //UIManager.Instance.incomePanel.InitState(4, tokenData);
+    //}
+    //public void GetMonthly_5()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[4].ToString()) as Dictionary<string, object>;
+    //    UIManager.Instance.operatingPanel.OpenPanel(tokenData);
+    //}
+    //public void GetMonthly_6()
+    //{
+    //    List<object> tokenData = Json.Deserialize(TxtFile[5].ToString()) as List<object>;
+    //    //UIManager.Instance.incomePanel.InitState(3,null,tokenData);
+    //}
+    //public void GetMonthly_7()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[6].ToString()) as Dictionary<string, object>;
+    //    //UIManager.Instance.businessPanel.OpenPanel(tokenData);
+    //    //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+    //    //Application.OpenURL(tokenData["url"].ToString());
+    //}
+    //public void GetMonthly_8()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[7].ToString()) as Dictionary<string, object>;
+    //    //UIManager.Instance.incomePanel.InitState(0,tokenData);
+    //    //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+    //    //Application.OpenURL(tokenData["url"].ToString());
+    //}
+    //public void GetMonthly_9()
+    //{
+    //    Dictionary<string, object> tokenData = Json.Deserialize(TxtFile[8].ToString()) as Dictionary<string, object>;
+    //    //UIManager.Instance.incomePanel.InitState(1, tokenData);
+    //    //StartCoroutine(RequestAddress(tokenData["url"].ToString()));
+    //    //Application.OpenURL(tokenData["url"].ToString());
+    //}
 
     private IEnumerator RequestAddress()
     {

@@ -1,4 +1,5 @@
 ﻿using LitJson;
+using MiniJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +32,6 @@ public class TaskConfirmPanel : MonoBehaviour
     private void OpenSuccess()
     {
         StartCoroutine(TaskOrder(DataTool.receiverTaskUrl));
-        successPanel.SetActive(true);
     }
 
     private void BackTask()
@@ -76,6 +76,15 @@ public class TaskConfirmPanel : MonoBehaviour
         else
         {
             Debug.Log("接单"+webRequest.downloadHandler.text);
+            Dictionary<string, object> clockData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+            if (clockData["msg"].ToString() == "SUCCESS")
+            {
+                successPanel.SetActive(true);
+            }
+            else
+            {
+                UIManager.Instance.CloningTips(clockData["msg"].ToString());
+            }
         }
     }
 }

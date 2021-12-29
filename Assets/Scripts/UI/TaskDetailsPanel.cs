@@ -63,7 +63,7 @@ public class TaskDetailsPanel : MonoBehaviour
                 taskAmount.text = string.Format("￥{0:N2}", infoData["fee"].ToString());
 
                 taskCycle.text = infoData["time"].ToString();
-                taskUnivalent.text = string.Format("￥{0}/{1}", infoData["unitAmount"].ToString(), infoData["billingUnit"].ToString());
+                taskUnivalent.text = string.Format("￥{0:N2}/{1}", infoData["unitAmount"].ToString(), infoData["billingUnit"].ToString());
                 taskInfo.text = infoData["taskResult"].ToString();
             }
             else
@@ -76,4 +76,5 @@ public class TaskDetailsPanel : MonoBehaviour
             }
         }
     }
+    
 }

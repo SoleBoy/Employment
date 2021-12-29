@@ -140,7 +140,9 @@ public class InvitationPanel : MonoBehaviour
             if (codeInfo["msg"].ToString() == "SUCCESS")
             {
                 updatePanel.SetActive(true);
-                UIManager.Instance.unitPanel.UpdateStatus(0, "已输入");
+                UIManager.Instance.mainPanel.SetCompany();
+                UIManager.Instance.hallPanel.InitData();
+                UIManager.Instance.unitPanel.UpdateStatus("已输入");
             }
             else
             {

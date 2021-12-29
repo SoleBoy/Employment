@@ -14,8 +14,8 @@ public class SuccessCodePanel : MonoBehaviour
     {
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         confirmBtn = transform.Find("Button").GetComponent<Button>();
-        identityText = transform.Find("Info/info3/Text").GetComponent<Text>();
-        nameText = transform.Find("Info/info4/Text").GetComponent<Text>();
+        identityText = transform.Find("Info/line/Name").GetComponent<Text>();
+        nameText = transform.Find("Info/line/Code").GetComponent<Text>();
 
         backBtn.onClick.AddListener(ClosePanel);
         confirmBtn.onClick.AddListener(ClosePanel);

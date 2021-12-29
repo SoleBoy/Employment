@@ -15,7 +15,7 @@ public class PersonalPanel : MonoBehaviour
     //private string[] fieldInfo = { "com_fr_realname_auth_status", "com_identity_register_status", "com_bank_acct_open_permit_status",  "com_fr_signature_status" };
     public void Init()
     {
-        infoParent = transform.Find("Info/PayrollView/Viewport/Content");
+        infoParent = transform.Find("PayrollView/Viewport/Content");
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
         nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
         firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();

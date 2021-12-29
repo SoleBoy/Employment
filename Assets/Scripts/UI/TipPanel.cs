@@ -25,4 +25,8 @@ public class TipPanel : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         gameObject.SetActive(false);
     }
+    private void OnDestroy()
+    {
+        transform.DOPause();
+    }
 }

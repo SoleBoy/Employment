@@ -35,6 +35,7 @@ public class TaskPanel : MonoBehaviour
     private GameObject areaPanel;
     private GameObject typePanel;
     private GameObject filterObject;
+    private GameObject bg_grey;
 
     private Transform itemParent;
     private Transform mineParent;
@@ -53,6 +54,7 @@ public class TaskPanel : MonoBehaviour
     private List<TaskDetails> taskDetails = new List<TaskDetails>();
     private void Awake()
     {
+        bg_grey = transform.Find("bg1/Image").gameObject;
         filterPanel = transform.Find("FilterPanel").gameObject;
         areaPanel = transform.Find("FilterPanel/Area").gameObject;
         typePanel = transform.Find("FilterPanel/Type").gameObject;
@@ -162,6 +164,12 @@ public class TaskPanel : MonoBehaviour
             isArea = false;
             areaPanel.SetActive(true);
             areaIcon.localEulerAngles = selectedAngle;
+            if (!isType)
+            {
+                isType = true;
+                typePanel.SetActive(false);
+                typeIcon.localEulerAngles = cancelAngle;
+            }
         }
         else
         {
@@ -178,6 +186,12 @@ public class TaskPanel : MonoBehaviour
             isType = false;
             typePanel.SetActive(true);
             typeIcon.localEulerAngles = selectedAngle;
+            if (!isArea)
+            {
+                isArea = true;
+                areaPanel.SetActive(false);
+                areaIcon.localEulerAngles = cancelAngle;
+            }
         }
         else
         {
@@ -336,6 +350,10 @@ public class TaskPanel : MonoBehaviour
         UIManager.Instance.MaskTest(true);
         yield return webRequest.SendWebRequest();
         UIManager.Instance.MaskTest(false);
+        for (int i = 0; i < taskDetails.Count; i++)
+        {
+            taskDetails[i].gameObject.SetActive(false);
+        }
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -344,10 +362,6 @@ public class TaskPanel : MonoBehaviour
         {
             Debug.Log("任务"+ taskType + webRequest.downloadHandler.text);
             bool istaskType = taskType == "2";
-            for (int i = 0; i < taskDetails.Count; i++)
-            {
-                taskDetails[i].gameObject.SetActive(false);
-            }
             Dictionary<string, object> taskTotal = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
             if (taskTotal["msg"].ToString() == "SUCCESS")
             {
@@ -371,12 +385,18 @@ public class TaskPanel : MonoBehaviour
                         taskDetails[i].SetInfo(istaskType,taskList[i] as Dictionary<string, object>,i == taskList.Count - 1);
                     }
                 }
+                bg_grey.SetActive(taskList.Count <= 0);
                 float maxY = taskList.Count * 180 + taskList.Count * 100;
                 itemParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
             }
+            else
+            {
+                bg_grey.SetActive(true);
+            }
         }
     }
-    class AraeClass
+
+    private class AraeClass
     {
         private Text nameText;
         private Button areaBtn;
