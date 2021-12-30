@@ -73,7 +73,7 @@ public class TaskSubmitPanel : MonoBehaviour
         tex.LoadImage(bytes);
         return tex;
     }
-    //
+
     private void OpenSuccess()
     {
         DataTool.salaryEntry = SalaryEntry.submit;
@@ -85,7 +85,6 @@ public class TaskSubmitPanel : MonoBehaviour
         {
             UIManager.Instance.Location_Android(UIManager.Instance.loadTxt.TxtFile[11].ToString());
         }
-        //successPanel.SetActive(true);
     }
 
     public void OpenSubmit()
@@ -93,7 +92,8 @@ public class TaskSubmitPanel : MonoBehaviour
         switch (taskStatus)
         {
             case TaskStatus.start:
-                StartCoroutine(RequestAddress());
+                
+                StartCoroutine(UIManager.Instance.RequestAddress(taskType));
                 break;
             case TaskStatus.submit:
                 StartCoroutine(TaskOrder(DataTool.submitTaskUrl));
@@ -101,9 +101,13 @@ public class TaskSubmitPanel : MonoBehaviour
             default:
                 break;
         }
-       
     }
 
+    public void CheckSuccess()
+    {
+        replenishPanel.SetActive(false);
+        successPanel.SetActive(true);
+    }
     //DataTool.checkAddress
     public void OpenPanel(TaskStatus taskStatus, string taskId, string taskType)
     {
@@ -112,6 +116,7 @@ public class TaskSubmitPanel : MonoBehaviour
         this.taskStatus = taskStatus;
         gameObject.SetActive(true);
         successPanel.SetActive(false);
+        DataTool.checkAddress = "";
         switch (taskStatus)
         {
             case TaskStatus.start:
@@ -170,53 +175,12 @@ public class TaskSubmitPanel : MonoBehaviour
             {
                 replenishPanel.SetActive(false);
                 successPanel.SetActive(true);
-                StartCoroutine(UIManager.Instance.CurretAddress(DataTool.currentTaskUrl));
+                StartCoroutine(UIManager.Instance.RequestAddress(DataTool.currentTaskUrl,true));
                 UIManager.Instance.hallPanel.UpdateTask();
             }
             else
             {
                 UIManager.Instance.CloningTips(codeInfo["msg"].ToString());
-            }
-        }
-    }
-
-    private IEnumerator RequestAddress()
-    {
-        JsonData data = new JsonData();
-        data["lat"] = DataTool.latitude;
-        data["lgn"] = DataTool.longitude;
-        data["lockType"] = "1";   ///0 登录 1.主动 2.已接单 4：待开始 5：进行中
-        data["pic"] = DataTool.checkAddress;
-        data["clockInAddress"] = DataTool.clockInAddress;
-        data["taskId"] = taskId;
-        Debug.Log("数据" + data.ToJson());
-
-        UnityWebRequest webRequest = new UnityWebRequest(DataTool.clockUrl, "POST");
-        webRequest.SetRequestHeader("Authorization", DataTool.token);
-
-        byte[] postBytes = System.Text.Encoding.Default.GetBytes(data.ToJson());
-        webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
-        webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        webRequest.SetRequestHeader("Content-Type", "application/json");
-
-        yield return webRequest.SendWebRequest();
-        if (webRequest.isNetworkError || webRequest.error != null)
-        {
-            Debug.Log("请求网络错误:" + webRequest.error);
-        }
-        else
-        {
-            Debug.Log("任务开始" + webRequest.downloadHandler.text);
-            Dictionary<string, object> clockData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (clockData["msg"].ToString() == "SUCCESS")
-            {
-                replenishPanel.SetActive(false);
-                successPanel.SetActive(true);
-                StartCoroutine(UIManager.Instance.CurretAddress(DataTool.currentTaskUrl));
-            }
-            else
-            {
-                UIManager.Instance.CloningTips(clockData["msg"].ToString());
             }
         }
     }

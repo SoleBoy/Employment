@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class BusinessPanel : MonoBehaviour
 {
-
+    public Transform conte;
     private Text nameText;
     private Text firmText;
 
@@ -18,35 +18,42 @@ public class BusinessPanel : MonoBehaviour
     private GameObject attestInfo;
     private Texture2D texture;
     private float m_Page = 0;
+    public bool isStart = true;
 
+    private float width;
     private void Awake()
     {
+        width = Screen.width - 300;
         nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
         firmText = transform.Find("TopBg/Text").GetComponent<Text>();
 
-        attestInfo = transform.Find("InfoText").gameObject;
-        licenseImage = transform.Find("License").GetComponent<RawImage>();
+        attestInfo = transform.Find("InfoText").gameObject;//Mask
+        licenseImage = transform.Find("Mask/License").GetComponent<RawImage>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
         backBtn.onClick.AddListener(ClosePanel);
     }
 
-    public void OpenPanel(string tokenUrl)
+    public void OpenPanel()
     {
-        //tokenUrl = "https://img-blog.csdnimg.cn/20200114151229684.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NTAyMzMyOA==,size_16,color_FFFFFF,t_70";
+        //DataTool.businessPic = "http://salary-file.oos-website-cn.oos-cn.ctyunapi.cn/businessLicense/2021-12-30/dd69858a12e04e599ec5a7a91db93339.jpg";
+        //DataTool.businessPic = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2673183312,4257398740&fm=26&gp=0.jpg";
         gameObject.SetActive(true);
-        //nameText.text = DataTool.roleName;
-        firmText.text = DataTool.theCompany;
-        UIManager.Instance.loadingPanel.OpenPanel();
-        licenseImage.gameObject.SetActive(false);
-        StartCoroutine(DownSprite(tokenUrl));
+        if(isStart)
+        {
+            isStart = false;
+            licenseImage.gameObject.SetActive(false);
+            StartCoroutine(DownSprite());
+            firmText.text = DataTool.theCompany;
+        }
     }
 
-    private IEnumerator DownSprite(string url)
+    private IEnumerator DownSprite()
     {
-        UnityWebRequest webRequest = new UnityWebRequest(url);
+        UnityWebRequest webRequest = new UnityWebRequest(DataTool.businessPic);
         DownloadHandlerTexture texD1 = new DownloadHandlerTexture(true);
         webRequest.downloadHandler = texD1;
+        UIManager.Instance.loadingPanel.OpenPanel();
         yield return webRequest.SendWebRequest();
         UIManager.Instance.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
@@ -56,17 +63,47 @@ public class BusinessPanel : MonoBehaviour
         }
         else
         {
-            int width = 834;
-            int high = 640;
-            Texture2D tex = new Texture2D(width, high);
-            tex = texD1.texture;
-
-            licenseImage.texture = tex;
+            licenseImage.texture = texD1.texture;
             licenseImage.SetNativeSize();
             licenseImage.gameObject.SetActive(true);
+
+            Vector2 canvasSize = gameObject.GetComponentInParent<Canvas>().GetComponent<RectTransform>().sizeDelta;
+            //当前画布尺寸长宽比
+            float screenxyRate =  canvasSize.x / canvasSize.y ;
+            Debug.Log("X:"+ canvasSize.x+"Y:"+ canvasSize.y+"bizhi："+screenxyRate);
+            Vector2 licenseSize = licenseImage.GetComponent<RectTransform>().sizeDelta;
+
+            float licenseRate = licenseSize.x/licenseSize.y;
+            Debug.Log("X:" + licenseSize.x + "Y:" + licenseSize.y + "bizhi：" + licenseRate);
+            if(screenxyRate >= licenseRate)
+            {
+                float y = canvasSize.y * 0.6f;
+                float offef = y / licenseSize.y;
+                licenseImage.GetComponent<RectTransform>().sizeDelta = new Vector2(licenseSize.x * offef, y);
+            }
+            else
+            {
+                float x = canvasSize.x * 0.6f;
+                float offef = x / licenseSize.x;
+                licenseImage.GetComponent<RectTransform>().sizeDelta = new Vector2(x, licenseSize.y * offef);
+            }
         }
     }
-
+    private void GetData(Vector2 canvasSize, Vector2 licenseSize, float licenseRate, float screenxyRate)
+    {
+        if (licenseRate > screenxyRate)
+        {
+            int newSizeY = Mathf.CeilToInt(canvasSize.y);
+            int newSizeX = Mathf.CeilToInt((float)newSizeY / licenseSize.y * licenseSize.x);
+            licenseImage.GetComponent<RectTransform>().sizeDelta = new Vector2(newSizeX, newSizeY);
+        }
+        else
+        {
+            int newVideoSizeX = Mathf.CeilToInt(canvasSize.x);
+            int newVideoSizeY = Mathf.CeilToInt((float)newVideoSizeX / licenseSize.x * licenseSize.y);
+            licenseImage.GetComponent<RectTransform>().sizeDelta = new Vector2(newVideoSizeX, newVideoSizeY);
+        }
+    }
 
     //public void OpenPanel(Dictionary<string, object> tokenData)
     //{

@@ -13,7 +13,6 @@ using System;
 public class UIManager : MonoSingleton<UIManager>
 {
     public LoadTxt loadTxt;
-    public LocationService location;
 
     public PhotographPanel photographPanel;
     public HallPanel hallPanel;
@@ -101,6 +100,7 @@ public class UIManager : MonoSingleton<UIManager>
         personalPanel.Init();
         bankCardPanel.Init();
     }
+    //遮罩面板
     public void MaskTest(bool isHide)
     {
         maskPanel.SetActive(isHide);
@@ -118,7 +118,6 @@ public class UIManager : MonoSingleton<UIManager>
         }
         return null;
     }
-
     //生成提示
     public void CloningTips(string messg)
     {
@@ -131,10 +130,8 @@ public class UIManager : MonoSingleton<UIManager>
     //打卡提示
     public void SubmitTip(bool isClock)
     {
-        //gameObject.SetActive(true);
         if(isClock)
         {
-            //location.UpdateGps();
             DataTool.salaryEntry = SalaryEntry.clock;
             if (Application.platform == RuntimePlatform.Android)
             {
@@ -147,10 +144,11 @@ public class UIManager : MonoSingleton<UIManager>
         }
         else
         {
+            gameObject.SetActive(true);
             CloningTips("获取相机权限失败");
         }
     }
-   
+
     ////切换后台
     //private void OnApplicationPause(bool focus)
     //{
@@ -172,8 +170,8 @@ public class UIManager : MonoSingleton<UIManager>
     //    battlePanel.ServiceData();
     //    Debug.Log("OnApplicationQuit保存数据");
     //}
-    //雇主 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDE2MTIzMSwic3ViIjoie1wiY29tcGFueUlkXCI6MzQsXCJ1c2VySWRcIjoxLFwidXNlclR5cGVcIjoxfSIsImV4cCI6MTY0Mjc1MzIzMX0.amlxYbYn2nfzkOlW09n-EndvVcsTdzzBjissfkmc1Bc
-    //个人 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDQ5NTYxMCwic3ViIjoie1widXNlcklkXCI6MjksXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzMDg3NjEwfQ.GGzpd-u1EcwE0V0-RW4PyoPm4f7MwBPuMpuOoDgR8iU
+    //雇主 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDg1ODI1Miwic3ViIjoie1wiY29tcGFueUlkXCI6NTYsXCJ1c2VySWRcIjoxMixcInVzZXJUeXBlXCI6MX0iLCJleHAiOjE2NDM0NTAyNTJ9.zcpT5h0kxD7o2Ey1Ni60b56jnRiDQHuhAuO-5rcS0NM
+    //个人 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDg1NTE5OSwic3ViIjoie1widXNlcklkXCI6NDEsXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzNDQ3MTk5fQ.cUt2PjV_YZvb-vLIEIk7NnSI6d5Kn_akKdW4VacYJm0
     //接受安卓数据  {"name":"张大牛","goto":"个体户"}
     public void AcceptData_Android(string messgInfo)
     {
@@ -189,6 +187,7 @@ public class UIManager : MonoSingleton<UIManager>
             DataTool.token = information["token"].ToString();
             if (DataTool.roleType.Contains("雇主"))
             {
+                businessPanel.isStart = true;
                 StartCoroutine(BusinessLicense(DataTool.businessUrl));
             }
             else
@@ -199,11 +198,12 @@ public class UIManager : MonoSingleton<UIManager>
                 DataTool.latitude = information["lat"].ToString();
                 DataTool.longitude = information["lgn"].ToString();
                 DataTool.clockInAddress = information["locationAddress"].ToString();
-                
+                DataTool.currentTask = "";
+                DataTool.taskDuration = "";
                 hallPanel.gameObject.SetActive(true);
                 homePanel.gameObject.SetActive(true);
                 employerpanel.gameObject.SetActive(false);
-                StartCoroutine(RequestAddress(DataTool.currentTaskUrl));
+                StartCoroutine(RequestAddress(DataTool.currentTaskUrl,false));
                 StartCoroutine(WorkerInfo(DataTool.workerInfo));
             }
         }
@@ -211,6 +211,44 @@ public class UIManager : MonoSingleton<UIManager>
         {
             Debug.Log("数据解析错误"+e.ToString());
         }
+    }
+    //接收经纬度信息
+    public void Location_Android(string messg)
+    {
+        Debug.Log("获取经纬度信息:" + messg);
+        Dictionary<string, object> clockData = Json.Deserialize(messg) as Dictionary<string, object>;
+        if (clockData["errorCode"].ToString() == "0")
+        {
+            DataTool.clockInAddress = clockData["clockInAddress"].ToString();
+            DataTool.latitude = clockData["lat"].ToString();
+            DataTool.longitude = clockData["lgn"].ToString();
+        }
+        else
+        {
+            DataTool.clockInAddress = "";
+            DataTool.latitude = "";
+            DataTool.longitude = "";
+        }
+
+        switch (DataTool.salaryEntry)
+        {
+            case SalaryEntry.submit:
+                taskSubmitPanel.OpenSubmit();
+                break;
+            case SalaryEntry.clock:
+                StartCoroutine(RequestAddress("1"));
+                break;
+            default:
+                break;
+        }
+    }
+    //打卡图片上传
+    public void CheckUrl()
+    {
+        gameObject.SetActive(true);
+        MaskTest(true);
+        DataTool.checkAddress = "";
+        StartCoroutine(CheckAddress(DataTool.pictureUrl));
     }
     //获取雇主用户信息
     private IEnumerator BusinessLicense(string url)
@@ -229,14 +267,10 @@ public class UIManager : MonoSingleton<UIManager>
             if (pageData["msg"].ToString() == "SUCCESS")
             {
                 Dictionary<string, object> employerInfo = pageData["data"] as Dictionary<string, object>;
-                if (employerInfo["companyName"] == null)
-                {
-                    DataTool.theCompany = ""; //
-                }
-                else
-                {
+                if (employerInfo["companyName"] != null)
                     DataTool.theCompany = employerInfo["companyName"].ToString(); //"cust_name";
-                }
+                if (employerInfo["buzLicensePic"] != null)
+                    DataTool.businessPic = employerInfo["buzLicensePic"].ToString(); //"cust_name";
             }
             hallPanel.gameObject.SetActive(false);
             homePanel.gameObject.SetActive(false);
@@ -281,14 +315,8 @@ public class UIManager : MonoSingleton<UIManager>
             if (pageData["msg"].ToString() == "SUCCESS")
             {
                 Dictionary<string, object> data = pageData["data"] as Dictionary<string, object>;
-                if (data["invitationCompayName"] == null)
-                {
-                    DataTool.theCompany = "";
-                }
-                else
-                {
+                if (data["invitationCompayName"] != null)
                     DataTool.theCompany = data["invitationCompayName"].ToString();
-                }
                 if (data["invitationCode"] == null || data["invitationCode"].ToString() == "")
                 {
                     DataTool.inviteCode = "-1";
@@ -308,11 +336,13 @@ public class UIManager : MonoSingleton<UIManager>
         }
     }
     //获取当前任务信息
-    private IEnumerator RequestAddress(string url)
+    public IEnumerator RequestAddress(string url,bool isUdata)
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(url);
         webRequest.SetRequestHeader("Authorization", DataTool.token);
 
+        DataTool.currentTask = "";
+        DataTool.taskDuration = "";
         yield return webRequest.SendWebRequest();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
@@ -330,16 +360,23 @@ public class UIManager : MonoSingleton<UIManager>
                 if (taskInfo["currentMonthTime"] != null)
                     DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
             }
-            hallPanel.InitData();
-            StartCoroutine(RequestAddress(DataTool.latitude, DataTool.longitude, "0"));
+            if(isUdata)
+            {
+                hallPanel.UpdateTask();
+            }
+            else
+            {
+                hallPanel.InitData();
+                StartCoroutine(RequestAddress("0"));
+            }
         }
     }
-
-    private IEnumerator RequestAddress(string lat, string lgn,string lockType)
+    //打卡  ///0 登录 1.主动 2.已接单 4：待开始 5：进行中
+    public IEnumerator RequestAddress(string lockType)
     {
         JsonData data = new JsonData();
-        data["lat"] = lat;
-        data["lgn"] = lgn;
+        data["lat"] = DataTool.latitude;
+        data["lgn"] = DataTool.longitude;
         data["lockType"] = lockType;
         data["pic"] = DataTool.checkAddress;
         data["taskId"] = DataTool.currentTask;
@@ -374,49 +411,19 @@ public class UIManager : MonoSingleton<UIManager>
                     hallPanel.CheckRecord(true);
                     checkPanel.OpenPanel();
                 }
+                else if(lockType == "2" || lockType == "4" || lockType == "5")
+                {
+                    taskSubmitPanel.CheckSuccess();
+                    StartCoroutine(RequestAddress(DataTool.currentTaskUrl, true));
+                }
             }
             else
             {
-                UIManager.Instance.CloningTips(clockData["msg"].ToString());
+                CloningTips(clockData["msg"].ToString());
             }
         }
     }
-    //接收经纬度信息
-    public void Location_Android(string messg)
-    {
-        Debug.Log("获取经纬度信息:"+ messg);
-        Dictionary<string, object> clockData = Json.Deserialize(messg) as Dictionary<string, object>;
-        if(clockData["errorCode"].ToString() == "0")
-        {
-            DataTool.clockInAddress = clockData["clockInAddress"].ToString();
-            DataTool.latitude = clockData["lat"].ToString();
-            DataTool.longitude = clockData["lgn"].ToString();
-        }
-        else
-        {
-            DataTool.clockInAddress = "";
-            DataTool.latitude = "";
-            DataTool.longitude = "";
-        }
-        switch (DataTool.salaryEntry)
-        {
-            case SalaryEntry.submit:
-                taskSubmitPanel.OpenSubmit();
-                break;
-            case SalaryEntry.clock:
-                StartCoroutine(RequestAddress(DataTool.latitude, DataTool.longitude, "1"));
-                break;
-            default:
-                break;
-        }
-    }
-    //打卡图片上传
-    public void CheckUrl()
-    {
-        gameObject.SetActive(true);
-        MaskTest(true);
-        StartCoroutine(CheckAddress(DataTool.pictureUrl));
-    }
+    //打卡上传图
     private IEnumerator CheckAddress(string url)
     {
         WWWForm form = new WWWForm();
@@ -432,37 +439,12 @@ public class UIManager : MonoSingleton<UIManager>
         }
         else
         {
-            DataTool.checkAddress = "";
             Debug.Log("打卡获取" + webRequest.downloadHandler.text);
             Dictionary<string, object> pageData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
             if (pageData["msg"].ToString() == "SUCCESS")
             {
                 DataTool.checkAddress = pageData["data"].ToString();
             }
-        }
-    }
-    //获取当前任务信息
-    public IEnumerator CurretAddress(string url)
-    {
-        UnityWebRequest webRequest = UnityWebRequest.Get(url);
-        webRequest.SetRequestHeader("Authorization", DataTool.token);
-
-        yield return webRequest.SendWebRequest();
-        if (webRequest.isNetworkError || webRequest.error != null)
-        {
-            Debug.Log("请求网络错误:" + webRequest.error);
-        }
-        else
-        {
-            Debug.Log("当前任务信息" + webRequest.downloadHandler.text);
-            Dictionary<string, object> taskData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskData["msg"].ToString() == "SUCCESS")
-            {
-                Dictionary<string, object> taskInfo = taskData["data"] as Dictionary<string, object>;
-                DataTool.currentTask = taskInfo["id"].ToString();
-                DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
-            }
-            hallPanel.UpdateTask();
         }
     }
     //接收收入信息

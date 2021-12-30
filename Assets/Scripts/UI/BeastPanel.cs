@@ -73,7 +73,7 @@ public class BeastPanel : MonoBehaviour
         }
         itemIndex = index;
         headParent.SetActive(true);
-        talentData = DataTool.talentDatas[itemId];
+        //talentData = DataTool.talentDatas[itemId];
         nameText.text = string.Format("{0} LV.{1}", beastName, itemIndex);
         infoText.text = string.Format("{0}\n{1}%{2}", talentData.name, talentData.probability, talentData.info);
         int fabric = int.Parse(quality);
@@ -194,7 +194,7 @@ public class BeastItem
         orderIndex = index;
         headSprite = head;
         string itemId = string.Format("200{0}", UnityEngine.Random.Range(1, 7));
-        beastData = DataTool.roleDatas[itemId];
+        //beastData = DataTool.roleDatas[itemId];
         carryObject = parent.Find("carry").gameObject;
         frameObject = parent.Find("Frame").gameObject;
         fixBtn = parent.GetComponent<Button>();

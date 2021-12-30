@@ -348,12 +348,13 @@ public class TaskPanel : MonoBehaviour
         webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         webRequest.SetRequestHeader("Content-Type", "application/json");
         UIManager.Instance.MaskTest(true);
-        yield return webRequest.SendWebRequest();
-        UIManager.Instance.MaskTest(false);
         for (int i = 0; i < taskDetails.Count; i++)
         {
             taskDetails[i].gameObject.SetActive(false);
         }
+        yield return webRequest.SendWebRequest();
+        UIManager.Instance.MaskTest(false);
+       
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);

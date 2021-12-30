@@ -78,7 +78,7 @@ public class RankingPanel : MonoBehaviour
                 item.localScale = Vector3.one;
             }
             RankingItem ranking = new RankingItem(item,i);
-            ranking.SetInfo(DataTool.GetName(), "奖励经验值1.5k",true);
+            //ranking.SetInfo(DataTool.GetName(), "奖励经验值1.5k",true);
             rankings.Add(ranking);
         }
         isDaily = false;
@@ -100,7 +100,7 @@ public class RankingPanel : MonoBehaviour
             holdText.gameObject.SetActive(true);
             for (int i = 0; i < rankings.Count; i++)
             {
-                rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",true);
+                //rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",true);
             }
         }
     }
@@ -116,7 +116,7 @@ public class RankingPanel : MonoBehaviour
             holdText.gameObject.SetActive(false);
             for (int i = 0; i < rankings.Count; i++)
             {
-                rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",false);
+                //rankings[i].SetInfo(DataTool.GetName(),"奖励经验值1.5k",false);
             }
         }
     }
@@ -157,7 +157,7 @@ public class RankingPanel : MonoBehaviour
             titleText.gameObject.SetActive(isDaily);
             if (isDaily)
             {
-                titleText.text = DataTool.GetTitle(rankIndex);
+                //titleText.text = DataTool.GetTitle(rankIndex);
             }
         }
     }

@@ -58,7 +58,7 @@ public class ClockinPanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-    //string.Format("{0:D2}:{1:D2}:{2:D2} " + "{3:D4}/{4:D2}/{5:D2}", hour, minute, second, year, month, day);
+
     private void SubmitTexture()
     {
         PlayerPrefs.SetString(System.DateTime.Now.Date.ToString() + "Clock", "Clock");

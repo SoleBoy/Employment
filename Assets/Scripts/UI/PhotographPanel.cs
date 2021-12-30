@@ -14,36 +14,30 @@ public class PhotographPanel : MonoBehaviour
 
     private RawImage rawImage;
     private Text infoText;
-    //private RawImage textImage;
-    //private Button submitBtn;
+
     private Button takeBtn;
     private Button flipBtn;
-    //private Button backBtn;
     private Button closeBtn;
     // 摄像机图片参数
     private WebCamTexture webCamTexture;
 
-    //private Transform clockinPanel;
     private WebCamDevice[] webCamDevices;
 
     private bool isFlip;
     private bool isClock;
     private void Awake()
     {
-        //clockinPanel = transform.Find("ClockinPanel");
-
         rawImage = transform.Find("RawImage").GetComponent<RawImage>();
         infoText = transform.Find("InfoText").GetComponent<Text>();
-        //textImage = transform.Find("ClockinPanel/Image").GetComponent<RawImage>();
-        //submitBtn = transform.Find("ClockinPanel/SubmitBtn").GetComponent<Button>();
+
         takeBtn = transform.Find("TakeBtn").GetComponent<Button>();
         flipBtn = transform.Find("FlipBtn").GetComponent<Button>();
         closeBtn = transform.Find("BackBtn").GetComponent<Button>();
-        //backBtn = transform.Find("ClockinPanel/BackBtn").GetComponent<Button>();
+
         takeBtn.onClick.AddListener(TakePhotoAndSave);
-        //submitBtn.onClick.AddListener(SubmitTexture);
+
         flipBtn.onClick.AddListener(FlipCamera);
-        //backBtn.onClick.AddListener(ClosePanel);
+
         closeBtn.onClick.AddListener(BackPanel);
     }
 
@@ -176,7 +170,6 @@ public class PhotographPanel : MonoBehaviour
         DataTool.cheackByte = texture2D.EncodeToJPG();
 
         System.IO.File.WriteAllBytes(DataTool.filePath,DataTool.cheackByte);
-        //StartCoroutine(CheckAddress(DataTool.pictureUrl, filePath));
     }
     //path=C:\Users\Acer\AppData\LocalLow\DefaultCompany\平台游戏测试\ClockIn.png
    

@@ -67,6 +67,10 @@ public class HallPanel : MonoBehaviour
 
     public void InitData()
     {
+        if (DataTool.taskDuration == "")
+        {
+            DataTool.taskDuration = "0";
+        }
         statusText.text = string.Format("当月累计任务时长{0}小时",DataTool.taskDuration);
         statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
         if (DataTool.theCompany == "")
@@ -155,6 +159,10 @@ public class HallPanel : MonoBehaviour
     }
     public void UpdateTask()
     {
+        if (DataTool.taskDuration == "")
+        {
+            DataTool.taskDuration = "0";
+        }
         statusText.text = string.Format("当月累计任务时长{0}小时", DataTool.taskDuration);
         statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
     }

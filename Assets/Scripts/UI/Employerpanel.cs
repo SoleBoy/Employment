@@ -78,7 +78,7 @@ public class Employerpanel : MonoBehaviour
     public void OpenLicense()
     {
         //DataTool.employerInfo["buzLicensePic"].ToString()
-        UIManager.Instance.businessPanel.OpenPanel("");
+        UIManager.Instance.businessPanel.OpenPanel();
         //UIManager.Instance.loadTxt.GetMonthly_7();
     }
 

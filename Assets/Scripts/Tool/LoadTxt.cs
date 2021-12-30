@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using System;
+using System.Runtime.InteropServices;
 
 public class LoadTxt : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class LoadTxt : MonoBehaviour
         //StartCoroutine(RequestAddress("http://appapi.brilliantnetwork.cn:5002/api/basicdata/getAddressFromGeo?lgn=121.459&lat=31.187117"));
         //UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
         //TaskTest(TxtFile[10].ToString());
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_IOS
         UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
 #endif
     }

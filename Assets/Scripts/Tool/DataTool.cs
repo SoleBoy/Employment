@@ -9,10 +9,10 @@ public class DataTool
 {
 #if UNITY_IOS
 	[DllImport ("__Internal")]
-	private static extern void iOSFunForUnity_requestUserInfo(int mesgg, int id, string month);
+	private static extern void startActivity(int pageId);//登录注册流程传数据
 
-	[DllImport ("__Internal")]
-	private static extern void iOSFunForUnity_startPage (int pageId);
+    [DllImport("__Internal")]
+    private static extern void getLocationInfo();//获取经纬度位置
 #endif
 
     public static Dictionary<string, object> information = new Dictionary<string, object>();
@@ -36,6 +36,7 @@ public class DataTool
     public static string clockInAddress = "";//打卡地址
     public static string latitude = "";//打卡经纬度
     public static string longitude = "";
+    public static string businessPic = "";
 
     public static string workerInfo = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
     //打卡记录
@@ -82,82 +83,9 @@ public class DataTool
     public static Color color_submitted;
     public static Color color_accepted;
     public static Color color_issued;
-    //获取头衔等级
-    public static string GetTitle(int rankIndex)
-    {
-        if (rankIndex == 1)
-        {
-            return "王者";
-        }
-        else if (rankIndex == 2)
-        {
-            return "蓝钻";
-        }
-        else if (rankIndex == 3)
-        {
-            return "红钻";
-        }
-        else if (rankIndex >= 4 && rankIndex <= 10)
-        {
-            return "黄钻";
-        }
-        else if (rankIndex >= 11 && rankIndex <= 100)
-        {
-            return "绿钻";
-        }
-        else if (rankIndex >= 101 && rankIndex <= 1000)
-        {
-            return "白金";
-        }
-        else if (rankIndex >= 1001 && rankIndex <= 10000)
-        {
-            return "黄金";
-        }
-        else if (rankIndex >= 10001 && rankIndex <= 100000)
-        {
-            return "白银";
-        }
-        else if (rankIndex >= 100001 && rankIndex <= 1000000)
-        {
-            return "钢铁";
-        }
-        else if (rankIndex >= 1000001 && rankIndex <= 10000000)
-        {
-            return "青铜";
-        }
-        else
-        {
-            return "黄铜";
-        }
-    }
-    //随机姓名
-    private static string[] ranName = { "澄", "阳", "邈", "海", "朗", "鸿", "高", "旻", "曦", "哲", "景", "彰" };
-    public static string GetName()
-    {
-        return ranName[Random.Range(0, ranName.Length)] + ranName[Random.Range(0, ranName.Length)];
-    }
-    //各类表数据
-    public static Dictionary<string, RoleData> roleDatas = new Dictionary<string, RoleData>();
-    public static Dictionary<string, TypeData> typeDatas = new Dictionary<string, TypeData>();
-    public static Dictionary<string, TalentData> talentDatas = new Dictionary<string, TalentData>();
+
     public static void InitData()
     {
-        //PackageRole role = Resources.Load<PackageRole>("DataAssets/roledata");
-        //roleDatas = role.GetItems();
-        //PackageType type = Resources.Load<PackageType>("DataAssets/typedata");
-        //typeDatas = type.GetItems();
-        //PackageTalent talent = Resources.Load<PackageTalent>("DataAssets/talentdata");
-        //talentDatas = talent.GetItems();
-
-        //roleData = roleDatas["1001"];
-        ////数据
-
-        //blindBox = PlayerPrefs.GetInt("CurretBlindBox", 5);
-        //roleRanking = Random.Range(800,2000);
-        //roleTitle = GetTitle(roleRanking);
-        //roleLevel = PlayerPrefs.GetFloat("CurretLevel",1);
-        //roleExp = PlayerPrefs.GetFloat("CurretExp");
-        //roleExp_Max = float.Parse(roleData.exp) + float.Parse(roleData.exp_upgrade) * (roleLevel-1);
         isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString() + "Clock") == "Clock";
 
         color_review = GetColor("2D56E9");//待审核 #D9680F
@@ -208,12 +136,35 @@ public class DataTool
         }
         else if(Application.platform == RuntimePlatform.IPhonePlayer)
         {
-            // iOSFunForUnity_startPage(pageId);
 #if UNITY_IOS
-            iOSFunForUnity_requestUserInfo(1, 2, "abcdedf");
+            startActivity(pageId);
 #endif
         }
     }
+    //打卡地址获取
+    public static void CallClockInfo()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            Debug.Log("getLocationInfo");
+
+            using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
+            {
+                if (pluginClass != null)
+                {
+                    pluginClass.CallStatic("getLocationInfo");
+                }
+            }
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+#if UNITY_IOS
+            getLocationInfo();
+#endif
+        }
+    }
+
+
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
     public static void CallNative(int mesgg,int id,string month = "")
     {
@@ -232,30 +183,12 @@ public class DataTool
         }
         else if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
-
+#if UNITY_IOS
+            //requestUserInfo(mesgg);
+#endif
         }
     }
-    //打卡记录上传getLocationInfo
-    public static void CallClockInfo()
-    {
-        //Debug.Log(System.Convert.ToBase64String(cheackByte));
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            Debug.Log("getLocationInfo");
-
-            using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
-            {
-                if (pluginClass != null)
-                {
-                    pluginClass.CallStatic("getLocationInfo");
-                }
-            }
-        }
-        else if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-
-        }
-    }
+   
     //获取字典
     public static Dictionary<string,object> GetDictionary(string activityInfo)
     {
