@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class TaskDetailsPanel : MonoBehaviour
 {
+    public Transform toolParent;
     private Text taskType;
     private Text taskAmount;
     private Text taskCycle;
@@ -22,7 +23,7 @@ public class TaskDetailsPanel : MonoBehaviour
         taskAmount = transform.Find("TopBg/WageText").GetComponent<Text>();
         taskCycle = transform.Find("Header/cycle").GetComponent<Text>();
         taskUnivalent = transform.Find("Header/univalent ").GetComponent<Text>();
-        taskInfo = transform.Find("Header/info").GetComponent<Text>();
+        taskInfo = toolParent.Find("Text").GetComponent<Text>();
 
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
@@ -46,7 +47,11 @@ public class TaskDetailsPanel : MonoBehaviour
         string dataUrl = string.Format("{0}{1}", url, taskid);
         UnityWebRequest webRequest = UnityWebRequest.Get(dataUrl);
         webRequest.SetRequestHeader("Authorization", DataTool.token);
-
+        taskType.text = "";
+        taskAmount.text = "";
+        taskCycle.text = "";
+        taskUnivalent.text = "";
+        taskInfo.text = "";
         yield return webRequest.SendWebRequest();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
@@ -59,22 +64,23 @@ public class TaskDetailsPanel : MonoBehaviour
             if (pageData["msg"].ToString() == "SUCCESS")
             {
                 Dictionary<string, object> infoData = pageData["data"] as Dictionary<string, object>;
-                taskType.text = infoData["title"].ToString();
-                taskAmount.text = string.Format("￥{0:N2}", infoData["fee"].ToString());
-
-                taskCycle.text = infoData["time"].ToString();
-                taskUnivalent.text = string.Format("￥{0:N2}/{1}", infoData["unitAmount"].ToString(), infoData["billingUnit"].ToString());
-                taskInfo.text = infoData["taskResult"].ToString();
+                if(infoData["title"] != null)
+                    taskType.text = infoData["title"].ToString();
+                if (infoData["fee"] != null)
+                    taskAmount.text = string.Format("￥{0:N2}", infoData["fee"].ToString());
+                if (infoData["time"] != null && infoData["timeHHmm"] != null)
+                    taskCycle.text = string.Format("{0}\n{1}", infoData["time"].ToString(), infoData["timeHHmm"].ToString()); ;//
+                if (infoData["unitAmount"] != null && infoData["billingUnit"] != null)
+                    taskUnivalent.text = string.Format("￥{0:N2}/{1}", infoData["unitAmount"].ToString(), infoData["billingUnit"].ToString());
+                if (infoData["taskResult"] != null)
+                    taskInfo.text = infoData["taskResult"].ToString();
             }
-            else
-            {
-                taskType.text = "";
-                taskAmount.text = "";
-                taskCycle.text = "";
-                taskUnivalent.text = "";
-                taskInfo.text = "";
-            }
+            Invoke("Dely", 1);
         }
     }
-    
+    void Dely()
+    {
+        Debug.Log(taskInfo.GetComponent<RectTransform>().sizeDelta.y);
+        toolParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, taskInfo.GetComponent<RectTransform>().sizeDelta.y);
+    }
 }

@@ -85,7 +85,7 @@ public class IncomePanel : MonoBehaviour
         }
         else
         {
-            //Debug.Log("收入页" + webRequest.downloadHandler.text);
+            Debug.Log("收入页" + webRequest.downloadHandler.text);
             Dictionary<string, object> pageData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
             if(pageData["msg"].ToString() == "SUCCESS")
             {

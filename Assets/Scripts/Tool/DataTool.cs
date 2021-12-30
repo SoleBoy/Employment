@@ -55,7 +55,7 @@ public class DataTool
     //收入
     public static string totalSalaryUrl="http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getTotalSalary";//总收入
     public static string salarySeachUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getSalarySeach";//收入列表
-    public static string salaryDetailsUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getDetalSalary?id=1";//薪水详情
+    public static string salaryDetailsUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getDetalSalary?id=";//薪水详情
 
     //邀请码认证信息
     public static string invateCodeUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/updateInvateCode";

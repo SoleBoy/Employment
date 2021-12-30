@@ -4,7 +4,7 @@
 	"bank_card_bind_status":"1",
 	"cust_name":"胡锦",
 	"entrust_video_status":"1",
-	"goto":"雇主",
+	"goto":"个人",
 	"invite_code":"-1",
 	"lat":"31.242122",
 	"lgn":"121.521059",
@@ -12,5 +12,5 @@
 	"locationAddress":"上海市浦东新区昌邑路543号靠近海悦滨江酒店公寓",
 	"name":"徐宝顶",
 	"realname_auth_status":"1","signature_status":"1",
-	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDg1ODI1Miwic3ViIjoie1wiY29tcGFueUlkXCI6NTYsXCJ1c2VySWRcIjoxMixcInVzZXJUeXBlXCI6MX0iLCJleHAiOjE2NDM0NTAyNTJ9.zcpT5h0kxD7o2Ey1Ni60b56jnRiDQHuhAuO-5rcS0NM"
+	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDg3MjY3MSwic3ViIjoie1widXNlcklkXCI6NDksXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzNDY0NjcxfQ.x5Jr6UMj6IZCY1dlwZp_mNmU2NttAKbz7raJHLQqL2E"
 }
