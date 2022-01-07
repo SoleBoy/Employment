@@ -11,6 +11,7 @@
 	"living_check_status":"1",
 	"locationAddress":"上海市浦东新区昌邑路543号靠近海悦滨江酒店公寓",
 	"name":"徐宝顶",
-	"realname_auth_status":"1","signature_status":"1",
-	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MDg3MjY3MSwic3ViIjoie1widXNlcklkXCI6NDksXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzNDY0NjcxfQ.x5Jr6UMj6IZCY1dlwZp_mNmU2NttAKbz7raJHLQqL2E"
+	"realname_auth_status":"1",
+	"signature_status":"1",
+	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MTI4NDAzMywic3ViIjoie1widXNlcklkXCI6NzEsXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzODc2MDMzfQ.44NRaebSwXUWTWSLPlc69KBNMhvpaIQnb0zugmgivmk"
 }

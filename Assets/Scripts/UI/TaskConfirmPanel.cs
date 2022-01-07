@@ -43,7 +43,6 @@ public class TaskConfirmPanel : MonoBehaviour
     public void OpenPanel(string taskId)
     {
         this.taskId = taskId;
-        Debug.Log("任务ID："+ taskId);
         gameObject.SetActive(true);
         successPanel.SetActive(false);
     }

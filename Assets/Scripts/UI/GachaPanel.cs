@@ -31,7 +31,7 @@ public class GachaPanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        numberText.text = string.Format("剩余次数：{0}",DataTool.blindBox);
+        //numberText.text = string.Format("剩余次数：{0}",DataTool.blindBox);
     }
 
     public void ClosePanel()
@@ -41,25 +41,25 @@ public class GachaPanel : MonoBehaviour
 
     public void OpenCard()
     {
-        if(DataTool.blindBox >= 1 || isOpen)
-        {
-            if (isOpen)
-            {
-                isOpen = false;
-                openText.text = "打开";
-                PlayerPrefs.SetString("LastDay", DateTime.Now.Date.ToString());
-            }
-            else
-            {
-                DataTool.blindBox -= 1;
-                PlayerPrefs.SetInt("CurretBlindBox", DataTool.blindBox);
-                numberText.text = string.Format("剩余次数：{0}", DataTool.blindBox);
-            }
-            //UIManager.Instance.cardPanel.OpenPanel("爱丽儿");
-        }
-        else
-        {
-            UIManager.Instance.CloningTips("次数已经用完!");
-        }
+        //if(DataTool.blindBox >= 1 || isOpen)
+        //{
+        //    if (isOpen)
+        //    {
+        //        isOpen = false;
+        //        openText.text = "打开";
+        //        PlayerPrefs.SetString("LastDay", DateTime.Now.Date.ToString());
+        //    }
+        //    else
+        //    {
+        //        DataTool.blindBox -= 1;
+        //        PlayerPrefs.SetInt("CurretBlindBox", DataTool.blindBox);
+        //        numberText.text = string.Format("剩余次数：{0}", DataTool.blindBox);
+        //    }
+        //    //UIManager.Instance.cardPanel.OpenPanel("爱丽儿");
+        //}
+        //else
+        //{
+        //    UIManager.Instance.CloningTips("次数已经用完!");
+        //}
     }
 }

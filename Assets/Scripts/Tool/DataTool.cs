@@ -8,35 +8,14 @@ using UnityEngine.Networking;
 public class DataTool
 {
 #if UNITY_IOS
-	[DllImport ("__Internal")]
-	private static extern void startActivity(int pageId);//登录注册流程传数据
+    [DllImport("__Internal")]
+    private static extern void startActivity();//登录注册流程传数据
 
     [DllImport("__Internal")]
     private static extern void getLocationInfo();//获取经纬度位置
 #endif
 
     public static Dictionary<string, object> information = new Dictionary<string, object>();
-    //public static Dictionary<string, object> employerInfo = new Dictionary<string, object>();
-
-    public static RoleData roleData;
-    public static float roleLevel;//等级
-    public static float roleExp;//经验
-    public static float roleExp_Max;//经验
-    public static int roleRanking;//排名
-    public static string roleType;//注册类型
-    public static string roleTitle;//头衔
-
-    public static string token = "";
-    public static string roleName = "";//姓名
-    public static string theCompany = "";//公司名字
-    public static string bankName = "";//银行卡名
-    public static string bankNo = "";//银行卡号
-    public static string inviteCode = "";//邀请码
-    public static string taskDuration = "0";//任务时长
-    public static string clockInAddress = "";//打卡地址
-    public static string latitude = "";//打卡经纬度
-    public static string longitude = "";
-    public static string businessPic = "";
 
     public static string workerInfo = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
     //打卡记录
@@ -64,18 +43,30 @@ public class DataTool
     public static string scanCodeUrl = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/postScanCode";//扫码提交
     public static string invitationCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getInvitationCode";//获取邀请码
 
-    public static int blindBox;//盲盒次数
-    //public static bool isUnit;//个体 个人
+    public static string token = "";
+    public static string roleType = "";//注册类型
+    public static string roleName = "";//姓名
+    public static string theCompany = "";//公司名字
+    public static string bankName = "";//银行卡名
+    public static string bankNo = "";//银行卡号
+    public static string inviteCode = "";//邀请码
+    public static string taskDuration = "0";//任务时长
+    public static string clockInAddress = "";//打卡地址
+    public static string latitude = "";//打卡经纬度
+    public static string longitude = "";//打卡经纬度
+    public static string businessPic = "";//营业执照
+    public static string bankCardPic = "";//银行卡照片
+    public static string signaturePic = "";//签名
+    public static string checkAddress = "";//打卡地址
+    public static string currentTask = "";//当前任务
+    public static string filePath = Application.persistentDataPath + "/" + "ClockIn.png";
     public static bool isClock;//打卡记录
     public static byte[] cheackByte;
     public static Texture checkTexture;
-    public static string checkAddress = "";
-    public static string currentTask = "";
-    public static string filePath = Application.persistentDataPath + "/" + "ClockIn.png";
-    public static SalaryEntry salaryEntry;
+    public static Vector2 canvasSize;
     public static Vector3 frontAngle = new Vector3(0, 180, 90);
     public static Vector3 rearAngle = new Vector3(0, 0, -90);
-
+    public static SalaryEntry salaryEntry;
 
     public static Color color_review;
     public static Color color_start; 
@@ -102,21 +93,6 @@ public class DataTool
         return skyColor;
     }
 
-    //加经验值
-    public static bool AddExperience(float exp)
-    {
-        roleExp += exp;
-        if(roleExp >= roleExp_Max)
-        {
-            roleLevel += 1;
-            roleExp = roleExp - roleExp_Max;
-            roleExp_Max = float.Parse(roleData.exp) + float.Parse(roleData.exp_upgrade) * (roleLevel - 1);
-            PlayerPrefs.SetFloat("CurretLevel", roleLevel);
-            return true;
-        }
-        PlayerPrefs.SetFloat("CurretExp",roleExp);
-        return false;
-    }
     //Open安卓
     public static void StartActivity(int pageId)
     {
@@ -137,7 +113,7 @@ public class DataTool
         else if(Application.platform == RuntimePlatform.IPhonePlayer)
         {
 #if UNITY_IOS
-            startActivity(pageId);
+            startActivity();
 #endif
         }
     }
@@ -163,8 +139,26 @@ public class DataTool
 #endif
         }
     }
+    //更新银行卡
+    public static void CallBankcard()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            Debug.Log("getLocationInfo");
 
+            using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
+            {
+                if (pluginClass != null)
+                {
+                    pluginClass.CallStatic("updateBankcard");
+                }
+            }
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
 
+        }
+    }
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
     public static void CallNative(int mesgg,int id,string month = "")
     {
@@ -183,9 +177,7 @@ public class DataTool
         }
         else if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
-#if UNITY_IOS
-            //requestUserInfo(mesgg);
-#endif
+
         }
     }
    
@@ -228,5 +220,6 @@ public enum SalaryEntry
     issued_1,
     business_1,
     submit,
-    clock
+    clock,
+    bankcard
 }

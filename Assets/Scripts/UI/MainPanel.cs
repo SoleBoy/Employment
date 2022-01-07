@@ -16,6 +16,7 @@ public class MainPanel : MonoBehaviour
     private Button dropBtn;
     private Button serviceBtn;
     private Button agreementBtn;
+    private Button bankcardBtn;
 
     private Transform btnParent;
     private void Awake()
@@ -28,6 +29,7 @@ public class MainPanel : MonoBehaviour
         dropBtn = btnParent.Find("DropBtn").GetComponent<Button>();
         serviceBtn = btnParent.Find("ServiceBtn").GetComponent<Button>();
         agreementBtn = btnParent.Find("Agreement").GetComponent<Button>();
+        bankcardBtn = btnParent.Find("BankCard").GetComponent<Button>();
 
         firmText = transform.Find("TopBg/FirmText").GetComponent<Text>();
         nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
@@ -39,6 +41,7 @@ public class MainPanel : MonoBehaviour
         dropBtn.onClick.AddListener(OpenDrop);
         serviceBtn.onClick.AddListener(OpenService);
         agreementBtn.onClick.AddListener(OpenAgreement);
+        bankcardBtn.onClick.AddListener(OpenBankCard);
 
         licenseBtn.gameObject.SetActive(false);
     }
@@ -95,6 +98,15 @@ public class MainPanel : MonoBehaviour
     private void OpenAgreement()
     {
         UIManager.Instance.protocolPanel.OpenPanel();
+    }
+    private void OpenBankCard()
+    {
+        DataTool.salaryEntry = SalaryEntry.bankcard;
+#if UNITY_EDITOR
+        UIManager.Instance.bankPhotoPanel.OpenPanel();
+#else
+                 DataTool.CallBankcard();
+#endif
     }
     //营业执照
     private void OpenLicense()

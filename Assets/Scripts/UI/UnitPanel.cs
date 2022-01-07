@@ -35,7 +35,7 @@ public class UnitPanel : MonoBehaviour
     {
         //firmText.text = DataTool.theCompany;
         nameText.text = DataTool.roleName;
-        if(DataTool.inviteCode != "-1")
+        if(DataTool.inviteCode.Length == 8)
         {
             UpdateStatus("已输入");
         }
@@ -43,17 +43,6 @@ public class UnitPanel : MonoBehaviour
         {
             UpdateStatus("");
         }
-        //for (int i = 0; i < infos.Count; i++)
-        //{
-        //    if (DataTool.information.ContainsKey(fieldInfo[i]))
-        //    {
-        //        infos[i].SetInfo(int.Parse(DataTool.information[fieldInfo[i]].ToString()));
-        //    }
-        //    else
-        //    {
-        //        infos[i].SetInfo(2);
-        //    }
-        //}
     }
     public void OpenPanel()
     {

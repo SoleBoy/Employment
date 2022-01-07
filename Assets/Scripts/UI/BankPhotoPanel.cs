@@ -1,13 +1,10 @@
-﻿using MiniJSON;
-using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class BusinessPanel : MonoBehaviour
+public class BankPhotoPanel : MonoBehaviour
 {
     private Text nameText;
     private Text firmText;
@@ -15,13 +12,13 @@ public class BusinessPanel : MonoBehaviour
     private RawImage licenseImage;
     private Button backBtn;
     private GameObject attestInfo;
+
     private Vector2 nTouchPos1;
     private Vector2 nTouchPos2;
     private Vector2 oTouchPos1;
     private Vector2 oTouchPos2;
 
     private float selfScaling = 1;
-
     public bool isStart = true;
 
     private float screenxyRate;
@@ -40,8 +37,6 @@ public class BusinessPanel : MonoBehaviour
 
     public void OpenPanel()
     {
-        //DataTool.businessPic = "http://salary-file.oos-website-cn.oos-cn.ctyunapi.cn/businessLicense/2021-12-30/dd69858a12e04e599ec5a7a91db93339.jpg";
-        //DataTool.businessPic = "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=2673183312,4257398740&fm=26&gp=0.jpg";
         gameObject.SetActive(true);
         selfScaling = licenseImage.transform.localScale.x;
         if (isStart)
@@ -49,13 +44,20 @@ public class BusinessPanel : MonoBehaviour
             isStart = false;
             licenseImage.gameObject.SetActive(false);
             StartCoroutine(DownSprite());
-            firmText.text = DataTool.theCompany;
+            if (DataTool.theCompany == "")
+            {
+                firmText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+            }
+            else
+            {
+                firmText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+            }
         }
     }
 
     private IEnumerator DownSprite()
     {
-        UnityWebRequest webRequest = new UnityWebRequest(DataTool.businessPic);
+        UnityWebRequest webRequest = new UnityWebRequest(DataTool.bankCardPic);
         DownloadHandlerTexture texD1 = new DownloadHandlerTexture(true);
         webRequest.downloadHandler = texD1;
         //UIManager.Instance.loadingPanel.OpenPanel();
@@ -73,9 +75,9 @@ public class BusinessPanel : MonoBehaviour
             licenseImage.gameObject.SetActive(true);
 
             Vector2 licenseSize = licenseImage.GetComponent<RectTransform>().sizeDelta;
-            float licenseRate = licenseSize.x/licenseSize.y;
-            //Debug.Log("X:" + licenseSize.x + "Y:" + licenseSize.y + "bizhi：" + licenseRate);
-            if(screenxyRate >= licenseRate)
+            float licenseRate = licenseSize.x / licenseSize.y;
+
+            if (screenxyRate >= licenseRate)
             {
                 float y = DataTool.canvasSize.y * 0.6f;
                 float offef = y / licenseSize.y;
@@ -96,7 +98,7 @@ public class BusinessPanel : MonoBehaviour
 
     private void Update()
     {
-        if (Input.touchCount == 2)
+        if(Input.touchCount == 2)
         {
             ZoomInOut();
         }
@@ -116,7 +118,7 @@ public class BusinessPanel : MonoBehaviour
             }
         }
     }
-
+  
     void ZoomInOut()
     {
         if (Input.GetTouch(0).phase == TouchPhase.Moved || Input.GetTouch(1).phase == TouchPhase.Moved)
@@ -156,51 +158,4 @@ public class BusinessPanel : MonoBehaviour
             return true;
         }
     }
-    //public void OpenPanel(Dictionary<string, object> tokenData)
-    //{
-    //    gameObject.SetActive(true);
-    //    //nameText.text = DataTool.roleName;
-    //    firmText.text = DataTool.theCompany;
-    //    UIManager.Instance.loadingPanel.OpenPanel();
-    //    licenseImage.gameObject.SetActive(false);
-    //    if (tokenData["code"].ToString() == "200")
-    //    {
-    //        attestInfo.SetActive(false);
-    //        StartCoroutine(RequestAddress(tokenData["url"].ToString()));
-    //    }
-    //    else
-    //    {
-    //        attestInfo.SetActive(true);
-    //        UIManager.Instance.loadingPanel.ClosePanel();
-    //    }
-    //}
-    //private IEnumerator RequestAddress(string url)
-    //{
-    //    UnityWebRequest webRequest = UnityWebRequest.Get(url);
-    //    yield return webRequest.SendWebRequest();
-    //    UIManager.Instance.loadingPanel.ClosePanel();
-    //    if (webRequest.isNetworkError || webRequest.error != null)
-    //    {
-    //        attestInfo.SetActive(true);
-    //        Debug.Log("请求网络错误:" + webRequest.error);
-    //    }
-    //    else
-    //    {
-    //        Debug.Log(webRequest.downloadHandler.text);
-    //        PDFDocument pdfDocument = new PDFDocument(webRequest.downloadHandler.data, "");
-    //        if (pdfDocument.IsValid)
-    //        {
-    //            int pageCount = pdfDocument.GetPageCount();
-
-    //            PDFRenderer renderer = new PDFRenderer();
-    //            texture = renderer.RenderPageToTexture(pdfDocument.GetPage((int)m_Page % pageCount), 834, 640);
-    //            texture.filterMode = FilterMode.Bilinear;
-    //            texture.anisoLevel = 8;
-    //            licenseImage.texture = texture;
-    //            licenseImage.SetNativeSize();
-    //            licenseImage.gameObject.SetActive(true);
-    //        }
-    //    }
-    //}
-
 }

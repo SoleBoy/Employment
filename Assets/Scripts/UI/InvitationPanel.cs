@@ -98,12 +98,15 @@ public class InvitationPanel : MonoBehaviour
         {
             Debug.Log("邀请码信息" + webRequest.downloadHandler.text);
             Dictionary<string, object> codeInfo = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (codeInfo["msg"].ToString() == "SUCCESS")
+            if (codeInfo["code"].ToString() == "0")
             {
                 Dictionary<string, object> code = codeInfo["data"] as Dictionary<string, object>;
                 codePanel.SetActive(true);
-                DataTool.inviteCode = code["invateCode"].ToString();
-                DataTool.theCompany = code["companyName"].ToString();
+                if(code["invateCode"] != null)
+                    DataTool.inviteCode = code["invateCode"].ToString();
+                if (code["companyName"] != null)
+                    DataTool.theCompany = code["companyName"].ToString();
+
                 identityText.text = DataTool.inviteCode;
                 nameText.text = DataTool.theCompany;
             }
@@ -137,7 +140,7 @@ public class InvitationPanel : MonoBehaviour
         {
             Debug.Log("邀请码信息" + webRequest.downloadHandler.text);
             Dictionary<string, object> codeInfo = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (codeInfo["msg"].ToString() == "SUCCESS")
+            if (codeInfo["code"].ToString() == "0")
             {
                 updatePanel.SetActive(true);
                 UIManager.Instance.mainPanel.SetCompany();

@@ -61,7 +61,7 @@ public class RankingPanel : MonoBehaviour
 
     private void InitData()
     {
-        rankingText.text = string.Format("昨日,我的名次{0}",DataTool.roleRanking);
+        //rankingText.text = string.Format("昨日,我的名次{0}",DataTool.roleRanking);
         rewardText.text = string.Format("奖励:经验值{0}",100);
         for (int i = 1; i <= 50; i++)
         {
@@ -86,7 +86,7 @@ public class RankingPanel : MonoBehaviour
         weekImage.sprite = normalSprite;
         float maxY = 50 * 150 + 50 * 35 + 50;
         rankParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-        holdText.text = string.Format("头衔:{0}", DataTool.roleTitle);
+        //holdText.text = string.Format("头衔:{0}", DataTool.roleTitle);
     }
 
     private void OpenDaily()

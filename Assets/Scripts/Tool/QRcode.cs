@@ -88,8 +88,6 @@ public class QRcode : MonoBehaviour
         var br = barcodeReader.Decode(data, width, height);
         if (br != null)
         {
-            //txtQRcode.text = br.Text;
-            //CallNative(br.Text);
             StartCoroutine(ScanCode(DataTool.scanCodeUrl, br.Text));
             isScan = false;
             webCameraTexture.Stop();
@@ -122,25 +120,25 @@ public class QRcode : MonoBehaviour
 
     }
 
-    public static void CallNative(string mesgg)
-    {
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            Debug.Log("扫描信息：" + mesgg);
+    //public static void CallNative(string mesgg)
+    //{
+    //    if (Application.platform == RuntimePlatform.Android)
+    //    {
+    //        Debug.Log("扫描信息：" + mesgg);
 
-            using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
-            {
-                if (pluginClass != null)
-                {
-                    pluginClass.CallStatic("pcLogin",mesgg);
-                }
-            }
+    //        using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
+    //        {
+    //            if (pluginClass != null)
+    //            {
+    //                pluginClass.CallStatic("pcLogin",mesgg);
+    //            }
+    //        }
 
-        }else if(Application.platform == RuntimePlatform.IPhonePlayer)
-        {
+    //    }else if(Application.platform == RuntimePlatform.IPhonePlayer)
+    //    {
 
-        }
-    }
+    //    }
+    //}
     //" "appToken" : "3e5e876-4c81-48ff-b6f9-86b908eQ2df" , "mobile": "19145724473" ,"qncode ":"Cc5695a7b32a4a3a91c6989c4aede073""
     private void OnDestroy()
     {

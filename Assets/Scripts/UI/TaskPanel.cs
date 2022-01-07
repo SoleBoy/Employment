@@ -46,6 +46,7 @@ public class TaskPanel : MonoBehaviour
 
     private bool isArea;
     private bool isType;
+    public bool isSuccess;
     private int index_click;
     private string provinceId;
 
@@ -89,9 +90,7 @@ public class TaskPanel : MonoBehaviour
         areaBtn.onClick.AddListener(RegionSelection);
         typeBtn.onClick.AddListener(TypeSelection);
 
-        StartCoroutine(RequestTaskType(DataTool.typeTaskUrl));
-        StartCoroutine(RequestAddress(DataTool.placeTaskUrl));
-        //StartCoroutine(RequestSeachTask(DataTool.seachTaskUrl,"0"));
+        transform.Find("TaskType").GetComponent<UScrollRect>().callback2 = () => { Debug.Log("到顶端了，开始刷新"); };
     }
 
     private void SetTaskType()
@@ -226,6 +225,12 @@ public class TaskPanel : MonoBehaviour
         index_click = 0;
         filterText.color = cancelColor;
         OpenRecommend();
+        if(isSuccess)
+        {
+            StartCoroutine(RequestTaskType(DataTool.typeTaskUrl));
+            StartCoroutine(RequestAddress(DataTool.placeTaskUrl));
+            //StartCoroutine(RequestSeachTask(DataTool.seachTaskUrl,"0"));
+        }
     }
 
 
@@ -267,8 +272,9 @@ public class TaskPanel : MonoBehaviour
         else
         {
             //Debug.Log("任务类型" + webRequest.downloadHandler.text);
+            isSuccess = false;
             Dictionary<string, object> taskType = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskType["msg"].ToString() == "SUCCESS")
+            if (taskType["code"].ToString() == "0")
             {
                 List<object> taskInfo = taskType["data"] as List<object>;
                 for (int i = 0; i < taskInfo.Count; i++)
@@ -299,9 +305,10 @@ public class TaskPanel : MonoBehaviour
         }
         else
         {
+            isSuccess = false;
             //Debug.Log("行政区" + webRequest.downloadHandler.text);
             Dictionary<string, object> taskType = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskType["msg"].ToString() == "SUCCESS")
+            if (taskType["code"].ToString() == "0")
             {
                 List<object> taskInfo = taskType["data"] as List<object>;
                 for (int i = 0; i < taskInfo.Count; i++)
@@ -347,14 +354,15 @@ public class TaskPanel : MonoBehaviour
         webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
         webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         webRequest.SetRequestHeader("Content-Type", "application/json");
-        UIManager.Instance.MaskTest(true);
+       
         for (int i = 0; i < taskDetails.Count; i++)
         {
             taskDetails[i].gameObject.SetActive(false);
         }
+        UIManager.Instance.MaskTest(true);//.OpenPanel();
         yield return webRequest.SendWebRequest();
-        UIManager.Instance.MaskTest(false);
-       
+        UIManager.Instance.MaskTest(false);//.loadingPanel.ClosePanel();
+
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -364,7 +372,7 @@ public class TaskPanel : MonoBehaviour
             Debug.Log("任务"+ taskType + webRequest.downloadHandler.text);
             bool istaskType = taskType == "2";
             Dictionary<string, object> taskTotal = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskTotal["msg"].ToString() == "SUCCESS")
+            if (taskTotal["code"].ToString() == "0")
             {
                 Dictionary<string, object> taskData = taskTotal["data"] as Dictionary<string, object>;
                 List<object> taskList = taskData["list"] as List<object>;

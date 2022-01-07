@@ -43,8 +43,8 @@ public class DetailsPanel : MonoBehaviour
     {
         gameObject.SetActive(true);
         userInfos[0].SetInfo(DataTool.roleName);
-        userInfos[1].SetInfo(DataTool.roleTitle);
-        userInfos[2].SetInfo("LV."+DataTool.roleLevel);
+        //userInfos[1].SetInfo(DataTool.roleTitle);
+        //userInfos[2].SetInfo("LV."+DataTool.roleLevel);
         userInfos[3].SetInfo("10");
     }
 

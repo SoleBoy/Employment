@@ -9,13 +9,10 @@ public class ProtocolPanel : MonoBehaviour
     private Button backBtn;
 
     public RawImage rawImage;
-    private bool isStart;
-    private string signatureUrl;
+    public bool isStart;
     private void Awake()
     {
-        isStart = true;
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
-
         backBtn.onClick.AddListener(ClosePanel);
     }
 
@@ -25,7 +22,7 @@ public class ProtocolPanel : MonoBehaviour
         if(isStart)
         {
             isStart = false;
-            StartCoroutine(DownSprite(signatureUrl));
+            StartCoroutine(DownSprite());
         }
     }
 
@@ -34,18 +31,13 @@ public class ProtocolPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void GetSignature(string url)
+    private IEnumerator DownSprite()
     {
-        signatureUrl = url;
-    }
-
-    private IEnumerator DownSprite(string url)
-    {
-        UnityWebRequest webRequest = new UnityWebRequest(url);
+        UnityWebRequest webRequest = new UnityWebRequest(DataTool.signaturePic);
         DownloadHandlerTexture texD1 = new DownloadHandlerTexture(true);
         webRequest.downloadHandler = texD1;
         yield return webRequest.SendWebRequest();
-        UIManager.Instance.loadingPanel.ClosePanel();
+        //UIManager.Instance.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);

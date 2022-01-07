@@ -65,7 +65,7 @@ public class PhotographPanel : MonoBehaviour
         // 调用拍照保存函数
         TakePhotoAndSaveImage(webCamTexture);
         gameObject.SetActive(false);
-        UIManager.Instance.CheckUrl();
+        UIManager.Instance.gameObject.SetActive(true);//.CheckUrl();
         if (isClock)
         {
             UIManager.Instance.clockinPanel.OpenPanel(!isFlip);

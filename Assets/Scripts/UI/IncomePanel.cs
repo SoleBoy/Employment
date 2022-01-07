@@ -50,9 +50,16 @@ public class IncomePanel : MonoBehaviour
         {
             Debug.Log("总收入" + webRequest.downloadHandler.text);
             Dictionary<string, object> taskData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (taskData["msg"].ToString() == "SUCCESS")
+            if (taskData["code"].ToString() == "0")
             {
-                totalText.text = string.Format("{0:N2}", taskData["data"].ToString());
+                if(taskData["data"] != null && taskData["data"].ToString() != "")
+                {
+                    totalText.text = string.Format("{0:N2}", float.Parse(taskData["data"].ToString()));
+                }
+                else
+                {
+                    totalText.text = string.Format("{0:N2}",0);
+                }
             }
             else
             {
@@ -78,7 +85,9 @@ public class IncomePanel : MonoBehaviour
         {
             taskDetails[i].curretTask.SetActive(false);
         }
+        //UIManager.Instance.loadingPanel.OpenPanel();
         yield return webRequest.SendWebRequest();
+        //UIManager.Instance.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -87,7 +96,7 @@ public class IncomePanel : MonoBehaviour
         {
             Debug.Log("收入页" + webRequest.downloadHandler.text);
             Dictionary<string, object> pageData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if(pageData["msg"].ToString() == "SUCCESS")
+            if(pageData["code"].ToString() == "0")
             {
                 Dictionary<string, object> taskData= pageData["data"] as Dictionary<string, object>;
                 List<object> taskList= taskData["list"] as List<object>;
@@ -110,7 +119,7 @@ public class IncomePanel : MonoBehaviour
                         taskDetails[i].SetInfo(itemData);
                     }
                 }
-                float detaMax = taskList.Count * 200 + taskList.Count * 20;
+                float detaMax = taskList.Count * 220 + taskList.Count * 20;
                 toolParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, detaMax);
                 bg_grey.SetActive(taskList.Count <= 0);
             }
@@ -143,10 +152,18 @@ public class IncomePanel : MonoBehaviour
 
         public void SetInfo(Dictionary<string, object> pairs)
         {
-            taskId = pairs["id"].ToString();
-            nameText.text = pairs["title"].ToString();
-            timeText.text = pairs["time"].ToString();
-            moneyText.text = pairs["fee"].ToString();
+            nameText.text = "";
+            timeText.text = "";
+            moneyText.text = "";
+
+            if (pairs["id"] != null)
+                taskId = pairs["id"].ToString();
+            if (pairs["title"] != null)
+                nameText.text = pairs["title"].ToString();
+            if (pairs["time"] != null)
+                timeText.text = pairs["time"].ToString();
+            if(pairs["fee"] != null)
+                moneyText.text = float.Parse(pairs["fee"].ToString()).ToString("N2");
         }
 
         private void OpenDetails()

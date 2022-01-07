@@ -24,6 +24,7 @@ public class TaskSubmitPanel : MonoBehaviour
 
     private string taskId;
     private string taskType;
+    private bool isClick;
     private TaskStatus taskStatus;
     private void Awake()
     {
@@ -40,7 +41,7 @@ public class TaskSubmitPanel : MonoBehaviour
 
         rawImage = transform.Find("ClockPanel/RawImage").GetComponent<RawImage>();
 
-        confirmBtn.onClick.AddListener(OpenSuccess);
+        confirmBtn.onClick.AddListener(Openconfirm);
         cerBtn.onClick.AddListener(OpenSuccess);
         sureBtn.onClick.AddListener(AurePanel);
         backBtn.onClick.AddListener(ClosePanel);
@@ -73,18 +74,27 @@ public class TaskSubmitPanel : MonoBehaviour
         tex.LoadImage(bytes);
         return tex;
     }
-
+    private void Openconfirm()
+    {
+        isClick = false;
+        DataTool.salaryEntry = SalaryEntry.submit;
+        UIManager.Instance.MaskTest(true);//.loadingPanel.OpenPanel();
+#if UNITY_EDITOR
+        UIManager.Instance.Location_Android(UIManager.Instance.loadTxt.TxtFile[11].ToString());
+#else
+                 DataTool.CallClockInfo();
+#endif
+    }
     private void OpenSuccess()
     {
+        isClick = true;
         DataTool.salaryEntry = SalaryEntry.submit;
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            DataTool.CallClockInfo();
-        }
-        else
-        {
-            UIManager.Instance.Location_Android(UIManager.Instance.loadTxt.TxtFile[11].ToString());
-        }
+        UIManager.Instance.MaskTest(true);//.loadingPanel.OpenPanel();
+#if UNITY_EDITOR
+        UIManager.Instance.Location_Android(UIManager.Instance.loadTxt.TxtFile[11].ToString());
+#else
+               DataTool.CallClockInfo();
+#endif
     }
 
     public void OpenSubmit()
@@ -92,11 +102,11 @@ public class TaskSubmitPanel : MonoBehaviour
         switch (taskStatus)
         {
             case TaskStatus.start:
-                
-                StartCoroutine(UIManager.Instance.RequestAddress(taskType));
+                //UIManager.Instance.loadingPanel.OpenPanel();
+                StartCoroutine(UIManager.Instance.RequestClockIn(true,taskType,taskId));
                 break;
             case TaskStatus.submit:
-                StartCoroutine(TaskOrder(DataTool.submitTaskUrl));
+                StartCoroutine(RequestClockIn(isClick, DataTool.submitTaskUrl));
                 break;
             default:
                 break;
@@ -143,6 +153,38 @@ public class TaskSubmitPanel : MonoBehaviour
         gameObject.SetActive(false);
         UIManager.Instance.taskPanel.OpenSubscript(2);
     }
+    public IEnumerator RequestClockIn(bool isPicture, string url)
+    {
+        if (isPicture)
+        {
+            WWWForm form = new WWWForm();
+
+            form.AddBinaryData("file", DataTool.cheackByte, "ClockIn.png", DataTool.filePath);
+            UnityWebRequest webRequest = UnityWebRequest.Post(DataTool.pictureUrl, form);
+
+            yield return webRequest.SendWebRequest();
+            //loadingPanel.ClosePanel();
+            if (webRequest.isNetworkError || webRequest.error != null)
+            {
+                Debug.Log("请求网络错误:" + webRequest.error);
+            }
+            else
+            {
+                Debug.Log("打卡获取" + webRequest.downloadHandler.text);
+                Dictionary<string, object> pageData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
+                if (pageData["code"].ToString() == "0")
+                {
+                    if (pageData["data"] != null)
+                        DataTool.checkAddress = pageData["data"].ToString();
+                }
+            }
+            StartCoroutine(TaskOrder(url));
+        }
+        else
+        {
+            StartCoroutine(TaskOrder(url));
+        }
+    }
 
     //提交任务
     private IEnumerator TaskOrder(string url)
@@ -153,7 +195,7 @@ public class TaskSubmitPanel : MonoBehaviour
         data["lat"] = DataTool.latitude;
         data["lgn"] = DataTool.longitude;
         data["pic"] = DataTool.checkAddress;
-        Debug.Log("数据"+ data.ToJson());
+        //Debug.Log("数据"+ data.ToJson());
         UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
         webRequest.SetRequestHeader("Authorization", DataTool.token);
 
@@ -163,6 +205,7 @@ public class TaskSubmitPanel : MonoBehaviour
         webRequest.SetRequestHeader("Content-Type", "application/json");
 
         yield return webRequest.SendWebRequest();
+        UIManager.Instance.MaskTest(false);//.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -171,7 +214,7 @@ public class TaskSubmitPanel : MonoBehaviour
         {
             Debug.Log("提交任务" + webRequest.downloadHandler.text);
             Dictionary<string, object> codeInfo = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (codeInfo["msg"].ToString() == "SUCCESS")
+            if (codeInfo["code"].ToString() == "0")
             {
                 replenishPanel.SetActive(false);
                 successPanel.SetActive(true);

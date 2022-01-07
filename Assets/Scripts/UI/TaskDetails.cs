@@ -57,28 +57,54 @@ public class TaskDetails : MonoBehaviour
         {
             taskText.text = infoTask["taskName"].ToString();
         }
-        timeText.text = string.Format("{0}一{1}\n{2}", infoTask["taskPlanStartDate"].ToString(), infoTask["taskPlanEndDate"].ToString(), infoTask["timeHHmm"].ToString());
-        addressText.text = infoTask["taskAddress"].ToString();
+        else
+        {
+            taskText.text = "";
+        }
+        if (infoTask["taskPlanStartDate"] != null && infoTask["taskPlanEndDate"] != null && infoTask["timeHHmm"] != null)
+        {
+            timeText.text = string.Format("{0}一{1}\n{2}", infoTask["taskPlanStartDate"].ToString(), infoTask["taskPlanEndDate"].ToString(), infoTask["timeHHmm"].ToString());
+        }
+        else
+        {
+            timeText.text = "";
+        }
+        if (infoTask["taskAddress"] != null)
+        {
+            addressText.text = infoTask["taskAddress"].ToString();
+        }
+        else
+        {
+            addressText.text = "";
+        }
+       
         submitBtn.gameObject.SetActive(false);
         if (isMe)
         {
             priceText.gameObject.SetActive(false);
             confirmBtn.gameObject.SetActive(false);
             stateText.gameObject.SetActive(true);
-            stateText.color = GetColor(infoTask["taskStatus"].ToString());
+            if(infoTask["taskStatus"] != null)
+            {
+                stateText.color = GetColor(infoTask["taskStatus"].ToString());
+            }
+            else
+            {
+                stateText.color = GetColor("10");
+            }
         }
         else
         {
             priceText.gameObject.SetActive(true);
             confirmBtn.gameObject.SetActive(true);
             stateText.gameObject.SetActive(false);
-            if (infoTask["unitAmount"] == null)
+            if (infoTask["unitAmount"] == null && infoTask["unitAmount"].ToString() == "")
             {
-                priceText.text = string.Format("{0:N2}元/天", 100);//string.Format("{0:N2}", taskData["data"].ToString());
+                priceText.text = "未知";//string.Format("{0:N2}元/天", 1);
             }
             else
             {
-                priceText.text = string.Format("{0:N2}元/天", infoTask["unitAmount"].ToString());
+                priceText.text = string.Format("{0:N2}元/{1}", float.Parse(infoTask["unitAmount"].ToString()), infoTask["billingUnit"].ToString());
             }
         }
     }

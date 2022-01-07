@@ -14,12 +14,13 @@ public class LoadTxt : MonoBehaviour
     //07-05  16:53  河南省郑州市管城回族区城东路街道城东路98号正商向阳广场
     private void Start()
     {
+        //Debug.Log(string.Format("￥{0:N2}元/{1}", 55555, "fe"));
         //StartCoroutine(RequestAddress("http://appapi.brilliantnetwork.cn:5002/api/basicdata/getAddressFromGeo?lgn=121.459&lat=31.187117"));
         //UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
         //TaskTest(TxtFile[10].ToString());
-#if UNITY_EDITOR || UNITY_IOS
-        UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
-#endif
+        //#if UNITY_EDITOR
+        //        UIManager.Instance.AcceptData_Android(TxtFile[9].ToString());
+        //#endif
     }
 
     public void TaskTest(string messg)

@@ -14,9 +14,6 @@ public class HomePanel : MonoBehaviour
     public Image[] clickImage;
     public GameObject[] clickObject;
 
-    //private Text nameText;
-    //private Text dutyText;
-
     private Image headImage;
 
     private Button homeBtn;
@@ -27,9 +24,6 @@ public class HomePanel : MonoBehaviour
     private int indexCurret;
     public void Init()
     {
-        //nameText = transform.Find("Head/NameText").GetComponent<Text>();
-        //dutyText = transform.Find("Bottom/InfoText").GetComponent<Text>();
-
         headImage = transform.Find("Head/Sprite").GetComponent<Image>();
 
         homeBtn = transform.Find("Bottom/HomeBtn").GetComponent<Button>();
@@ -45,7 +39,6 @@ public class HomePanel : MonoBehaviour
 
     public void InitData()
     {
-        //nameText.text = DataTool.roleName;
         OpenPanel();
     }
 
@@ -57,12 +50,10 @@ public class HomePanel : MonoBehaviour
             if(indexCurret == i)
             {
                 clickImage[indexCurret].sprite = pickSprite[indexCurret];
-                //clickObject[indexCurret].SetActive(true);
             }
             else
             {
                 clickImage[i].sprite = norSprite[i];
-                //clickObject[i].SetActive(false);
             }
         }
         UIManager.Instance.hallPanel.OpenPanel();
@@ -70,14 +61,20 @@ public class HomePanel : MonoBehaviour
 
     private void OpenMain()
     {
-        ClosePanel(2);
-        UIManager.Instance.mainPanel.OpenPanel();
+        if(indexCurret != 2)
+        {
+            ClosePanel(2);
+            UIManager.Instance.mainPanel.OpenPanel();
+        }
     }
 
     private void OpenInconme()
     {
-        ClosePanel(1);
-        UIManager.Instance.incomePanel.OpenPanel();
+        if (indexCurret != 1)
+        {
+            ClosePanel(1);
+            UIManager.Instance.incomePanel.OpenPanel();
+        }
     }
 
     public void OpenHome()
@@ -86,19 +83,20 @@ public class HomePanel : MonoBehaviour
         UIManager.Instance.hallPanel.OpenPanel();
     }
 
-    public void OpenTask()
+    private void OpenTask()
     {
-        ClosePanel(3);
-        UIManager.Instance.taskPanel.OpenPanel();
+        if (indexCurret != 3)
+        {
+            ClosePanel(3);
+            UIManager.Instance.taskPanel.OpenPanel();
+        }
     }
 
     private void ClcikButton(int index)
     {
         clickImage[indexCurret].sprite = norSprite[indexCurret];
-        //clickObject[indexCurret].SetActive(false);
         indexCurret = index;
         clickImage[indexCurret].sprite = pickSprite[indexCurret];
-        //clickObject[indexCurret].SetActive(true);
     }
 
     private void ClosePanel(int index)
