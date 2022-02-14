@@ -126,37 +126,37 @@ public class DataTool
         if(isUrl)
         {
             //注销账号
-            cancel = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/cancel";
+            cancel = "http://salaryapi.beeai.work/workerapi/workers/cancel";
             //更新验证码
-            sendsms = "http://salaryapi.beeai.work.cn:5002/api/sms/sendsms?mobile=";
-            updateMobile = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/updateMobile";//更新手机号
-            workerInfo = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
-            verifyCode = "http://salaryapi.beeai.work.cn:5002/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
+            sendsms = "http://salaryapi.beeai.work/api/sms/sendsms?mobile=";
+            updateMobile = "http://salaryapi.beeai.work/workerapi/workers/updateMobile";//更新手机号
+            workerInfo = "http://salaryapi.beeai.work/workerapi/workers/getWorkerInfo";//个人用户信息
+            verifyCode = "http://salaryapi.beeai.work/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
            
             //打卡记录
-            clockUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/lock";
-            pictureUrl = "http://salaryapi.beeai.work.cn:5002/api/upload/uploadfile?path=daka&onlyLocal=0";
+            clockUrl = "http://salaryapi.beeai.work/workerapi/task/lock";
+            pictureUrl = "http://salaryapi.beeai.work/api/upload/uploadfile?path=daka&onlyLocal=0";
 
             //任务显示信息
-            currentTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getCurrentTask";//当前任务
-            typeTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskTypeNames";//任务类型
-            placeTaskUrl = "http://salaryapi.beeai.work.cn:5002/api/basicdata/getRegionByParentId?parentId=1";//行政区
-            receiverTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/receiverTask";//接单
-            infoTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskInfo?taskId=";//任务详情
-            seachTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskSeach";//任务搜索
-            submitTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/submitTask";//任务提交
+            currentTaskUrl = "http://salaryapi.beeai.work/workerapi/task/getCurrentTask";//当前任务
+            typeTaskUrl = "http://salaryapi.beeai.work/workerapi/task/getTaskTypeNames";//任务类型
+            placeTaskUrl = "http://salaryapi.beeai.work/api/basicdata/getRegionByParentId?parentId=1";//行政区
+            receiverTaskUrl = "http://salaryapi.beeai.work/workerapi/task/receiverTask";//接单
+            infoTaskUrl = "http://salaryapi.beeai.work/workerapi/task/getTaskInfo?taskId=";//任务详情
+            seachTaskUrl = "http://salaryapi.beeai.work/workerapi/task/getTaskSeach";//任务搜索
+            submitTaskUrl = "http://salaryapi.beeai.work/workerapi/task/submitTask";//任务提交
             //收入
-            totalSalaryUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getTotalSalary";//总收入
-            salarySeachUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getSalarySeach";//收入列表
-            salaryDetailsUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getDetalSalary?id=";//薪水详情
+            totalSalaryUrl = "http://salaryapi.beeai.work/workerapi/salary/getTotalSalary";//总收入
+            salarySeachUrl = "http://salaryapi.beeai.work/workerapi/salary/getSalarySeach";//收入列表
+            salaryDetailsUrl = "http://salaryapi.beeai.work/workerapi/salary/getDetalSalary?id=";//薪水详情
 
             //邀请码认证信息
-            invateCodeUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/updateInvateCode";
-            urlCode = "http://salaryapi.beeai.work.cn:5002/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
+            invateCodeUrl = "http://salaryapi.beeai.work/workerapi/workers/updateInvateCode";
+            urlCode = "http://salaryapi.beeai.work/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
             //雇主
-            businessUrl = "http://salaryapi.beeai.work.cn:5002/companyapi/getLoginInfo";//雇主-获取登录用户信息
-            scanCodeUrl = "http://salaryapi.beeai.work.cn:5002/companyapi/company/postScanCode";//扫码提交
-            invitationCode = "http://salaryapi.beeai.work.cn:5002/companyapi/company/getInvitationCode";//获取邀请码
+            businessUrl = "http://salaryapi.beeai.work/companyapi/getLoginInfo";//雇主-获取登录用户信息
+            scanCodeUrl = "http://salaryapi.beeai.work/companyapi/company/postScanCode";//扫码提交
+            invitationCode = "http://salaryapi.beeai.work/companyapi/company/getInvitationCode";//获取邀请码
         }
         else
         {
