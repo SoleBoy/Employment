@@ -102,7 +102,6 @@ public class TaskSubmitPanel : MonoBehaviour
         switch (taskStatus)
         {
             case TaskStatus.start:
-                //UIManager.Instance.loadingPanel.OpenPanel();
                 StartCoroutine(UIManager.Instance.RequestClockIn(true,taskType,taskId));
                 break;
             case TaskStatus.submit:
@@ -195,7 +194,7 @@ public class TaskSubmitPanel : MonoBehaviour
         data["lat"] = DataTool.latitude;
         data["lgn"] = DataTool.longitude;
         data["pic"] = DataTool.checkAddress;
-        //Debug.Log("数据"+ data.ToJson());
+        Debug.Log("当前任务id"+ taskId);
         UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
         webRequest.SetRequestHeader("Authorization", DataTool.token);
 

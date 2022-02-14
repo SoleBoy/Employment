@@ -1,0 +1,6 @@
+{
+	"bankName":"建设银行",
+	"bankNo":"6225768888888888",
+	"errorCode":"0",
+	"errorInfo":"messg"
+}

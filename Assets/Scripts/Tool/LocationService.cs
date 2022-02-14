@@ -7,7 +7,6 @@ using System;
 using MiniJSON;
 using System.Collections.Generic;
 using UnityEngine.Networking;
-using ZXing;
 using LitJson;
 
 public class LocationService : MonoBehaviour

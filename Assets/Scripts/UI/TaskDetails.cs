@@ -190,6 +190,13 @@ public class TaskDetails : MonoBehaviour
 //9：雇主取消加入 雇主拒绝申请后
     private void ConfirmPanel()
     {
-        UIManager.Instance.taskConfirmPanel.OpenPanel(infoTask["id"].ToString());
+        if(DataTool.isDegree)
+        {
+            UIManager.Instance.taskConfirmPanel.OpenPanel(infoTask["id"].ToString());
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
 }

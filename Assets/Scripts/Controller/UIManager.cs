@@ -38,7 +38,12 @@ public class UIManager : MonoSingleton<UIManager>
     public SuccessCodePanel successCodePanel;
     public TaskSubmitPanel taskSubmitPanel;
     public ClockinPanel clockinPanel;
-    public BankPhotoPanel bankPhotoPanel;
+    public GuidePanel guidePanel;
+    public PhonePanel phonePanel;
+    public GamePanel gamePanel;
+    public GameLoad gameLoad;
+    public RankingPanel rankingPanel;
+    public SigninPanel signinPanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
@@ -47,15 +52,11 @@ public class UIManager : MonoSingleton<UIManager>
     private bool isInit;
     public override void Init()
     {
+        //PlayerPrefs.DeleteAll();
         Debug.Log("初始信息");
-        if(Application.platform == RuntimePlatform.Android)
-        {
-            AndroidStatusBar.statusBarState = AndroidStatusBar.States.Visible;//显示状态栏，占用屏幕最上方的一部分像素
-            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.VisibleOverContent;//悬浮显示状态栏，不占用屏幕像素
-            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.TranslucentOverContent;//透明悬浮显示状态栏，不占用屏幕像素
-            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.Hidden;//隐藏状态栏
-        }
+        DataTool.InitData();
         FindPanel();
+        //AcceptData_Android(loadTxt.TxtFile[9].ToString());
 #if UNITY_EDITOR
         AcceptData_Android(loadTxt.TxtFile[9].ToString());
 #else
@@ -64,42 +65,47 @@ public class UIManager : MonoSingleton<UIManager>
     }
     private void Start()
     {
-        DataTool.InitData();
         DataTool.canvasSize = this.GetComponent<RectTransform>().sizeDelta;
         maskPanel.SetActive(false);
     }
     //查找面板
     private void FindPanel()
     {
+        Transform barbg = transform.Find("BarBg");
         maskPanel = transform.Find("MaskPanel").gameObject;
         tipPanel = transform.Find("TipPanel");
-        bloodParent = transform.Find("DriftingBlood");
+        bloodParent = barbg.Find("DriftingBlood");
         maskPanel.SetActive(true);
-
-        hallPanel = transform.Find("HallPanel").GetComponent<HallPanel>();
-        homePanel = transform.Find("HomePanel").GetComponent<HomePanel>();
-        incomePanel = transform.Find("IncomePanel").GetComponent<IncomePanel>();
-        mainPanel = transform.Find("MainPanel").GetComponent<MainPanel>();
-        dropPanel = transform.Find("DropPanel").GetComponent<DropPanel>();
-        personalPanel = transform.Find("Employerpanel/PersonalPanel").GetComponent<PersonalPanel>();
-        unitPanel = transform.Find("UnitPanel").GetComponent<UnitPanel>();
-        businessPanel = transform.Find("BusinessPanel").GetComponent<BusinessPanel>();
-        privacyPanel = transform.Find("PrivacyPanel").GetComponent<PrivacyPanel>();
-        termsPanel = transform.Find("TermsPanel").GetComponent<TermsPanel>();
         loadingPanel = transform.Find("LoadingPanel").GetComponent<LoadingPanel>();
-        employerpanel = transform.Find("Employerpanel").GetComponent<Employerpanel>();
-        servicePanel = transform.Find("ServicePanel").GetComponent<ServicePanel>();
-        checkPanel = transform.Find("CheckPanel").GetComponent<CheckPanel>();
-        taskPanel = transform.Find("TaskPanel").GetComponent<TaskPanel>();
-        taskConfirmPanel = transform.Find("TaskConfirmPanel").GetComponent<TaskConfirmPanel>();
-        protocolPanel = transform.Find("ProtocolPanel").GetComponent<ProtocolPanel>();
-        bankCardPanel = transform.Find("BankCardPanel").GetComponent<BankCardPanel>();
-        invitationPanel = transform.Find("InvitationPanel").GetComponent<InvitationPanel>();
-        taskDetailsPanel = transform.Find("TaskDetailsPanel").GetComponent<TaskDetailsPanel>();
-        successCodePanel = transform.Find("SuccessCodePanel").GetComponent<SuccessCodePanel>();
-        taskSubmitPanel = transform.Find("TaskSubmitPanel").GetComponent<TaskSubmitPanel>();
-        clockinPanel = transform.Find("ClockinPanel").GetComponent<ClockinPanel>();
-        bankPhotoPanel = transform.Find("BankPhotoPanel").GetComponent<BankPhotoPanel>();
+
+        hallPanel = barbg.Find("HallPanel").GetComponent<HallPanel>();
+        homePanel = barbg.Find("HomePanel").GetComponent<HomePanel>();
+        incomePanel = barbg.Find("IncomePanel").GetComponent<IncomePanel>();
+        mainPanel = barbg.Find("MainPanel").GetComponent<MainPanel>();
+        dropPanel = barbg.Find("DropPanel").GetComponent<DropPanel>();
+        personalPanel = barbg.Find("Employerpanel/PersonalPanel").GetComponent<PersonalPanel>();
+        unitPanel = barbg.Find("UnitPanel").GetComponent<UnitPanel>();
+        businessPanel = barbg.Find("BusinessPanel").GetComponent<BusinessPanel>();
+        privacyPanel = barbg.Find("PrivacyPanel").GetComponent<PrivacyPanel>();
+        termsPanel = barbg.Find("TermsPanel").GetComponent<TermsPanel>();
+        employerpanel = barbg.Find("Employerpanel").GetComponent<Employerpanel>();
+        servicePanel = barbg.Find("ServicePanel").GetComponent<ServicePanel>();
+        checkPanel = barbg.Find("CheckPanel").GetComponent<CheckPanel>();
+        taskPanel = barbg.Find("TaskPanel").GetComponent<TaskPanel>();
+        taskConfirmPanel = barbg.Find("TaskConfirmPanel").GetComponent<TaskConfirmPanel>();
+        protocolPanel = barbg.Find("ProtocolPanel").GetComponent<ProtocolPanel>();
+        bankCardPanel = barbg.Find("BankCardPanel").GetComponent<BankCardPanel>();
+        invitationPanel = barbg.Find("InvitationPanel").GetComponent<InvitationPanel>();
+        taskDetailsPanel = barbg.Find("TaskDetailsPanel").GetComponent<TaskDetailsPanel>();
+        successCodePanel = barbg.Find("SuccessCodePanel").GetComponent<SuccessCodePanel>();
+        taskSubmitPanel = barbg.Find("TaskSubmitPanel").GetComponent<TaskSubmitPanel>();
+        clockinPanel = barbg.Find("ClockinPanel").GetComponent<ClockinPanel>();
+        guidePanel = barbg.Find("GuidePanel").GetComponent<GuidePanel>();
+        phonePanel = barbg.Find("PhonePanel").GetComponent<PhonePanel>();
+        gamePanel = barbg.Find("GamePanel").GetComponent<GamePanel>();
+        gameLoad = barbg.Find("GameLoad").GetComponent<GameLoad>();
+        rankingPanel = barbg.Find("RankingPanel").GetComponent<RankingPanel>();
+        signinPanel = barbg.Find("SigninPanel").GetComponent<SigninPanel>();
 
         hallPanel.Init();
         homePanel.Init();
@@ -140,11 +146,12 @@ public class UIManager : MonoSingleton<UIManager>
         if(isClock)
         {
             DataTool.salaryEntry = SalaryEntry.clock;
-            #if UNITY_EDITOR
-                  Location_Android(loadTxt.TxtFile[11].ToString());
-            #else
+            //Location_Android(loadTxt.TxtFile[11].ToString());
+#if UNITY_EDITOR
+            Location_Android(loadTxt.TxtFile[11].ToString());
+#else
                   DataTool.CallClockInfo();
-            #endif
+#endif
         }
         else
         {
@@ -191,6 +198,7 @@ public class UIManager : MonoSingleton<UIManager>
         DataTool.bankCardPic = "";
         DataTool.signaturePic = "";
         DataTool.inviteCode = "";
+        DataTool.isDegree = false;
         DataTool.information.Clear();
     }
     //雇主 eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MTI4MjgxNCwic3ViIjoie1wiY29tcGFueUlkXCI6ODIsXCJ1c2VySWRcIjozNCxcInVzZXJUeXBlXCI6MX0iLCJleHAiOjE2NDM4NzQ4MTR9.YNNj2RxWuOJaEONQXRNTeIqwP7aHtPZ3mEUDYTFzr78
@@ -223,7 +231,6 @@ public class UIManager : MonoSingleton<UIManager>
                 DataTool.clockInAddress = information["locationAddress"].ToString();
 
                 taskPanel.isSuccess = true;
-                bankPhotoPanel.isStart = true;
                 protocolPanel.isStart = true;
                 hallPanel.gameObject.SetActive(true);
                 homePanel.gameObject.SetActive(true);
@@ -273,8 +280,23 @@ public class UIManager : MonoSingleton<UIManager>
     //接收收入信息
     public void Acceptance_Android(string messg)
     {
-        Debug.Log("更新银行卡:"+ messg);
-
+        Dictionary<string, object> clockData = Json.Deserialize(messg) as Dictionary<string, object>;
+        switch (DataTool.salaryEntry)
+        {
+            case SalaryEntry.bankcard:
+                Debug.Log("更新银行卡:" + messg);
+                if (clockData["errorCode"].ToString() == "0")
+                {
+                    if(clockData["bankName"] != null)
+                         DataTool.bankName = clockData["bankName"].ToString();
+                    if (clockData["bankNo"] != null)
+                        DataTool.bankNo = clockData["bankNo"].ToString();
+                    bankCardPanel.BankCard();
+                }
+                break;
+            default:
+                break;
+        }
     }
     //获取雇主用户信息
     private IEnumerator BusinessLicense(string url)
@@ -356,6 +378,22 @@ public class UIManager : MonoSingleton<UIManager>
                     DataTool.signaturePic = data["signaturePic"].ToString();
                 if (data["bankPic"] != null)
                     DataTool.bankCardPic = data["bankPic"].ToString();
+                if (data["loginPhone"] != null)
+                    DataTool.loginPhone = data["loginPhone"].ToString();
+                //signatureVerificationStatus签名  invitationCodeStatus 邀请码   
+                //bindBankStatus 银行卡 realNameStatus实名 willingVideoVerificationStatus活体
+                if (data["signatureVerificationStatus"] != null&& data["bindBankStatus"] != null && 
+                    data["realNameStatus"] != null && data["willingVideoVerificationStatus"] != null
+                    && data["signatureVerificationStatus"].ToString() == "1"
+                    && data["bindBankStatus"].ToString() == "1" && data["realNameStatus"].ToString() == "1" 
+                    && data["willingVideoVerificationStatus"].ToString() == "1")
+                {
+                    DataTool.isDegree = true;
+                }
+                else
+                {
+                    DataTool.isDegree = false;
+                }
             }
             hallPanel.InitData();
             homePanel.InitData();
@@ -393,14 +431,10 @@ public class UIManager : MonoSingleton<UIManager>
                 if (taskInfo["currentMonthTime"] != null)
                     DataTool.taskDuration = taskInfo["currentMonthTime"].ToString();
             }
-            if(isUdata)
+            hallPanel.UpdateTask();
+            if (!isUdata)
             {
-                hallPanel.UpdateTask();
-            }
-            else
-            {
-                hallPanel.InitData();
-                StartCoroutine(RequestClockIn(false,"0"));
+                StartCoroutine(RequestClockIn(false, "0"));
             }
         }
     }
@@ -450,6 +484,10 @@ public class UIManager : MonoSingleton<UIManager>
             data["taskId"] = DataTool.currentTask;
         else
             data["taskId"] = currentTask;
+
+        Debug.Log(
+            
+            "当前任务id"+ data["taskId"].ToString());
 
         UnityWebRequest webRequest = new UnityWebRequest(DataTool.clockUrl, "POST");
         webRequest.SetRequestHeader("Authorization", DataTool.token);

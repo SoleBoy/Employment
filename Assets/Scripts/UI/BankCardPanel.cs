@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BankCardPanel : MonoBehaviour
 {
     private Button backBtn;
+    private Button bankBtn;
 
     private Text bankText;
     private Text cardText;
@@ -16,8 +17,10 @@ public class BankCardPanel : MonoBehaviour
         cardText = transform.Find("Info/line/Code").GetComponent<Text>();
 
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
+        bankBtn = transform.Find("UpdataBank").GetComponent<Button>();
 
         backBtn.onClick.AddListener(ClosePanel);
+        bankBtn.onClick.AddListener(UpdataBank);
     }
     public void InitData()
     {
@@ -34,5 +37,18 @@ public class BankCardPanel : MonoBehaviour
     public void ClosePanel()
     {
         gameObject.SetActive(false);
+    }
+
+    public void BankCard()
+    {
+        bankText.text = DataTool.bankName;
+        string bankNo = DataTool.bankNo;
+        cardText.text = System.Text.RegularExpressions.Regex.Replace(bankNo, @"(\w{4})", "$1 ").Trim(' ');
+    }
+
+    private void UpdataBank()
+    {
+        DataTool.salaryEntry = SalaryEntry.bankcard;
+        DataTool.CallBankcard();
     }
 }

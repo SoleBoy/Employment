@@ -1,17 +1,8 @@
-{
-	"bankName":"中国建设银行",
-	"bankNo":"6217002430035678375",
-	"bank_card_bind_status":"1",
-	"cust_name":"胡锦",
-	"entrust_video_status":"1",
+{	
+    "name":"徐宝顶",
 	"goto":"个人",
-	"invite_code":"-1",
 	"lat":"31.242122",
 	"lgn":"121.521059",
-	"living_check_status":"1",
 	"locationAddress":"上海市浦东新区昌邑路543号靠近海悦滨江酒店公寓",
-	"name":"徐宝顶",
-	"realname_auth_status":"1",
-	"signature_status":"1",
-	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MTI4NDAzMywic3ViIjoie1widXNlcklkXCI6NzEsXCJ1c2VyVHlwZVwiOjB9IiwiZXhwIjoxNjQzODc2MDMzfQ.44NRaebSwXUWTWSLPlc69KBNMhvpaIQnb0zugmgivmk"
+	"token":"eyJ1c2VyTmFtZSI6IjEyMyIsImFsZyI6IkhTMjU2In0.eyJqdGkiOiJmY29pbmp3dCIsImlhdCI6MTY0MjY0NjMzMSwic3ViIjoie1widXNlcklkXCI6MTQzLFwidXNlclR5cGVcIjowfSIsImV4cCI6MTY0NTIzODMzMX0.dqOmGvxtYPqqXnbuDqnYdbzsFy9zaPwsGeUTF0LKNfo"
 }

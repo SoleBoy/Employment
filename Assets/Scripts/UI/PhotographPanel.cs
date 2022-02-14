@@ -9,8 +9,8 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 public class PhotographPanel : MonoBehaviour
 {
-    public int width = 950;
-    public int high = 720;
+    public int width = 1015;
+    public int high = 850;
 
     private RawImage rawImage;
     private Text infoText;
@@ -27,18 +27,19 @@ public class PhotographPanel : MonoBehaviour
     private bool isClock;
     private void Awake()
     {
-        rawImage = transform.Find("RawImage").GetComponent<RawImage>();
-        infoText = transform.Find("InfoText").GetComponent<Text>();
+        rawImage = transform.Find("BarBg/RawImage").GetComponent<RawImage>();
+        infoText = transform.Find("BarBg/InfoText").GetComponent<Text>();
 
-        takeBtn = transform.Find("TakeBtn").GetComponent<Button>();
-        flipBtn = transform.Find("FlipBtn").GetComponent<Button>();
-        closeBtn = transform.Find("BackBtn").GetComponent<Button>();
+        takeBtn = transform.Find("BarBg/TakeBtn").GetComponent<Button>();
+        flipBtn = transform.Find("BarBg/FlipBtn").GetComponent<Button>();
+        closeBtn = transform.Find("BarBg/BackBtn").GetComponent<Button>();
 
         takeBtn.onClick.AddListener(TakePhotoAndSave);
 
         flipBtn.onClick.AddListener(FlipCamera);
 
         closeBtn.onClick.AddListener(BackPanel);
+        rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(width, high);
     }
 
     private void BackPanel()
@@ -136,7 +137,7 @@ public class PhotographPanel : MonoBehaviour
                     webCamName = webCamDevices[0].name;
                 }
                 // 设置相机渲染宽高，并运行相机
-                webCamTexture = new WebCamTexture(webCamName, width, high, 25);
+                webCamTexture = new WebCamTexture(webCamName, width, high);
                 webCamTexture.Play();
                 // 把获取的图像渲染到画布上
                 rawImage.texture = webCamTexture;
@@ -154,6 +155,16 @@ public class PhotographPanel : MonoBehaviour
             UIManager.Instance.SubmitTip(false);
         }
     }
+
+    private void OnDisable()
+    {
+        if(webCamTexture != null && webCamTexture.isPlaying)
+        {
+            rawImage.texture = null;
+            webCamTexture.Stop();
+        }
+    }
+
     /// <summary>
     /// 保存图片的接口函数
     /// </summary>
@@ -172,5 +183,4 @@ public class PhotographPanel : MonoBehaviour
         System.IO.File.WriteAllBytes(DataTool.filePath,DataTool.cheackByte);
     }
     //path=C:\Users\Acer\AppData\LocalLow\DefaultCompany\平台游戏测试\ClockIn.png
-   
 }

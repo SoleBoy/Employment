@@ -62,34 +62,27 @@ public class HomePanel : MonoBehaviour
     private void OpenMain()
     {
         if(indexCurret != 2)
-        {
-            ClosePanel(2);
-            UIManager.Instance.mainPanel.OpenPanel();
-        }
+            OpenGuide(2);
     }
 
     private void OpenInconme()
     {
         if (indexCurret != 1)
         {
-            ClosePanel(1);
-            UIManager.Instance.incomePanel.OpenPanel();
+            OpenGuide(1);
         }
     }
 
     public void OpenHome()
     {
-        ClosePanel(0);
-        UIManager.Instance.hallPanel.OpenPanel();
+        if (indexCurret != 0)
+            ClosePanel(0);
     }
 
     private void OpenTask()
     {
         if (indexCurret != 3)
-        {
             ClosePanel(3);
-            UIManager.Instance.taskPanel.OpenPanel();
-        }
     }
 
     private void ClcikButton(int index)
@@ -118,5 +111,34 @@ public class HomePanel : MonoBehaviour
             UIManager.Instance.taskPanel.ClosePanel();
         }
         ClcikButton(index);
+        if (index == 0)
+        {
+            UIManager.Instance.hallPanel.OpenPanel();
+        }
+        else if (index == 1)
+        {
+            UIManager.Instance.incomePanel.OpenPanel();
+        }
+        else if (index == 2)
+        {
+            UIManager.Instance.mainPanel.OpenPanel();
+        }
+        else if (index == 3)
+        {
+            UIManager.Instance.taskPanel.OpenPanel();
+        }
+    }
+
+    private void OpenGuide(int index)
+    {
+        if (DataTool.isDegree)
+        {
+            //UIManager.Instance.CloningTips("要有收益，赶紧注册哦");
+            ClosePanel(index);
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
 }

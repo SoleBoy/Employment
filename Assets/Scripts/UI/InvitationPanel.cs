@@ -21,7 +21,7 @@ public class InvitationPanel : MonoBehaviour
     private Button confirmBtn;
     private Text identityText;
     private Text nameText;
-    private string urlCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
+   
     private void Awake()
     {
         codePanel = transform.Find("CodePanel").gameObject;
@@ -58,7 +58,7 @@ public class InvitationPanel : MonoBehaviour
     {
         if (codeText.text.Length == 8)
         {
-            StartCoroutine(RequestIfo(string.Format("{0}{1}", urlCode, codeText.text)));
+            StartCoroutine(RequestIfo(string.Format("{0}{1}", DataTool.urlCode, codeText.text)));
         }
         else
         {

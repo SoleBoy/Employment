@@ -11,10 +11,11 @@ public class BusinessPanel : MonoBehaviour
 {
     private Text nameText;
     private Text firmText;
+    private Text attestInfo;
 
     private RawImage licenseImage;
     private Button backBtn;
-    private GameObject attestInfo;
+  
     private Vector2 nTouchPos1;
     private Vector2 nTouchPos2;
     private Vector2 oTouchPos1;
@@ -31,7 +32,7 @@ public class BusinessPanel : MonoBehaviour
         nameText = transform.Find("TopBg/NameText").GetComponent<Text>();
         firmText = transform.Find("TopBg/Text").GetComponent<Text>();
 
-        attestInfo = transform.Find("InfoText").gameObject;//Mask
+        attestInfo = transform.Find("InfoText").GetComponent<Text>();
         licenseImage = transform.Find("Mask/License").GetComponent<RawImage>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
@@ -63,11 +64,13 @@ public class BusinessPanel : MonoBehaviour
         //UIManager.Instance.loadingPanel.ClosePanel();
         if (webRequest.isNetworkError || webRequest.error != null)
         {
-            attestInfo.SetActive(true);
+            attestInfo.gameObject.SetActive(true);
+            attestInfo.text = webRequest.error;
             Debug.Log("请求网络错误:" + webRequest.error);
         }
         else
         {
+            attestInfo.gameObject.SetActive(false);
             licenseImage.texture = texD1.texture;
             licenseImage.SetNativeSize();
             licenseImage.gameObject.SetActive(true);

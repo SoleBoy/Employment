@@ -19,16 +19,12 @@ public class HallPanel : MonoBehaviour
     private Image roleImage;
     private GameObject checkRecord;
 
-    private Button gachaBtn;
-    private Button battleBtn;
-    private Button beastBtn;
-    private Button packBtn;
-    private Button certiBtn;
-    private Button infoBtn;
     private Button clockinBtn;
+    private Button fruitBtn;
 
     private Transform roleParent;
     private Transform petParent;
+    private bool isShow;
     public void Init()
     {
         checkRecord = transform.Find("Head/Boom").gameObject;
@@ -43,43 +39,47 @@ public class HallPanel : MonoBehaviour
         statusImage = transform.Find("Head/Status/Image").GetComponent<Image>();
         roleImage = transform.Find("Bracket/RoleImage").GetComponent<Image>();
 
-        gachaBtn = transform.Find("GachaBtn").GetComponent<Button>();
-        battleBtn = transform.Find("BattleBtn").GetComponent<Button>();
-        beastBtn = transform.Find("BeastBtn").GetComponent<Button>();
-        packBtn = transform.Find("PackBtn").GetComponent<Button>();
-        certiBtn = transform.Find("CertiBtn").GetComponent<Button>();
-        infoBtn = transform.Find("GradeBar/InfoBtn").GetComponent<Button>();
-        clockinBtn= transform.Find("ClockinBtn").GetComponent<Button>();
+        clockinBtn = transform.Find("ClockinBtn").GetComponent<Button>();
+        fruitBtn = transform.Find("FruitBtn").GetComponent<Button>();
 
-        gachaBtn.onClick.AddListener(OpneGacha);
-        battleBtn.onClick.AddListener(OpneBattle);
-        beastBtn.onClick.AddListener(OpneBeast);
-        packBtn.onClick.AddListener(OpnePack);
-        certiBtn.onClick.AddListener(OpenCerti);
-        infoBtn.onClick.AddListener(OpenDetails);
         clockinBtn.onClick.AddListener(OpenClockin);
+        fruitBtn.onClick.AddListener(OpenFruit);
+    }
+
+    private void OpenFruit()
+    {
+        UIManager.Instance.gameLoad.OpenPanel();
     }
 
     private void OpenClockin()
     {
-        UIManager.Instance.photographPanel.OpenPanel(true,"");
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.photographPanel.OpenPanel(true, "");
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
 
     public void InitData()
     {
-        if (DataTool.taskDuration == "")
+        if(DataTool.isDegree)
         {
-            DataTool.taskDuration = "0";
-        }
-        statusText.text = string.Format("当月累计任务时长{0}小时",DataTool.taskDuration);
-        statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
-        if (DataTool.theCompany == "")
-        {
-            firmText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+            if (DataTool.theCompany == "")
+            {
+                firmText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+            }
+            else
+            {
+                firmText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+            }
         }
         else
         {
-            firmText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+            if(DataTool.loginPhone.Length >= 11)
+                firmText.text = string.Format("未注册用户:{0}****{1}", DataTool.loginPhone.Substring(0,3), DataTool.loginPhone.Substring(7, 4));
         }
     }
 
@@ -108,55 +108,6 @@ public class HallPanel : MonoBehaviour
         }
     }
 
-    //宠物携带
-    public void BringPets(bool isHide,int index,Sprite pet=null)
-    {
-        petParent.GetChild(index).gameObject.SetActive(isHide);
-    }
-
-    private void OpnePack()
-    {
-        //UIManager.Instance.backpackPanel.OpenPanel();
-    }
-    private bool isBeast;
-    private void OpneBeast()
-    {
-        if(isBeast)
-        {
-            isBeast = false;
-            for (int i = 0; i < beastObject.Length; i++)
-            {
-                beastObject[i].SetActive(false);
-            }
-        }
-        else
-        {
-            isBeast = true;
-            beastObject[UnityEngine.Random.Range(0,beastObject.Length)].SetActive(true);
-        }
-        //UIManager.Instance.beastPanel.OpenPanel();
-    }
-
-    private void OpneBattle()
-    {
-        UIManager.Instance.CloningTips("功能暂未开启");
-        //UIManager.Instance.battlePanel.OpenPanel();
-    }
-
-    private void OpneGacha()
-    {
-        ///UIManager.Instance.gachaPanel.OpenPanel();
-    }
-
-    private void OpenCerti()
-    {
-        //UIManager.Instance.unitPanel.OpenPanel();
-    }
-
-    private void OpenDetails()
-    {
-        //UIManager.Instance.detailsPanel.OpenPanel();
-    }
     public void UpdateTask()
     {
         if (DataTool.taskDuration == "")
@@ -167,4 +118,22 @@ public class HallPanel : MonoBehaviour
         statusImage.fillAmount = float.Parse(DataTool.taskDuration) / 300;
     }
    
+    public void BeastObject()
+    {
+        int ran = 0;
+        if(isShow)
+        {
+            isShow = false;
+            for (int i = 0; i < beastObject.Length; i++)
+            {
+                beastObject[i].SetActive(false);
+            }
+        }
+        else
+        {
+            isShow = true;
+            ran = UnityEngine.Random.Range(0,beastObject.Length);
+            beastObject[ran].SetActive(true);
+        }
+    }
 }

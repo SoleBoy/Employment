@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RankingPanel : MonoBehaviour
+public class SigninPanel : MonoBehaviour
 {
     private Text weekText;
     private Text totalText;
 
     private Image weekImage;
     private Image totalImage;
-   
+
     private Button weekBtn;
     private Button totalBtn;
     private Button backBtn;
@@ -22,29 +22,29 @@ public class RankingPanel : MonoBehaviour
     private bool isWeek;
     private void Awake()
     {
-        rankParent = transform.Find("bg/RankView/Viewport/Content");
-        rankItem = transform.Find("Item");
+        //rankParent = transform.Find("bg/RankView/Viewport/Content");
+        //rankItem = transform.Find("Item");
 
-        weekText = transform.Find("bg/WeekBtn/Text").GetComponent<Text>();
-        totalText = transform.Find("bg/TotalBtn/Text").GetComponent<Text>();
+        //weekText = transform.Find("bg/WeekBtn/Text").GetComponent<Text>();
+        //totalText = transform.Find("bg/TotalBtn/Text").GetComponent<Text>();
 
-        weekImage = transform.Find("bg/WeekBtn").GetComponent<Image>();
-        totalImage = transform.Find("bg/TotalBtn").GetComponent<Image>();
+        //weekImage = transform.Find("bg/WeekBtn").GetComponent<Image>();
+        //totalImage = transform.Find("bg/TotalBtn").GetComponent<Image>();
 
-        weekBtn = transform.Find("bg/WeekBtn").GetComponent<Button>();
-        totalBtn = transform.Find("bg/TotalBtn").GetComponent<Button>();
+        //weekBtn = transform.Find("bg/WeekBtn").GetComponent<Button>();
+        //totalBtn = transform.Find("bg/TotalBtn").GetComponent<Button>();
         backBtn = transform.Find("bg/BackBtn").GetComponent<Button>();
 
-        weekBtn.onClick.AddListener(OpenWeek);
-        totalBtn.onClick.AddListener(OpenTotal);
+        //weekBtn.onClick.AddListener(OpenWeek);
+        //totalBtn.onClick.AddListener(OpenTotal);
         backBtn.onClick.AddListener(ClosePanel);
     }
 
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        isWeek = false;
-        OpenWeek();
+        //isWeek = false;
+        //OpenWeek();
     }
 
     public void ClosePanel()
@@ -76,7 +76,7 @@ public class RankingPanel : MonoBehaviour
                 rankings[i].ShowItem(true);
                 rankings[i].SetInfo();
             }
-            if(i == 49)
+            if (i == 49)
             {
                 rankings[49].ShowEnd();
             }
@@ -87,7 +87,7 @@ public class RankingPanel : MonoBehaviour
 
     private void OpenTotal()
     {
-        if(isWeek)
+        if (isWeek)
         {
             isWeek = false;
             totalImage.color = Color.blue;
@@ -119,7 +119,7 @@ public class RankingPanel : MonoBehaviour
         private int rankIndex;
         private Transform itemRank;
         private Transform lineEnd;
-        public RankingItem(Transform parent,int index)
+        public RankingItem(Transform parent, int index)
         {
             itemRank = parent;
             rankIndex = index;
@@ -132,7 +132,7 @@ public class RankingPanel : MonoBehaviour
 
         public void ShowItem(bool isShow)
         {
-            if(isShow)
+            if (isShow)
             {
                 itemRank.gameObject.SetActive(true);
             }
@@ -152,7 +152,7 @@ public class RankingPanel : MonoBehaviour
         {
             levelText.text = "11级";
             typeText.text = "红富士苹果";
-            nameText.text =string.Format("{0} {1}", rankIndex,"李三");
+            nameText.text = string.Format("{0} {1}", rankIndex, "李三");
         }
     }
 }

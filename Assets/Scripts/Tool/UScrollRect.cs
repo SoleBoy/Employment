@@ -31,16 +31,16 @@ public class UScrollRect : ScrollRect
         if (!isDrag)
             return;
         //这个就是Content
-        RectTransform rect = GetComponentInChildren<ContentSizeFitter>().GetComponent<RectTransform>();
+        //RectTransform rect = GetComponentInChildren<ContentSizeFitter>().GetComponent<RectTransform>();
         //如果拖动的距离大于给定的值
-        if (f > rect.rect.height * vector.y)
+        if (vector.y <= 0)
         {
-            isRef = true;
+            isRef = false;
             Debug.Log("OnBeginDrag执行");
         }
         else
         {
-            isRef = false;
+            isRef = true;
             Debug.Log("OnEndDrag执行");
         }
     }
@@ -54,7 +54,8 @@ public class UScrollRect : ScrollRect
     public override void OnEndDrag(PointerEventData eventData)
     {
         base.OnEndDrag(eventData);
-        callback2.Invoke();
+        if(isRef)
+            callback2.Invoke();
         isRef = false;
         isDrag = false;
     }

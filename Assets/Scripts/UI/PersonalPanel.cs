@@ -74,27 +74,27 @@ public class PersonalPanel : MonoBehaviour
         }
         private void OpenAttest()
         {
-            Debug.Log(attestIndex);
-            if (attestIndex == 0)
-            {
-                Debug.Log("企业法人实名认证");
-                DataTool.StartActivity(158);
-            }
-            else if (attestIndex == 1)
-            {
-                Debug.Log("营业执照登记");
-                DataTool.StartActivity(38);
-            }
-            else if (attestIndex == 2)
-            {
-                Debug.Log("银行开户许可证");
-                DataTool.StartActivity(48);
-            }
-            else if (attestIndex == 3)
-            {
-                Debug.Log("签名验证");
-                DataTool.StartActivity(91);
-            }
+            //Debug.Log(attestIndex);
+            //if (attestIndex == 0)
+            //{
+            //    Debug.Log("企业法人实名认证");
+            //    DataTool.StartActivity(158);
+            //}
+            //else if (attestIndex == 1)
+            //{
+            //    Debug.Log("营业执照登记");
+            //    DataTool.StartActivity(38);
+            //}
+            //else if (attestIndex == 2)
+            //{
+            //    Debug.Log("银行开户许可证");
+            //    DataTool.StartActivity(48);
+            //}
+            //else if (attestIndex == 3)
+            //{
+            //    Debug.Log("签名验证");
+            //    DataTool.StartActivity(91);
+            //}
         }
         public void HideInfo(bool isHide)
         {

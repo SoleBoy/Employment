@@ -117,12 +117,26 @@ public class TaskPanel : MonoBehaviour
 
     private void OpenAssign()
     {
-        OpenSubscript(1);
+        if (DataTool.isDegree)
+        {
+            OpenSubscript(1);
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
 
     private void OpenMine()
     {
-        OpenSubscript(2);
+        if (DataTool.isDegree)
+        {
+            OpenSubscript(2);
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
 
     private void OpenFilter()

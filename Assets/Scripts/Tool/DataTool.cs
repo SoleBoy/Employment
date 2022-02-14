@@ -9,39 +9,48 @@ public class DataTool
 {
 #if UNITY_IOS
     [DllImport("__Internal")]
-    private static extern void startActivity();//登录注册流程传数据
+    private static extern void startActivity(string messg);//登录注册流程传数据
 
     [DllImport("__Internal")]
     private static extern void getLocationInfo();//获取经纬度位置
+
+    [DllImport("__Internal")]
+    private static extern void updateBankcard();//更新银行卡
+    
 #endif
 
     public static Dictionary<string, object> information = new Dictionary<string, object>();
-
-    public static string workerInfo = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
+    //注销账号
+    public static string cancel;
+    //更新验证码
+    public static string sendsms;
+    public static string updateMobile;//更新手机号
+    public static string workerInfo;//个人用户信息
+    public static string verifyCode;//验证验证码
     //打卡记录
-    public static string clockUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/lock";
-    public static string pictureUrl = "http://appapi.brilliantnetwork.cn:5002/api/upload/uploadfile?path=daka&onlyLocal=0";
+    public static string clockUrl;
+    public static string pictureUrl;
 
     //任务显示信息
-    public static string currentTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getCurrentTask";//当前任务
-    public static string typeTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskTypeNames";//任务类型
-    public static string placeTaskUrl = "http://appapi.brilliantnetwork.cn:5002/api/basicdata/getRegionByParentId?parentId=1";//行政区
-    public static string receiverTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/receiverTask";//接单
-    public static string infoTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskInfo?taskId=";//任务详情
-    public static string seachTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskSeach";//任务搜索
-    public static string submitTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/submitTask";//任务提交
-    //
+    public static string currentTaskUrl;//当前任务
+    public static string typeTaskUrl;//任务类型
+    public static string placeTaskUrl;//行政区
+    public static string receiverTaskUrl;//接单
+    public static string infoTaskUrl;//任务详情
+    public static string seachTaskUrl;//任务搜索
+    public static string submitTaskUrl;//任务提交
     //收入
-    public static string totalSalaryUrl="http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getTotalSalary";//总收入
-    public static string salarySeachUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getSalarySeach";//收入列表
-    public static string salaryDetailsUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getDetalSalary?id=";//薪水详情
+    public static string totalSalaryUrl;//总收入
+    public static string salarySeachUrl;//收入列表
+    public static string salaryDetailsUrl;//薪水详情
 
     //邀请码认证信息
-    public static string invateCodeUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/updateInvateCode";
+    public static string invateCodeUrl;
+    public static string urlCode;
     //雇主
-    public static string businessUrl = "http://appapi.brilliantnetwork.cn:5002/companyapi/getLoginInfo";//雇主-获取登录用户信息
-    public static string scanCodeUrl = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/postScanCode";//扫码提交
-    public static string invitationCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getInvitationCode";//获取邀请码
+    public static string businessUrl;//雇主-获取登录用户信息
+    public static string scanCodeUrl;//扫码提交
+    public static string invitationCode ;//获取邀请码
 
     public static string token = "";
     public static string roleType = "";//注册类型
@@ -56,16 +65,18 @@ public class DataTool
     public static string longitude = "";//打卡经纬度
     public static string businessPic = "";//营业执照
     public static string bankCardPic = "";//银行卡照片
+    public static string loginPhone = "";//用户是手机号
     public static string signaturePic = "";//签名
     public static string checkAddress = "";//打卡地址
     public static string currentTask = "";//当前任务
     public static string filePath = Application.persistentDataPath + "/" + "ClockIn.png";
     public static bool isClock;//打卡记录
+    public static bool isDegree;//注册完成度
     public static byte[] cheackByte;
     public static Texture checkTexture;
     public static Vector2 canvasSize;
-    public static Vector3 frontAngle = new Vector3(0, 180, 90);
-    public static Vector3 rearAngle = new Vector3(0, 0, -90);
+    public static Vector3 frontAngle;
+    public static Vector3 rearAngle;
     public static SalaryEntry salaryEntry;
 
     public static Color color_review;
@@ -77,6 +88,7 @@ public class DataTool
 
     public static void InitData()
     {
+        SwitchUrl(true);
         isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString() + "Clock") == "Clock";
 
         color_review = GetColor("2D56E9");//待审核 #D9680F
@@ -85,7 +97,105 @@ public class DataTool
         color_submitted = GetColor("2ACCB1");//已提交 #A6A3A3
         color_accepted = GetColor("2ACCB1");//已验收 #1886F2
         color_issued = GetColor("2ACCB1");//已发放 #053EA4
+
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            frontAngle = new Vector3(0, 180, 90);
+            rearAngle = new Vector3(0, 0, -90);
+
+            AndroidStatusBar.statusBarState = AndroidStatusBar.States.Visible;//显示状态栏，占用屏幕最上方的一部分像素
+            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.VisibleOverContent;//悬浮显示状态栏，不占用屏幕像素
+            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.TranslucentOverContent;//透明悬浮显示状态栏，不占用屏幕像素
+            //AndroidStatusBar.statusBarState = AndroidStatusBar.States.Hidden;//隐藏状态栏
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            frontAngle = new Vector3(180, 180, 90);
+            rearAngle = new Vector3(0, 0, -90);
+        }
+        else
+        {
+            frontAngle = new Vector3(180, 180, 90);
+            rearAngle = new Vector3(0, 0, -90);
+        }
     }
+
+    //测试: appapi.brilliantnetwork 正式: salaryapi.beeai.work
+    private static void SwitchUrl(bool isUrl)
+    {
+        if(isUrl)
+        {
+            //注销账号
+            cancel = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/cancel";
+            //更新验证码
+            sendsms = "http://salaryapi.beeai.work.cn:5002/api/sms/sendsms?mobile=";
+            updateMobile = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/updateMobile";//更新手机号
+            workerInfo = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
+            verifyCode = "http://salaryapi.beeai.work.cn:5002/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
+           
+            //打卡记录
+            clockUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/lock";
+            pictureUrl = "http://salaryapi.beeai.work.cn:5002/api/upload/uploadfile?path=daka&onlyLocal=0";
+
+            //任务显示信息
+            currentTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getCurrentTask";//当前任务
+            typeTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskTypeNames";//任务类型
+            placeTaskUrl = "http://salaryapi.beeai.work.cn:5002/api/basicdata/getRegionByParentId?parentId=1";//行政区
+            receiverTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/receiverTask";//接单
+            infoTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskInfo?taskId=";//任务详情
+            seachTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/getTaskSeach";//任务搜索
+            submitTaskUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/task/submitTask";//任务提交
+            //收入
+            totalSalaryUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getTotalSalary";//总收入
+            salarySeachUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getSalarySeach";//收入列表
+            salaryDetailsUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/salary/getDetalSalary?id=";//薪水详情
+
+            //邀请码认证信息
+            invateCodeUrl = "http://salaryapi.beeai.work.cn:5002/workerapi/workers/updateInvateCode";
+            urlCode = "http://salaryapi.beeai.work.cn:5002/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
+            //雇主
+            businessUrl = "http://salaryapi.beeai.work.cn:5002/companyapi/getLoginInfo";//雇主-获取登录用户信息
+            scanCodeUrl = "http://salaryapi.beeai.work.cn:5002/companyapi/company/postScanCode";//扫码提交
+            invitationCode = "http://salaryapi.beeai.work.cn:5002/companyapi/company/getInvitationCode";//获取邀请码
+        }
+        else
+        {
+            //注销账号
+            cancel = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/cancel";
+            //更新验证码
+            sendsms = "http://appapi.brilliantnetwork.cn:5002/api/sms/sendsms?mobile=";
+            updateMobile = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/updateMobile";//更新手机号
+            workerInfo = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
+            verifyCode = "http://appapi.brilliantnetwork.cn:5002/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
+            urlCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
+            //打卡记录
+            clockUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/lock";
+            pictureUrl = "http://appapi.brilliantnetwork.cn:5002/api/upload/uploadfile?path=daka&onlyLocal=0";
+
+            //任务显示信息
+            currentTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getCurrentTask";//当前任务
+            typeTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskTypeNames";//任务类型
+            placeTaskUrl = "http://appapi.brilliantnetwork.cn:5002/api/basicdata/getRegionByParentId?parentId=1";//行政区
+            receiverTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/receiverTask";//接单
+            infoTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskInfo?taskId=";//任务详情
+            seachTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/getTaskSeach";//任务搜索
+            submitTaskUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/submitTask";//任务提交
+            //收入
+            totalSalaryUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getTotalSalary";//总收入
+            salarySeachUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getSalarySeach";//收入列表
+            salaryDetailsUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/salary/getDetalSalary?id=";//薪水详情
+
+            //邀请码认证信息
+            invateCodeUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/updateInvateCode";
+            //雇主
+            businessUrl = "http://appapi.brilliantnetwork.cn:5002/companyapi/getLoginInfo";//雇主-获取登录用户信息
+            scanCodeUrl = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/postScanCode";//扫码提交
+            invitationCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getInvitationCode";//获取邀请码
+        }
+    }
+
+
+
     private static Color GetColor(string color)
     {
         Color skyColor;
@@ -113,7 +223,7 @@ public class DataTool
         else if(Application.platform == RuntimePlatform.IPhonePlayer)
         {
 #if UNITY_IOS
-            startActivity();
+            startActivity(pageId.ToString());
 #endif
         }
     }
@@ -144,7 +254,7 @@ public class DataTool
     {
         if (Application.platform == RuntimePlatform.Android)
         {
-            Debug.Log("getLocationInfo");
+            Debug.Log("updateBankcard");
 
             using (AndroidJavaClass pluginClass = new AndroidJavaClass("com.example.jinchang.utils.UnityReflection"))
             {
@@ -156,7 +266,9 @@ public class DataTool
         }
         else if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
-
+#if UNITY_IOS
+            updateBankcard();
+#endif
         }
     }
     // 172 173 174  185 已发放  ,187 经营所得    ,190 经营所得二级目录-加月份
@@ -223,3 +335,6 @@ public enum SalaryEntry
     clock,
     bankcard
 }
+
+
+

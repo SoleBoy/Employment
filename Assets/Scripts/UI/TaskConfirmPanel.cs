@@ -52,8 +52,6 @@ public class TaskConfirmPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-
-    //筛选任务
     private IEnumerator TaskOrder(string url)
     {
         JsonData data = new JsonData();
@@ -66,8 +64,9 @@ public class TaskConfirmPanel : MonoBehaviour
         webRequest.uploadHandler = (UploadHandler)new UploadHandlerRaw(postBytes);
         webRequest.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         webRequest.SetRequestHeader("Content-Type", "application/json");
-
+        UIManager.Instance.MaskTest(true);
         yield return webRequest.SendWebRequest();
+        UIManager.Instance.MaskTest(false);
         if (webRequest.isNetworkError || webRequest.error != null)
         {
             Debug.Log("请求网络错误:" + webRequest.error);
@@ -76,7 +75,7 @@ public class TaskConfirmPanel : MonoBehaviour
         {
             Debug.Log("接单"+webRequest.downloadHandler.text);
             Dictionary<string, object> clockData = Json.Deserialize(webRequest.downloadHandler.text) as Dictionary<string, object>;
-            if (clockData["msg"].ToString() == "SUCCESS")
+            if (clockData["code"].ToString() == "0")
             {
                 successPanel.SetActive(true);
             }
