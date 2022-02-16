@@ -213,7 +213,6 @@ public class UIManager : MonoSingleton<UIManager>
             Debug.Log("安卓初始数据" + messgInfo);
             InitData();
             Dictionary<string, object> information = Json.Deserialize(messgInfo) as Dictionary<string, object>;
-            DataTool.information = information;
             DataTool.roleType = information["goto"].ToString();
             DataTool.token = information["token"].ToString();
             if (DataTool.roleType.Contains("雇主"))
@@ -348,7 +347,7 @@ public class UIManager : MonoSingleton<UIManager>
         }
     }
     //获取个人用户信息
-    private IEnumerator WorkerInfo(string url)
+    public IEnumerator WorkerInfo(string url)
     {
         UnityWebRequest webRequest = UnityWebRequest.Get(url);
         webRequest.SetRequestHeader("Authorization", DataTool.token);
@@ -364,6 +363,7 @@ public class UIManager : MonoSingleton<UIManager>
             if (pageData["code"].ToString() == "0")
             {
                 Dictionary<string, object> data = pageData["data"] as Dictionary<string, object>;
+                DataTool.information = data;
                 if (data["name"] != null)
                     DataTool.roleName = data["name"].ToString();
                 if (data["invitationCompayName"] != null)
@@ -380,13 +380,13 @@ public class UIManager : MonoSingleton<UIManager>
                     DataTool.bankCardPic = data["bankPic"].ToString();
                 if (data["loginPhone"] != null)
                     DataTool.loginPhone = data["loginPhone"].ToString();
-                //signatureVerificationStatus签名  invitationCodeStatus 邀请码   
-                //bindBankStatus 银行卡 realNameStatus实名 willingVideoVerificationStatus活体
+                //signatureVerificationStatus 签名  invitationCodeStatus 邀请码   bodyRecognitionStatus 活体认证
+                //bindBankStatus 银行卡 realNameStatus 实名 willingVideoVerificationStatus 意愿
                 if (data["signatureVerificationStatus"] != null&& data["bindBankStatus"] != null && 
                     data["realNameStatus"] != null && data["willingVideoVerificationStatus"] != null
-                    && data["signatureVerificationStatus"].ToString() == "1"
-                    && data["bindBankStatus"].ToString() == "1" && data["realNameStatus"].ToString() == "1" 
-                    && data["willingVideoVerificationStatus"].ToString() == "1")
+                    && data["bodyRecognitionStatus"] != null && data["signatureVerificationStatus"].ToString() == "1"
+                    && data["bindBankStatus"].ToString() == "1" && data["realNameStatus"].ToString() == "1"
+                    && data["willingVideoVerificationStatus"].ToString() == "1" && data["bodyRecognitionStatus"].ToString() == "1")
                 {
                     DataTool.isDegree = true;
                 }

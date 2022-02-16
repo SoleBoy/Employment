@@ -131,14 +131,15 @@ public class HomePanel : MonoBehaviour
 
     private void OpenGuide(int index)
     {
-        if (DataTool.isDegree)
-        {
-            //UIManager.Instance.CloningTips("要有收益，赶紧注册哦");
-            ClosePanel(index);
-        }
-        else
-        {
-            UIManager.Instance.guidePanel.OpenPanel();
-        }
+        ClosePanel(index);
+        //if (DataTool.isDegree)
+        //{
+        //    //UIManager.Instance.CloningTips("要有收益，赶紧注册哦");
+           
+        //}
+        //else
+        //{
+        //    UIManager.Instance.guidePanel.OpenPanel();
+        //}
     }
 }

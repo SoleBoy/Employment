@@ -168,8 +168,14 @@ public class IncomePanel : MonoBehaviour
 
         private void OpenDetails()
         {
-            UIManager.Instance.taskDetailsPanel.OpenPanel(taskId);
-            
+            if (DataTool.isDegree)
+            {
+                UIManager.Instance.taskDetailsPanel.OpenPanel(taskId);
+            }
+            else
+            {
+                UIManager.Instance.guidePanel.OpenPanel();
+            }
         }
     }
 

@@ -52,14 +52,31 @@ public class MainPanel : MonoBehaviour
 
     public void SetCompany()
     {
-        if (DataTool.theCompany == "")
+        if (DataTool.isDegree)
         {
-            nameText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+            if (DataTool.theCompany == "")
+            {
+                nameText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
+            }
+            else
+            {
+                nameText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+            }
         }
         else
         {
-            nameText.text = string.Format("{0}({1})", DataTool.roleName, DataTool.theCompany);
+            if (DataTool.information["willingVideoVerificationStatus"].ToString() == "2")
+            {
+                if (DataTool.loginPhone.Length >= 11)
+                    nameText.text = string.Format("注册中:{0}****{1}", DataTool.loginPhone.Substring(0, 3), DataTool.loginPhone.Substring(7, 4));
+            }
+            else
+            {
+                if (DataTool.loginPhone.Length >= 11)
+                    nameText.text = string.Format("未注册:{0}****{1}", DataTool.loginPhone.Substring(0, 3), DataTool.loginPhone.Substring(7, 4));
+            }
         }
+
     }
 
     public void ClosePanel()
@@ -69,7 +86,14 @@ public class MainPanel : MonoBehaviour
     //客服
     private void OpenService()
     {
-        UIManager.Instance.servicePanel.OpenPanel();
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.servicePanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
     //退出
     private void OpenDrop()
@@ -79,22 +103,50 @@ public class MainPanel : MonoBehaviour
     //隐私
     private void OpenPolicy()
     {
-        UIManager.Instance.privacyPanel.OpenPanel();
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.privacyPanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
     //服务
     private void OpenServer()
     {
-        UIManager.Instance.termsPanel.OpenPanel();
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.termsPanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
     //认证信息
     private void OpenCerti()
     {
-        UIManager.Instance.unitPanel.OpenPanel();
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.unitPanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
     //我的协议
     private void OpenAgreement()
     {
-        UIManager.Instance.protocolPanel.OpenPanel();
+        if (DataTool.isDegree)
+        {
+            UIManager.Instance.protocolPanel.OpenPanel();
+        }
+        else
+        {
+            UIManager.Instance.guidePanel.OpenPanel();
+        }
     }
     //营业执照
     private void OpenLicense()

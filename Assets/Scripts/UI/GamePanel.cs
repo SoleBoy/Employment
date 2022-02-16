@@ -7,10 +7,8 @@ using UnityEngine.UI;
 public class GamePanel : MonoBehaviour
 {
     private Button backBtn;
-
-    private Transform fruitFarm;
-
     private Button dailyBtn;
+    private Button factoryBtn;
     private Button fertilizeBtn;
     private Button rankBtn;
     private Button receiveBtn;
@@ -20,58 +18,47 @@ public class GamePanel : MonoBehaviour
     private Text manureText;
     private Text numberText;
     private Text dailyText;
+    private Text factoryText;
     private Text dailyFertilizer;
     private Text levelText;
     private Text infoText;
     private Text meteringText;
     private Image levelImage;
 
-    private bool isDaily;
-
-    private float manureSum;
-    private float numberManure;
-    private float levelCurr;
-    private float empiricalCurr;
-    private float empiricalSum;
-    private float meteringNum;
-    private float dailyNum;
     private void Awake()
     {
-        fruitFarm = transform.Find("FruitFarm");
-        levelImage = fruitFarm.Find("Schedule/Image").GetComponent<Image>();
-        levelText = fruitFarm.Find("Schedule/Level").GetComponent<Text>();
-        infoText = fruitFarm.Find("Schedule/Info").GetComponent<Text>();
-        dailyText = fruitFarm.Find("Daily/receive/Text").GetComponent<Text>();
-        dailyFertilizer = fruitFarm.Find("Daily/Text").GetComponent<Text>();
-        manureText = fruitFarm.Find("Fertilize/Manure").GetComponent<Text>();
-        numberText = fruitFarm.Find("Fertilize/Number/Text").GetComponent<Text>();
-        meteringText = fruitFarm.Find("Schedule/Metering/Text").GetComponent<Text>();
+        levelImage = transform.Find("Schedule/Image").GetComponent<Image>();
+        levelText = transform.Find("Schedule/Level").GetComponent<Text>();
+        infoText = transform.Find("Schedule/Info").GetComponent<Text>();
+        dailyText = transform.Find("Daily/receive/Text").GetComponent<Text>();
+        factoryText = transform.Find("Factory/receive/Text").GetComponent<Text>();
+        dailyFertilizer = transform.Find("Daily/Text").GetComponent<Text>();
+        manureText = transform.Find("Fertilize/Manure").GetComponent<Text>();
+        numberText = transform.Find("Fertilize/Number/Text").GetComponent<Text>();
+        meteringText = transform.Find("Schedule/Metering/Text").GetComponent<Text>();
 
-        dailyBtn = fruitFarm.Find("Daily").GetComponent<Button>();
-        fertilizeBtn = fruitFarm.Find("Fertilize").GetComponent<Button>();
-        rankBtn = fruitFarm.Find("Ranking").GetComponent<Button>();
-        receiveBtn = fruitFarm.Find("Receive").GetComponent<Button>();
-        helpBtn = fruitFarm.Find("Help").GetComponent<Button>();
-        meteringBtn = fruitFarm.Find("Schedule/Metering").GetComponent<Button>();
-
+        dailyBtn = transform.Find("Daily").GetComponent<Button>();
+        factoryBtn = transform.Find("Factory").GetComponent<Button>();
+        fertilizeBtn = transform.Find("Fertilize").GetComponent<Button>();
+        rankBtn = transform.Find("Ranking").GetComponent<Button>();
+        receiveBtn = transform.Find("Receive").GetComponent<Button>();
+        helpBtn = transform.Find("Help").GetComponent<Button>();
+        meteringBtn = transform.Find("Schedule/Metering").GetComponent<Button>();
         backBtn = transform.Find("BackBtn").GetComponent<Button>();
 
         backBtn.onClick.AddListener(ClosePanel);
         dailyBtn.onClick.AddListener(DailyReward);
+        factoryBtn.onClick.AddListener(FactoryReward);
         fertilizeBtn.onClick.AddListener(Fertilize);
         rankBtn.onClick.AddListener(OpenRanking);
         receiveBtn.onClick.AddListener(SignInReward);
         helpBtn.onClick.AddListener(OpenHelp);
         meteringBtn.onClick.AddListener(OpenMetering);
-        levelCurr = 1;
-        dailyNum = 500;
-        isDaily = PlayerPrefs.GetString("DailySignIn") == "Daily" + System.DateTime.Now.Date;
     }
 
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        fruitFarm.gameObject.SetActive(true);
         ValueAdjustment();
     }
 
@@ -82,71 +69,71 @@ public class GamePanel : MonoBehaviour
 
     private void ValueAdjustment()
     {
-        Quantity(manureSum);
-        empiricalSum = levelCurr * 2;
-        levelText.text = levelCurr+"级";
+        Quantity(0);
         infoText.text = "施肥升等级";
-        if (meteringNum >= 2)
+
+        //dailyFertilizer.text = string.Format("肥料\n{0}", dailyNum);
+        levelImage.fillAmount = DataTool.farmData.expCurrent / DataTool.farmData.expMax;
+        if (DataTool.farmData.dailyMuck == "true")
         {
-            meteringText.text = "可领取肥料";
+            factoryText.text = "明日7:00可领";
         }
         else
         {
-            meteringText.text = string.Format("施肥{0}次可领", meteringNum);
-        }
-        dailyFertilizer.text = string.Format("肥料\n{0}", dailyNum);
-        levelImage.fillAmount = empiricalCurr / empiricalSum;
-        if (isDaily)
-        {
-            dailyText.text = "明日7:00可领";
-        }
-        else
-        {
-            dailyText.text = "领取";
+            factoryText.text = "领取";
         }
     }
 
     private void DailyReward()
     {
-        if(!isDaily)
+        //if(!isDaily)
+        //{
+        //    Quantity(50000);
+        //    isDaily = true;
+        //    dailyText.text = "明日7:00可领";
+        //    PlayerPrefs.SetString("DailySignIn", "Daily" + System.DateTime.Now.Date);
+        //}
+    }
+
+    private void FactoryReward()
+    {
+        if (DataTool.farmData.dailyMuck == "false")
         {
-            Quantity(5000);
-            isDaily = true;
-            dailyText.text = "明日7:00可领";
-            PlayerPrefs.SetString("DailySignIn", "Daily" + System.DateTime.Now.Date);
+            Quantity(20000000000);
+            DataTool.farmData.dailyMuck = "true";
+            factoryText.text = "明日可领";
         }
     }
 
     private void Fertilize()
     {
-        if(numberManure >= 1)
+        if(DataTool.farmData.numberMuck >= 1 && DataTool.farmData.treeGrade < 16)
         {
-            empiricalCurr += 1;
-            levelImage.fillAmount = empiricalCurr / empiricalSum;
-            if (empiricalCurr >= empiricalSum)
-            {
-                levelCurr += 1;
-                empiricalCurr = 0;
-                empiricalSum = levelCurr * 2;
-                levelText.text = string.Format("{0}级", levelCurr);
-                infoText.text = "施肥升等级";
-                levelImage.fillAmount = 0;
-            }
             Quantity(-600);
-            meteringNum += 1;
-            float number = 2 - meteringNum;
-            if(number > 0)
+            DataTool.farmData.expCurrent += 600;
+            float billie = DataTool.farmData.expCurrent / DataTool.farmData.expMax;
+            levelImage.fillAmount = billie;
+            infoText.text = string.Format("在施肥{0}%花香飘逸", billie.ToString("F2"));
+            if (DataTool.farmData.expCurrent >= DataTool.farmData.expMax)
             {
-                meteringText.text = string.Format("施肥{0}次可领", number);
-            }
-            else
-            {
-                meteringText.text = "领取肥料";
-            }
-            if(dailyNum < 1800)
-            {
-                dailyNum += 100;
-                dailyFertilizer.text = string.Format("肥料\n{0}", dailyNum);
+                DataTool.farmData.treeGrade += 1;
+                DataTool.farmData.expCurrent = 0;
+                if (DataTool.farmData.treeGrade == 1)
+                {
+                    DataTool.farmData.expMax = 3000 * DataTool.farmData.treeGrade;
+                }
+                else if (DataTool.farmData.treeGrade > 1 && DataTool.farmData.treeGrade <= 10)
+                {
+                    DataTool.farmData.expMax = (DataTool.farmData.treeGrade - 1) * 6000;
+                }
+                else if (DataTool.farmData.treeGrade > 10)
+                {
+                    DataTool.farmData.expMax = 72000 + (DataTool.farmData.treeGrade - 11) * 18000;
+                }
+                Debug.Log(DataTool.farmData.expMax);
+                levelText.text = string.Format("{0}级", DataTool.farmData.treeGrade);
+                
+                levelImage.fillAmount = 0;
             }
         }
     }
@@ -168,21 +155,22 @@ public class GamePanel : MonoBehaviour
 
     private void OpenMetering()
     {
-        if(meteringNum >= 2)
-        {
-            meteringNum = 0;
-            Quantity(500);
-            UIManager.Instance.CloningTips("领取肥料500");
-            meteringText.text = "施肥2次可领";
-        }
+        //if(meteringNum >= meteringSum)
+        //{
+        //    meteringNum = 0;
+        //    meteringSum += 2;
+        //    Quantity(600);
+        //    UIManager.Instance.CloningTips("领取肥料500");
+        //    meteringText.text = string.Format("施肥{0}次可领", meteringSum);
+        //}
     }
 
     private void Quantity(float number)
     {
-        manureSum = manureSum + number;
-        numberManure = (float)Math.Floor((double)(manureSum / 600));
-        manureText.text = string.Format("我的肥料 {0}",manureSum.ToString("F0")); 
-        numberText.text = numberManure.ToString("F0");
+        DataTool.farmData.totalMuck += number;
+        DataTool.farmData.numberMuck = (float)Math.Floor((double)(DataTool.farmData.totalMuck / 600));
+        manureText.text = string.Format("我的肥料 {0}", DataTool.UnitConversion(DataTool.farmData.totalMuck)); 
+        numberText.text = DataTool.farmData.numberMuck.ToString("F0");
     }
 
     //private void OpenFruit()

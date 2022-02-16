@@ -26,6 +26,10 @@ public class GuidePanel : MonoBehaviour
     public void OpenPanel()
     {
         gameObject.SetActive(true);
+        if(DataTool.information["willingVideoVerificationStatus"].ToString() == "2")
+        {
+            StartCoroutine(UIManager.Instance.WorkerInfo(DataTool.workerInfo));
+        }
     }
 
     public void ClosePanel()

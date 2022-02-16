@@ -1,4 +1,5 @@
 ﻿using MiniJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -86,9 +87,33 @@ public class DataTool
     public static Color color_accepted;
     public static Color color_issued;
 
+    public static FarmData farmData;
     public static void InitData()
     {
         SwitchUrl(true);
+        farmData = new FarmData();
+        farmData.numberMature = 1;
+        farmData.treeGrade = 1;
+        farmData.checkTimes = 1;
+        farmData.expCurrent = 1;
+        if(farmData.treeGrade == 1)
+        {
+            farmData.expMax = 3000 * farmData.treeGrade;
+        }
+        else if (farmData.treeGrade > 1 && farmData.treeGrade <= 10)
+        {
+            farmData.expMax = (farmData.treeGrade-1) * 6000;
+        }
+        else if (farmData.treeGrade > 10)
+        {
+            farmData.expMax = 72000 + (farmData.treeGrade - 11)*18000;
+        }
+        farmData.expMax *= farmData.numberMature;
+        farmData.totalMuck = 0;
+        farmData.numberMuck = (float)Math.Floor((double)(farmData.totalMuck / 600));
+        farmData.dailyMuck = "false";
+        farmData.dailyCheck = "false";
+        Debug.Log(DataTool.farmData.expMax);
         isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString() + "Clock") == "Clock";
 
         color_review = GetColor("2D56E9");//待审核 #D9680F
@@ -202,7 +227,23 @@ public class DataTool
         ColorUtility.TryParseHtmlString("#" + color, out skyColor);
         return skyColor;
     }
-
+    // K M B T
+    public static string UnitConversion(float number)
+    {
+        if (number >= 1000 && number < 1000000)
+        {
+            return string.Format("{0:F1}kg", number * 0.001);
+        }
+        else if (number >= 1000000 && number < 1000000000)
+        {
+            return string.Format("{0:F1}m", number * 0.000001);
+        }
+        else if (number >= 1000000000)
+        {
+            return string.Format("{0:F1}b", number * 0.000000001f);
+        }
+        return string.Format("{0:F0}", Mathf.Floor(number));
+    }
     //Open安卓
     public static void StartActivity(int pageId)
     {
@@ -316,6 +357,20 @@ public class DataTool
         {
             return new List<object>();
         }
+    }
+
+
+    public class FarmData
+    {
+        public int numberMature;  //成熟数量
+        public int treeGrade;  //果树等级
+        public int checkTimes; //签到次数  1-5
+        public float expCurrent; //当前经验值
+        public float expMax;  //最大经验值
+        public float totalMuck; //总肥料
+        public float numberMuck; //施肥个数
+        public string dailyMuck; //每日肥料
+        public string dailyCheck; //每日签到
     }
 
 }

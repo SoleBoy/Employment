@@ -1,50 +1,58 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SigninPanel : MonoBehaviour
 {
-    private Text weekText;
-    private Text totalText;
+    public Transform[] itemSigins;
+    public Transform[] itemActivities;
 
-    private Image weekImage;
-    private Image totalImage;
+    private Text siginText;
 
-    private Button weekBtn;
-    private Button totalBtn;
+    private Image checkProgress;
+    private Button siginBtn;
     private Button backBtn;
 
-    private Transform rankParent;
-    private Transform rankItem;
-    private List<RankingItem> rankings = new List<RankingItem>();
+    private List<DailyActivities> activities = new List<DailyActivities>();
+    private List<SiginItem> siginItems = new List<SiginItem>();
 
-    private bool isWeek;
     private void Awake()
     {
-        //rankParent = transform.Find("bg/RankView/Viewport/Content");
-        //rankItem = transform.Find("Item");
-
-        //weekText = transform.Find("bg/WeekBtn/Text").GetComponent<Text>();
-        //totalText = transform.Find("bg/TotalBtn/Text").GetComponent<Text>();
-
-        //weekImage = transform.Find("bg/WeekBtn").GetComponent<Image>();
-        //totalImage = transform.Find("bg/TotalBtn").GetComponent<Image>();
-
-        //weekBtn = transform.Find("bg/WeekBtn").GetComponent<Button>();
-        //totalBtn = transform.Find("bg/TotalBtn").GetComponent<Button>();
+        siginText = transform.Find("bg/SiginBtn/Text").GetComponent<Text>();
+        checkProgress = transform.Find("bg/Progress").GetComponent<Image>();
+        siginBtn = transform.Find("bg/SiginBtn").GetComponent<Button>();
         backBtn = transform.Find("bg/BackBtn").GetComponent<Button>();
 
-        //weekBtn.onClick.AddListener(OpenWeek);
-        //totalBtn.onClick.AddListener(OpenTotal);
         backBtn.onClick.AddListener(ClosePanel);
+        siginBtn.onClick.AddListener(DailyReward);
+        for (int i = 0; i < itemActivities.Length; i++)
+        {
+            DailyActivities item = new DailyActivities(itemActivities[i], i);
+            activities.Add(item);
+        }
+        for (int i = 0; i < itemSigins.Length; i++)
+        {
+            SiginItem item = new SiginItem(itemSigins[i], i);
+            siginItems.Add(item);
+        }
+        if (DataTool.farmData.dailyCheck == "false")
+        {
+            siginText.text = "领取";
+            checkProgress.fillAmount = (DataTool.farmData.checkTimes - 1) * 0.2f; 
+        }
+        else
+        {
+            siginText.text = "已领取";
+            checkProgress.fillAmount = DataTool.farmData.checkTimes * 0.2f;
+        }
     }
 
     public void OpenPanel()
     {
         gameObject.SetActive(true);
-        //isWeek = false;
-        //OpenWeek();
+
     }
 
     public void ClosePanel()
@@ -52,107 +60,131 @@ public class SigninPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void InitData()
+    private void DailyReward()
     {
-        for (int i = 0; i < rankings.Count; i++)
+        if(DataTool.farmData.dailyCheck == "false")
         {
-            rankings[i].ShowItem(false);
-        }
-
-        for (int i = 0; i < 50; i++)
-        {
-            if (i >= rankings.Count)
-            {
-                Transform item = Instantiate(rankItem);
-                item.gameObject.SetActive(true);
-                item.SetParent(rankParent);
-                item.localScale = Vector3.one;
-                RankingItem ranking = new RankingItem(item, i);
-                ranking.SetInfo();
-                rankings.Add(ranking);
-            }
-            else
-            {
-                rankings[i].ShowItem(true);
-                rankings[i].SetInfo();
-            }
-            if (i == 49)
-            {
-                rankings[49].ShowEnd();
-            }
-        }
-        float maxY = 50 * 150;
-        rankParent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, maxY);
-    }
-
-    private void OpenTotal()
-    {
-        if (isWeek)
-        {
-            isWeek = false;
-            totalImage.color = Color.blue;
-            weekImage.color = Color.white;
-            rankParent.localPosition = Vector3.zero;
-            InitData();
+            DataTool.farmData.dailyCheck = "true";
+            siginText.text = "已领取";
+            checkProgress.fillAmount = DataTool.farmData.checkTimes * 0.2f;
         }
     }
 
-    private void OpenWeek()
+    //日常活动
+    private class DailyActivities
     {
-        if (!isWeek)
+        private Text typeText;
+        private Text nameText;
+        private Text btnText;
+        private Button completeBtn;
+
+        private int siginIndex;
+        public DailyActivities(Transform parent, int index)
         {
-            isWeek = true;
-            totalImage.color = Color.white;
-            weekImage.color = Color.blue;
-            rankParent.localPosition = Vector3.zero;
-            InitData();
+            siginIndex = index;
+            typeText = parent.Find("TypeText").GetComponent<Text>();
+            nameText = parent.Find("NameText").GetComponent<Text>();
+            btnText = parent.Find("Btn/Text").GetComponent<Text>();
+            completeBtn = parent.Find("Btn").GetComponent<Button>();
+            completeBtn.onClick.AddListener(OpenTask);
+        }
+
+        private void OpenTask()
+        {
+            if (siginIndex == 0) //上班打卡（0/1）
+            {
+
+            }
+            else if (siginIndex == 1)  //分享给好友（0/3）
+            {
+
+            }
+            else if (siginIndex == 2)  //"蜜蜂采蜜"PK游戏（0/1）
+            {
+
+            }
+            else if (siginIndex == 3)  //上传劳动成果（0/1）
+            {
+
+            }
+        }
+
+        public void SetInfo(int index)
+        {
+            if (index == 0) //上班打卡（0/1）
+            {
+                typeText.text = string.Format("上班打卡({0}/1)", 0);
+            }
+            else if (index == 1)  //分享给好友（0/3）
+            {
+                typeText.text = string.Format("分享给好友({0}/3)", 0);
+            }
+            else if (index == 2)  //"蜜蜂采蜜"PK游戏（0/1）
+            {
+                typeText.text = string.Format("蜜蜂采蜜PK游戏({0}/1)", 0);
+            }
+            else if (index == 3)  //上传劳动成果（0/1）
+            {
+                typeText.text = string.Format("上传劳动成果({0}/1)", 0);
+            }
         }
     }
-
-    //排行类
-    private class RankingItem
+    //每日签到
+    private class SiginItem
     {
-        private Text levelText;
         private Text typeText;
         private Text nameText;
 
-        private int rankIndex;
-        private Transform itemRank;
-        private Transform lineEnd;
-        public RankingItem(Transform parent, int index)
+        private int siginIndex;
+        public SiginItem(Transform parent, int index)
         {
-            itemRank = parent;
-            rankIndex = index;
-            levelText = parent.Find("LevelText").GetComponent<Text>();
+            siginIndex = index;
             typeText = parent.Find("TypeText").GetComponent<Text>();
             nameText = parent.Find("NameText").GetComponent<Text>();
-            lineEnd = parent.Find("LineEnd");
-            lineEnd.gameObject.SetActive(false);
         }
 
-        public void ShowItem(bool isShow)
+        private void OpenTask()
         {
-            if (isShow)
+            if (siginIndex == 0) //上班打卡（0/1）
             {
-                itemRank.gameObject.SetActive(true);
+               
             }
-            else
+            else if (siginIndex == 1)  //分享给好友（0/3）
             {
-                itemRank.gameObject.SetActive(false);
-                lineEnd.gameObject.SetActive(false);
+
+            }
+            else if (siginIndex == 2)  //"蜜蜂采蜜"PK游戏（0/1）
+            {
+
+            }
+            else if (siginIndex == 3)  //上传劳动成果（0/1）
+            {
+
             }
         }
 
-        public void ShowEnd()
+        public void SetInfo(int index)
         {
-            lineEnd.gameObject.SetActive(true);
-        }
-
-        public void SetInfo()
-        {
-            levelText.text = "11级";
-            typeText.text = "红富士苹果";
-            nameText.text = string.Format("{0} {1}", rankIndex, "李三");
+            if (index == 0) //上班打卡（0/1）
+            {
+                typeText.text = "第一天";
+            }
+            else if (index == 1)  //分享给好友（0/3）
+            {
+                typeText.text = "第二天";
+            }
+            else if (index == 2)  //"蜜蜂采蜜"PK游戏（0/1）
+            {
+                typeText.text = "第三天";
+            }
+            else if (index == 3)  //上传劳动成果（0/1）
+            {
+                typeText.text = "第四天";
+            }
+            else if (index == 4)  //上传劳动成果（0/1）
+            {
+                typeText.text = "第五天";
+            }
         }
     }
 }

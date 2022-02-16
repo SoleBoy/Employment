@@ -19,6 +19,7 @@ public class HallPanel : MonoBehaviour
     private Image roleImage;
     private GameObject checkRecord;
 
+    private Button registerBtn;
     private Button clockinBtn;
     private Button fruitBtn;
 
@@ -39,11 +40,18 @@ public class HallPanel : MonoBehaviour
         statusImage = transform.Find("Head/Status/Image").GetComponent<Image>();
         roleImage = transform.Find("Bracket/RoleImage").GetComponent<Image>();
 
+        registerBtn = transform.Find("RegisterBtn").GetComponent<Button>();
         clockinBtn = transform.Find("ClockinBtn").GetComponent<Button>();
         fruitBtn = transform.Find("FruitBtn").GetComponent<Button>();
 
+        registerBtn.onClick.AddListener(OpenRegister);
         clockinBtn.onClick.AddListener(OpenClockin);
         fruitBtn.onClick.AddListener(OpenFruit);
+    }
+
+    private void OpenRegister()
+    {
+        UIManager.Instance.guidePanel.OpenPanel();
     }
 
     private void OpenFruit()
@@ -67,6 +75,8 @@ public class HallPanel : MonoBehaviour
     {
         if(DataTool.isDegree)
         {
+            registerBtn.gameObject.SetActive(false);
+            clockinBtn.gameObject.SetActive(true);
             if (DataTool.theCompany == "")
             {
                 firmText.text = string.Format("{0}(自由职业者)", DataTool.roleName);
@@ -78,8 +88,18 @@ public class HallPanel : MonoBehaviour
         }
         else
         {
-            if(DataTool.loginPhone.Length >= 11)
-                firmText.text = string.Format("未注册用户:{0}****{1}", DataTool.loginPhone.Substring(0,3), DataTool.loginPhone.Substring(7, 4));
+            registerBtn.gameObject.SetActive(true);
+            clockinBtn.gameObject.SetActive(false);
+            if (DataTool.information["willingVideoVerificationStatus"].ToString() == "2")
+            {
+                if (DataTool.loginPhone.Length >= 11)
+                    firmText.text = string.Format("注册中:{0}****{1}", DataTool.loginPhone.Substring(0, 3), DataTool.loginPhone.Substring(7, 4));
+            }
+            else
+            {
+                if (DataTool.loginPhone.Length >= 11)
+                    firmText.text = string.Format("未注册:{0}****{1}", DataTool.loginPhone.Substring(0, 3), DataTool.loginPhone.Substring(7, 4));
+            }
         }
     }
 
