@@ -60,6 +60,11 @@ public class SigninPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void DailyState(int index)
+    {
+
+    }
+
     private void DailyReward()
     {
         if(DataTool.farmData.dailyCheck == "false")
@@ -79,6 +84,7 @@ public class SigninPanel : MonoBehaviour
         private Button completeBtn;
 
         private int siginIndex;
+        private int gameCount;
         public DailyActivities(Transform parent, int index)
         {
             siginIndex = index;
@@ -101,7 +107,14 @@ public class SigninPanel : MonoBehaviour
             }
             else if (siginIndex == 2)  //"蜜蜂采蜜"PK游戏（0/1）
             {
-
+                if (DataTool.farmData.gamePK >= 1)
+                {
+                    btnText.text = "已完成";
+                }
+                else
+                {
+                    UIManager.Instance.battlePanel.OpenPanel();
+                }
             }
             else if (siginIndex == 3)  //上传劳动成果（0/1）
             {
@@ -121,13 +134,23 @@ public class SigninPanel : MonoBehaviour
             }
             else if (index == 2)  //"蜜蜂采蜜"PK游戏（0/1）
             {
-                typeText.text = string.Format("蜜蜂采蜜PK游戏({0}/1)", 0);
+                if(DataTool.farmData.gamePK >= 1)
+                {
+                    btnText.text = "已完成";
+                }
+                else
+                {
+                    btnText.text = "去完成";
+                }
+                typeText.text = string.Format("蜜蜂采蜜PK游戏({0}/1)", DataTool.farmData.gamePK);
             }
             else if (index == 3)  //上传劳动成果（0/1）
             {
                 typeText.text = string.Format("上传劳动成果({0}/1)", 0);
             }
         }
+
+
     }
     //每日签到
     private class SiginItem

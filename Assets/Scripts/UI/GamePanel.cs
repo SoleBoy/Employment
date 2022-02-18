@@ -107,8 +107,9 @@ public class GamePanel : MonoBehaviour
 
     private void Fertilize()
     {
-        if(DataTool.farmData.numberMuck >= 1 && DataTool.farmData.treeGrade < 16)
+        if(DataTool.farmData.dailyFer < 10 && DataTool.farmData.numberMuck >= 1 && DataTool.farmData.treeGrade < 16)
         {
+            DataTool.farmData.dailyFer += 1;
             Quantity(-600);
             DataTool.farmData.expCurrent += 600;
             float billie = DataTool.farmData.expCurrent / DataTool.farmData.expMax;
@@ -132,8 +133,19 @@ public class GamePanel : MonoBehaviour
                 }
                 Debug.Log(DataTool.farmData.expMax);
                 levelText.text = string.Format("{0}级", DataTool.farmData.treeGrade);
-                
+
                 levelImage.fillAmount = 0;
+            }
+        }
+        else
+        {
+            if (DataTool.farmData.numberMuck < 1)
+            {
+                UIManager.Instance.CloningTips("请完成活动获取更多肥料");
+            }
+            else
+            {
+                UIManager.Instance.CloningTips("今日施肥数已达上限");
             }
         }
     }

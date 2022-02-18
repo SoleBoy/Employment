@@ -44,6 +44,7 @@ public class UIManager : MonoSingleton<UIManager>
     public GameLoad gameLoad;
     public RankingPanel rankingPanel;
     public SigninPanel signinPanel;
+    public BattlePanel battlePanel;
 
     private GameObject maskPanel;
     private Transform tipPanel;
@@ -106,6 +107,7 @@ public class UIManager : MonoSingleton<UIManager>
         gameLoad = barbg.Find("GameLoad").GetComponent<GameLoad>();
         rankingPanel = barbg.Find("RankingPanel").GetComponent<RankingPanel>();
         signinPanel = barbg.Find("SigninPanel").GetComponent<SigninPanel>();
+        battlePanel = barbg.Find("BattlePanel").GetComponent<BattlePanel>();
 
         hallPanel.Init();
         homePanel.Init();

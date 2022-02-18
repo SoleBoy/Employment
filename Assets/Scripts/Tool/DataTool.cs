@@ -28,6 +28,7 @@ public class DataTool
     public static string updateMobile;//更新手机号
     public static string workerInfo;//个人用户信息
     public static string verifyCode;//验证验证码
+    public static string getRamdomNickName;//获取随机验证码 http://appapi.brilliantnetwork.cn:5002/api/basicdata/getRamdomNickName
     //打卡记录
     public static string clockUrl;
     public static string pictureUrl;
@@ -111,9 +112,13 @@ public class DataTool
         farmData.expMax *= farmData.numberMature;
         farmData.totalMuck = 0;
         farmData.numberMuck = (float)Math.Floor((double)(farmData.totalMuck / 600));
+        farmData.clockIn = 0;
+        farmData.dailySharing = 0;
+        farmData.gamePK = 0;
+        farmData.laborResults = 0;
+        farmData.dailyFer = 0;
         farmData.dailyMuck = "false";
         farmData.dailyCheck = "false";
-        Debug.Log(DataTool.farmData.expMax);
         isClock = PlayerPrefs.GetString(System.DateTime.Now.Date.ToString() + "Clock") == "Clock";
 
         color_review = GetColor("2D56E9");//待审核 #D9680F
@@ -157,7 +162,7 @@ public class DataTool
             updateMobile = "http://salaryapi.beeai.work/workerapi/workers/updateMobile";//更新手机号
             workerInfo = "http://salaryapi.beeai.work/workerapi/workers/getWorkerInfo";//个人用户信息
             verifyCode = "http://salaryapi.beeai.work/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
-           
+            getRamdomNickName = "http://salaryapi.beeai.work/api/basicdata/getRamdomNickName";
             //打卡记录
             clockUrl = "http://salaryapi.beeai.work/workerapi/task/lock";
             pictureUrl = "http://salaryapi.beeai.work/api/upload/uploadfile?path=daka&onlyLocal=0";
@@ -193,6 +198,7 @@ public class DataTool
             workerInfo = "http://appapi.brilliantnetwork.cn:5002/workerapi/workers/getWorkerInfo";//个人用户信息
             verifyCode = "http://appapi.brilliantnetwork.cn:5002/api/sms/verifyCode?smstoken={0}&code={1}&mobile={2}";
             urlCode = "http://appapi.brilliantnetwork.cn:5002/companyapi/company/getCompanyInfoByInvateCode?invateCode=";
+            getRamdomNickName = "http://appapi.brilliantnetwork.cn:5002/api/basicdata/getRamdomNickName";
             //打卡记录
             clockUrl = "http://appapi.brilliantnetwork.cn:5002/workerapi/task/lock";
             pictureUrl = "http://appapi.brilliantnetwork.cn:5002/api/upload/uploadfile?path=daka&onlyLocal=0";
@@ -365,8 +371,13 @@ public class DataTool
         public int numberMature;  //成熟数量
         public int treeGrade;  //果树等级
         public int checkTimes; //签到次数  1-5
+        public int clockIn;//上班打卡 1
+        public int dailySharing;//每日分享 3
+        public int gamePK;//游戏PK 1
+        public int laborResults;//上传劳动成果 1
         public float expCurrent; //当前经验值
         public float expMax;  //最大经验值
+        public float dailyFer;// 每日施肥数
         public float totalMuck; //总肥料
         public float numberMuck; //施肥个数
         public string dailyMuck; //每日肥料
